@@ -1,4 +1,10 @@
-import { apiFetch, readApiJson } from '../services/api';
+import { DEMO_MODE } from '../services/session';
+import {
+  ADMIN_SERVICE_UNAVAILABLE,
+  apiFetch,
+  isApiBaseConfigured,
+  readApiJson,
+} from '../services/api';
 import React, { useState, useEffect } from 'react';
 import {
   Lock,
@@ -53,7 +59,7 @@ interface AdminPanelViewProps {
 
 export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   isAuthenticated,
-  adminToken = 'tr-admin-session-token-2026',
+  adminToken = '',
   onLoginSuccess,
   onLogout,
   properties,
@@ -73,8 +79,8 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   const [activeTab, setActiveTab] = useState<AdminSubTab>('our-projects');
 
   // --- LOGIN STATE ---
-  const [loginEmail, setLoginEmail] = useState('admin@trinetrarealty.com');
-  const [loginPassword, setLoginPassword] = useState('trinetra2026');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loggingIn, setLoggingIn] = useState(false);
 
@@ -190,6 +196,13 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     setLoggingIn(true);
     setLoginError('');
     try {
+      if (!isApiBaseConfigured()) {
+        if (import.meta.env.DEV) {
+          console.error('VITE_API_BASE_URL is missing from the production frontend build.');
+        }
+        setLoginError(ADMIN_SERVICE_UNAVAILABLE);
+        return;
+      }
       const res = await apiFetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -197,11 +210,16 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
       });
       const data = await readApiJson<{ error?: string; token?: string }>(res);
       if (!res.ok) {
-        throw new Error(data.error || 'Authentication failed');
+        throw new Error(data.error || 'Invalid email or password.');
       }
-      onLoginSuccess(data.token || 'tr-admin-session-token-2026');
+      if (!data.token) throw new Error(ADMIN_SERVICE_UNAVAILABLE);
+      onLoginSuccess(data.token);
     } catch (err: any) {
-      setLoginError(err.message || 'Invalid credentials');
+      if (import.meta.env.PROD && err instanceof TypeError) {
+        setLoginError(ADMIN_SERVICE_UNAVAILABLE);
+      } else {
+        setLoginError(err.message || 'Unable to sign in. Please try again.');
+      }
     } finally {
       setLoggingIn(false);
     }
@@ -432,6 +450,10 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
             </p>
           </div>
 
+          {DEMO_MODE && (
+            <p className="text-xs text-[#615E59]">Client demo: Changes are saved only in this browser tab.</p>
+          )}
+
           {loginError && (
             <div className="p-3 bg-red-50 border border-red-200 text-xs text-red-800">
               {loginError}
@@ -440,11 +462,13 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-[#141413] mb-1">
+              <label htmlFor="admin-email" className="block text-xs font-medium text-[#141413] mb-1">
                 Partner Email Address
               </label>
               <input
+                id="admin-email"
                 type="email"
+                autoComplete="username"
                 required
                 value={loginEmail}
                 onChange={(e) => setLoginEmail(e.target.value)}
@@ -453,11 +477,13 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#141413] mb-1">
+              <label htmlFor="admin-password" className="block text-xs font-medium text-[#141413] mb-1">
                 Passkey / Password
               </label>
               <input
+                id="admin-password"
                 type="password"
+                autoComplete="current-password"
                 required
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
@@ -544,6 +570,10 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
           </button>
         </div>
       </div>
+
+      {DEMO_MODE && (
+        <p className="text-xs text-[#615E59]">Client demo: Sample data and changes stay in this browser tab. No live records are changed.</p>
+      )}
 
       {/* Sub-Navigation Tabs for the 5 Authenticated Admin Modules */}
       <div className="flex flex-wrap items-center gap-1.5 border-b border-stone-200 pb-3">
@@ -1119,19 +1149,6 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
             </div>
           </form>
 
-          <div className="pt-4 border-t border-stone-200 flex items-center justify-between text-xs text-[#615E59]">
-            <span>Demo Principal Access:</span>
-            <button
-              type="button"
-              onClick={() => {
-                setLoginEmail('admin@trinetrarealty.com');
-                setLoginPassword('trinetra2026');
-              }}
-              className="font-mono-tabular underline text-[#141413] cursor-pointer"
-            >
-              Reset Demo Credentials
-            </button>
-          </div>
         </div>
       )}
 

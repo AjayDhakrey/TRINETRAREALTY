@@ -1,4 +1,5 @@
 import { apiFetch } from './services/api';
+import { getAdminSession, setAdminSession, clearAdminSession } from './services/session';
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Search,
@@ -97,6 +98,7 @@ export default function App() {
   const [activeRoute, setActiveRoute] = useState<ActiveRoute>(() => {
     if (typeof window !== 'undefined') {
       const p = window.location.pathname;
+      if (p === '/admin' || p === '/admin/') return 'admin';
       if (p.startsWith('/projects/') && p.split('/projects/')[1]) {
         return 'project-details';
       }
@@ -127,10 +129,10 @@ export default function App() {
     INITIAL_PROPERTIES[1].id,
   ]);
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() =>
-    Boolean(window.localStorage.getItem('admin-token'))
+    Boolean(getAdminSession())
   );
   const [adminToken, setAdminToken] = useState<string>(() =>
-    window.localStorage.getItem('admin-token') || 'tr-admin-session-token-2026'
+    getAdminSession()
   );
 
   // --- SEARCH & FILTER STATE ---
@@ -161,10 +163,10 @@ export default function App() {
       })
       .then((data) => {
         if (!mounted) return;
-        if (Array.isArray(data.properties) && data.properties.length > 0) {
+        if (Array.isArray(data.properties)) {
           setProperties(data.properties);
         }
-        if (Array.isArray(data.projects) && data.projects.length > 0) {
+        if (Array.isArray(data.projects)) {
           setProjects(data.projects);
         }
         if (Array.isArray(data.leads)) setLeads(data.leads);
@@ -174,7 +176,7 @@ export default function App() {
         if (Array.isArray(data.blogPosts) && data.blogPosts.length > 0) {
           setBlogPosts(data.blogPosts);
         }
-        if (Array.isArray(data.media) && data.media.length > 0) {
+        if (Array.isArray(data.media)) {
           setMedia(data.media);
         }
       })
@@ -208,7 +210,9 @@ export default function App() {
   // Synchronize clean URL path for /projects and /projects/:slug
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (activeRoute === 'projects') {
+    if (activeRoute === 'admin') {
+      if (window.location.pathname !== '/admin') window.history.pushState({}, '', '/admin');
+    } else if (activeRoute === 'projects') {
       if (window.location.pathname !== '/projects') {
         window.history.pushState({}, '', '/projects');
       }
@@ -223,7 +227,7 @@ export default function App() {
           window.history.pushState({}, '', targetPath);
         }
       }
-    } else if (window.location.pathname.startsWith('/projects')) {
+    } else if (window.location.pathname.startsWith('/projects') || window.location.pathname.startsWith('/admin')) {
       window.history.pushState({}, '', '/');
     }
   }, [activeRoute, selectedProjectSlugOrId, projects]);
@@ -1134,12 +1138,13 @@ export default function App() {
             onLoginSuccess={(token) => {
               if (token) {
                 setAdminToken(token);
-                window.localStorage.setItem('admin-token', token);
+                setAdminSession(token);
               }
               setIsAdminAuthenticated(true);
             }}
             onLogout={() => {
-              window.localStorage.removeItem('admin-token');
+              void apiFetch('/api/admin/logout', { method: 'POST' }).catch(() => {});
+              clearAdminSession();
               setAdminToken('');
               setIsAdminAuthenticated(false);
             }}

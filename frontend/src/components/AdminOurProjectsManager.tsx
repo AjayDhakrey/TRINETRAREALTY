@@ -265,7 +265,7 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
 
   const authHeaders = {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${adminToken || 'tr-admin-session-token-2026'}`,
+    Authorization: `Bearer ${adminToken || ''}`,
   };
 
   const resetFormForNewProject = () => {

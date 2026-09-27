@@ -34,8 +34,8 @@ interface DatabaseSchema {
 
 const DATA_DIR = path.join(BACKEND_DIR, 'data');
 const DB_FILE = path.join(DATA_DIR, 'realestate-db.json');
-const activeAdminTokens = new Set<string>();
-const demoAdminTokens = new Set(['tr-admin-session-token-2026', 'av-admin-session-token-2026']);
+const ADMIN_SESSION_DURATION_MS = 8 * 60 * 60 * 1000;
+const activeAdminTokens = new Map<string, number>();
 
 function slugifyProjectName(input: string): string {
   return input
@@ -98,12 +98,24 @@ function saveDatabase(db: DatabaseSchema): void {
   }
 }
 
-function isAdminAuthorized(req: express.Request): boolean {
+function getAdminToken(req: express.Request): string {
   const authHeader = req.headers.authorization || '';
-  const token = authHeader.replace(/^Bearer\s+/i, '').trim();
-  const headerToken = (req.headers['x-admin-token'] as string) || '';
-  return activeAdminTokens.has(token) || activeAdminTokens.has(headerToken) ||
-    demoAdminTokens.has(token) || demoAdminTokens.has(headerToken);
+  const token = /^Bearer\s+/i.test(authHeader)
+    ? authHeader.replace(/^Bearer\s+/i, '').trim()
+    : '';
+  const headerToken = req.headers['x-admin-token'];
+  return token || (typeof headerToken === 'string' ? headerToken : '');
+}
+
+function isAdminAuthorized(req: express.Request): boolean {
+  const token = getAdminToken(req);
+  const expiresAt = activeAdminTokens.get(token);
+  if (!expiresAt) return false;
+  if (expiresAt <= Date.now()) {
+    activeAdminTokens.delete(token);
+    return false;
+  }
+  return true;
 }
 
 function requireAdminAuth(
@@ -781,19 +793,33 @@ async function startServer() {
 
   // --- API: Admin Authentication ---
   app.post('/api/admin/login', (req, res) => {
-    const { email, password } = req.body;
+    res.setHeader('Cache-Control', 'no-store');
+    const email = req.body?.email;
+    const password = req.body?.password;
     const configuredEmail = process.env.ADMIN_EMAIL;
     const configuredPassword = process.env.ADMIN_PASSWORD;
-    const demoLogin =
-      ((email === 'admin@trinetrarealty.com' || email === 'admin@ateliervance.com') &&
-        (password === 'trinetra2026' || password === 'vance2026')) ||
-      password === 'admin123' || password === 'trinetra2026' || password === 'vance2026';
-    if ((configuredEmail && configuredPassword && email === configuredEmail && password === configuredPassword) || demoLogin) {
-      const token = demoLogin ? 'tr-admin-session-token-2026' : randomUUID();
-      activeAdminTokens.add(token);
+
+    // Production API authentication only: the temporary frontend demo never authenticates here.
+    if (!configuredEmail || !configuredPassword) {
+      res.status(503).json({
+        error: 'Admin service is temporarily unavailable. Please try again shortly.',
+      });
+      return;
+    }
+
+    if (typeof email === 'string' && typeof password === 'string' &&
+        email === configuredEmail && password === configuredPassword) {
+      const now = Date.now();
+      for (const [existingToken, expiresAt] of activeAdminTokens) {
+        if (expiresAt <= now) activeAdminTokens.delete(existingToken);
+      }
+      const token = randomUUID();
+      const expiresAt = now + ADMIN_SESSION_DURATION_MS;
+      activeAdminTokens.set(token, expiresAt);
       res.json({
         authenticated: true,
         token,
+        expiresAt,
         user: {
           name: 'Managing Principal',
           role: 'Managing Principal, Trinetra Realty',
@@ -804,8 +830,14 @@ async function startServer() {
     }
 
     res.status(401).json({
-      error: 'Invalid credentials. Demo access: admin@trinetrarealty.com / trinetra2026',
+      error: 'Invalid email or password.',
     });
+  });
+
+  app.post('/api/admin/logout', (req, res) => {
+    activeAdminTokens.delete(getAdminToken(req));
+    res.setHeader('Cache-Control', 'no-store');
+    res.status(204).end();
   });
 
   // The frontend is developed and deployed separately; this process serves the API only.
