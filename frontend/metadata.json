@@ -1,0 +1,6 @@
+{
+  "name": "Atelier Vance — Architectural Real Estate & Advisory Platform",
+  "description": "A comprehensive real estate platform featuring property search, buy/rent/sell portals, side-by-side comparison, EMI amortization calculator, locality intelligence, customer lead capture, and an administrative management suite.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "frontend/dist"
+
+# Single-page app routes are handled by the frontend router.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

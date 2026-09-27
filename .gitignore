@@ -1,0 +1,10 @@
+node_modules/
+frontend/dist/
+backend/data/*.json
+!backend/data/.gitkeep
+coverage/
+.DS_Store
+*.log
+.env
+.env.*
+!.env.example
