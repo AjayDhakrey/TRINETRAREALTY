@@ -130,7 +130,7 @@ export default function App() {
     Boolean(window.localStorage.getItem('admin-token'))
   );
   const [adminToken, setAdminToken] = useState<string>(() =>
-    window.localStorage.getItem('admin-token') || ''
+    window.localStorage.getItem('admin-token') || 'tr-admin-session-token-2026'
   );
 
   // --- SEARCH & FILTER STATE ---

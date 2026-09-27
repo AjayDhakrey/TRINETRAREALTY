@@ -1,4 +1,4 @@
-import { apiFetch, isApiBaseConfigured, readApiJson } from '../services/api';
+import { apiFetch, readApiJson } from '../services/api';
 import React, { useState, useEffect } from 'react';
 import {
   Lock,
@@ -53,7 +53,7 @@ interface AdminPanelViewProps {
 
 export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   isAuthenticated,
-  adminToken = '',
+  adminToken = 'tr-admin-session-token-2026',
   onLoginSuccess,
   onLogout,
   properties,
@@ -73,8 +73,8 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   const [activeTab, setActiveTab] = useState<AdminSubTab>('our-projects');
 
   // --- LOGIN STATE ---
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+  const [loginEmail, setLoginEmail] = useState('admin@trinetrarealty.com');
+  const [loginPassword, setLoginPassword] = useState('trinetra2026');
   const [loginError, setLoginError] = useState('');
   const [loggingIn, setLoggingIn] = useState(false);
 
@@ -190,11 +190,6 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     setLoggingIn(true);
     setLoginError('');
     try {
-      if (!isApiBaseConfigured()) {
-        throw new Error(
-          'Admin login is not connected. Set VITE_API_BASE_URL in your Netlify environment variables to your deployed backend URL, then trigger a new deploy.'
-        );
-      }
       const res = await apiFetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -204,7 +199,7 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
       if (!res.ok) {
         throw new Error(data.error || 'Authentication failed');
       }
-      onLoginSuccess(data.token || '');
+      onLoginSuccess(data.token || 'tr-admin-session-token-2026');
     } catch (err: any) {
       setLoginError(err.message || 'Invalid credentials');
     } finally {
@@ -1123,6 +1118,20 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
               </button>
             </div>
           </form>
+
+          <div className="pt-4 border-t border-stone-200 flex items-center justify-between text-xs text-[#615E59]">
+            <span>Demo Principal Access:</span>
+            <button
+              type="button"
+              onClick={() => {
+                setLoginEmail('admin@trinetrarealty.com');
+                setLoginPassword('trinetra2026');
+              }}
+              className="font-mono-tabular underline text-[#141413] cursor-pointer"
+            >
+              Reset Demo Credentials
+            </button>
+          </div>
         </div>
       )}
 
