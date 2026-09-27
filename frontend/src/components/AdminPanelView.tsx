@@ -1,4 +1,4 @@
-import { apiFetch } from '../services/api';
+import { apiFetch, isApiBaseConfigured, readApiJson } from '../services/api';
 import React, { useState, useEffect } from 'react';
 import {
   Lock,
@@ -190,16 +190,20 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     setLoggingIn(true);
     setLoginError('');
     try {
+      if (!isApiBaseConfigured()) {
+        throw new Error(
+          'Admin login is not connected. Set VITE_API_BASE_URL in your Netlify environment variables to your deployed backend URL, then trigger a new deploy.'
+        );
+      }
       const res = await apiFetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: loginEmail, password: loginPassword }),
       });
+      const data = await readApiJson<{ error?: string; token?: string }>(res);
       if (!res.ok) {
-        const data = await res.json();
         throw new Error(data.error || 'Authentication failed');
       }
-      const data = await res.json();
       onLoginSuccess(data.token || '');
     } catch (err: any) {
       setLoginError(err.message || 'Invalid credentials');
@@ -475,19 +479,6 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
             </button>
           </form>
 
-          <div className="pt-4 border-t border-stone-200 flex items-center justify-between text-xs text-[#615E59]">
-            <span>Demo Principal Access:</span>
-            <button
-              type="button"
-              onClick={() => {
-                setLoginEmail('');
-                setLoginPassword('');
-              }}
-              className="font-mono-tabular underline text-[#141413] cursor-pointer"
-            >
-              Reset Demo Credentials
-            </button>
-          </div>
         </div>
       </div>
     );
