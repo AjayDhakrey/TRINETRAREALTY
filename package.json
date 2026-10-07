@@ -3,16 +3,17 @@
     "private":  true,
     "version":  "0.0.0",
     "type":  "module",
-    "scripts":  {
-                    "dev":  "node ./node_modules/vite/bin/vite.js frontend --config frontend/vite.config.ts",
-                    "start":  "npm run dev:api",
-                    "build":  "node ./node_modules/vite/bin/vite.js build frontend --config frontend/vite.config.ts",
-                    "preview":  "node ./node_modules/vite/bin/vite.js preview frontend --config frontend/vite.config.ts",
-                    "clean":  "node -e \"require(\u0027node:fs\u0027).rmSync(\u0027frontend/dist\u0027,{recursive:true,force:true})\"",
-                    "lint":  "node ./node_modules/typescript/bin/tsc --noEmit -p frontend/tsconfig.json",
-                    "dev:api":  "node ./node_modules/tsx/dist/cli.mjs backend/server.ts",
-                    "typecheck:backend":  "node ./node_modules/typescript/bin/tsc --noEmit --module ESNext --moduleResolution bundler --target ES2022 --types node --skipLibCheck backend/server.ts"
-                },
+    "scripts": {
+        "dev": "node scripts/dev.js",
+        "dev:frontend": "node ./node_modules/vite/bin/vite.js frontend --config frontend/vite.config.ts",
+        "start": "npm run dev:api",
+        "build": "node ./node_modules/vite/bin/vite.js build frontend --config frontend/vite.config.ts",
+        "preview": "node ./node_modules/vite/bin/vite.js preview frontend --config frontend/vite.config.ts",
+        "clean": "node -e \"require('node:fs').rmSync('frontend/dist',{recursive:true,force:true})\"",
+        "lint": "node ./node_modules/typescript/bin/tsc --noEmit -p frontend/tsconfig.json",
+        "dev:api": "node ./node_modules/tsx/dist/cli.mjs backend/server.ts",
+        "typecheck:backend": "node ./node_modules/typescript/bin/tsc --noEmit --module ESNext --moduleResolution bundler --target ES2022 --types node --skipLibCheck backend/server.ts"
+    },
     "dependencies":  {
                          "@google/genai":  "^2.4.0",
                          "@tailwindcss/vite":  "^4.3.3",
