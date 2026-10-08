@@ -85,8 +85,10 @@ async function startServer() {
   app.use((req, res, next) => {
     const origin = req.headers.origin;
     const allowedOrigin = process.env.FRONTEND_ORIGIN;
-    if (origin && allowedOrigin && origin === allowedOrigin) {
-      res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
+    const isVercelOrigin = origin && (origin.endsWith('.vercel.app') || origin === 'https://trinetrarealty.vercel.app');
+    
+    if (origin && (!allowedOrigin || allowedOrigin === '*' || origin === allowedOrigin || isVercelOrigin || origin.startsWith('http://localhost:'))) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
       res.setHeader('Vary', 'Origin');
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Admin-Token');
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
