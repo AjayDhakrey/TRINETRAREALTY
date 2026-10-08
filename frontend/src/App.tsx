@@ -58,9 +58,21 @@ import { formatCurrency } from './utils/formatters';
 
 export default function App() {
   // --- WELCOME INTRO VIDEO STATE ---
-  const [introStage, setIntroStage] = useState<'playing' | 'fading' | 'done'>('playing');
+  // If the user has already seen the intro in this session, skip directly to 'done' for instant page loading
+  const [introStage, setIntroStage] = useState<'playing' | 'fading' | 'done'>(() => {
+    if (typeof window !== 'undefined') {
+      const hasSeen = sessionStorage.getItem('trinetra_seen_intro');
+      if (hasSeen || window.location.pathname.startsWith('/admin')) {
+        return 'done';
+      }
+    }
+    return 'playing';
+  });
 
   const handleBeginIntroFadeOut = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('trinetra_seen_intro', 'true');
+    }
     setIntroStage((prev) => (prev === 'playing' ? 'fading' : prev));
   }, []);
 

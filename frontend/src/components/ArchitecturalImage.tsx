@@ -35,6 +35,8 @@ export const ArchitecturalImage: React.FC<ArchitecturalImageProps> = ({
     <img
       src={src}
       alt={alt}
+      loading="lazy"
+      decoding="async"
       referrerPolicy="no-referrer"
       onError={() => setHasError(true)}
       className={className}

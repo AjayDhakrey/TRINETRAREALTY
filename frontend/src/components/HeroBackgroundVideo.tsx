@@ -46,7 +46,7 @@ export const HeroBackgroundVideo: React.FC = memo(() => {
       muted
       loop
       playsInline
-      preload="auto"
+      preload="none"
       controls={false}
       disablePictureInPicture
       disableRemotePlayback
