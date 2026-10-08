@@ -132,15 +132,27 @@ Trinetra Realty CRM Automated Dispatch
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpSecure,
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    });
+    const isGmail = smtpHost?.includes('gmail') || smtpUser?.includes('@gmail.com');
+    
+    const transporter = nodemailer.createTransport(
+      isGmail
+        ? ({
+            service: 'gmail',
+            auth: {
+              user: smtpUser,
+              pass: smtpPass,
+            },
+          } as any)
+        : ({
+            host: smtpHost,
+            port: smtpPort,
+            secure: smtpSecure,
+            auth: {
+              user: smtpUser,
+              pass: smtpPass,
+            },
+          } as any)
+    );
 
     const info = await transporter.sendMail({
       from: smtpFrom,

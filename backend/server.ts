@@ -1,9 +1,15 @@
 import dotenv from 'dotenv';
 import { randomUUID } from 'node:crypto';
+import dns from 'node:dns';
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'node:url';
+
+// Force IPv4 resolution order to avoid ENETUNREACH on cloud container networks like Render
+if (typeof dns.setDefaultResultOrder === 'function') {
+  dns.setDefaultResultOrder('ipv4first');
+}
 
 const BACKEND_DIR = path.dirname(fileURLToPath(import.meta.url));
 
