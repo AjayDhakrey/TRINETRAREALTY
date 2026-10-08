@@ -62,6 +62,74 @@ async function createSmtpTransporter() {
 }
 
 /**
+ * Send email via Resend HTTPS API (Port 443).
+ * Never blocked by cloud container hosting firewalls.
+ */
+async function sendViaResend(
+  to: string,
+  subject: string,
+  text: string,
+  html: string
+): Promise<NotificationResult> {
+  const apiKey = process.env.RESEND_API_KEY?.trim();
+  if (!apiKey) {
+    return {
+      sent: false,
+      channel: 'email',
+      recipient: to,
+      error: 'RESEND_API_KEY is not configured',
+    };
+  }
+
+  const from = process.env.RESEND_FROM || 'Trinetra Realty <onboarding@resend.dev>';
+
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from,
+        to: [to],
+        subject,
+        text,
+        html,
+      }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const errMsg = (data && (data.message || data.error)) || `Resend HTTP ${res.status}`;
+      console.warn(`⚠️ [Resend API] Failed to send to ${to}:`, errMsg);
+      return {
+        sent: false,
+        channel: 'email',
+        recipient: to,
+        error: errMsg,
+      };
+    }
+
+    console.log(`📧 [Resend API] Email delivered successfully to ${to}. Message ID: ${data.id}`);
+    return {
+      sent: true,
+      channel: 'email',
+      recipient: to,
+      messageId: data.id,
+    };
+  } catch (err: any) {
+    console.error(`❌ [Resend API] Exception sending to ${to}:`, err.message);
+    return {
+      sent: false,
+      channel: 'email',
+      recipient: to,
+      error: err.message,
+    };
+  }
+}
+
+/**
  * Send Email Notification to Business Owner immediately upon new enquiry submission.
  */
 export async function sendOwnerEmailNotification(lead: CustomerLead): Promise<NotificationResult> {
@@ -193,8 +261,15 @@ Trinetra Realty CRM Automated Dispatch
 </html>
 `.trim();
 
+  // 1. Prioritize Resend HTTPS API (fast, reliable, never blocked on Render)
+  if (process.env.RESEND_API_KEY) {
+    const resendRes = await sendViaResend(ownerEmail, subject, textBody, htmlBody);
+    if (resendRes.sent) return resendRes;
+  }
+
+  // 2. Fall back to SMTP
   if (!smtpUser || !smtpPass) {
-    const errorMsg = 'SMTP credentials not configured (requires SMTP_USER and SMTP_PASS in .env)';
+    const errorMsg = 'Email credentials not configured (requires RESEND_API_KEY or SMTP credentials)';
     console.warn(`⚠️ [Email Notification] ${errorMsg}. Configured owner email: ${ownerEmail}`);
     return {
       sent: false,
@@ -342,12 +417,19 @@ Executive Concierge: admin@trinetrarealty.com
 </html>
 `.trim();
 
+  // 1. Prioritize Resend HTTPS API (fast, reliable, never blocked on Render)
+  if (process.env.RESEND_API_KEY) {
+    const resendRes = await sendViaResend(customerEmail, subject, textBody, htmlBody);
+    if (resendRes.sent) return resendRes;
+  }
+
+  // 2. Fall back to SMTP
   if (!smtpUser || !smtpPass) {
     return {
       sent: false,
       channel: 'email',
       recipient: customerEmail,
-      error: 'SMTP credentials not configured',
+      error: 'Email credentials not configured',
     };
   }
 
