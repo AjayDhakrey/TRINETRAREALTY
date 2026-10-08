@@ -3,7 +3,7 @@ import { CustomerLead } from '../../frontend/src/types/realestate';
 
 export interface NotificationResult {
   sent: boolean;
-  channel: 'email' | 'whatsapp';
+  channel: 'email';
   recipient?: string;
   messageId?: string;
   error?: string;
@@ -58,82 +58,76 @@ Trinetra Realty CRM Automated Dispatch
 <head>
   <meta charset="utf-8">
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f7f6f2; margin: 0; padding: 24px; color: #141413; }
-    .card { max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e7e5e4; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .header { background: #141413; color: #ffffff; padding: 20px 24px; }
-    .header h2 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: 0.5px; }
-    .header p { margin: 4px 0 0; font-size: 12px; color: #a8a29e; }
-    .content { padding: 24px; }
-    .badge { display: inline-block; background: #1E3A2F; color: #ffffff; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 2px; text-transform: uppercase; margin-bottom: 16px; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-    th, td { text-align: left; padding: 10px 12px; font-size: 13px; border-bottom: 1px solid #f5f5f4; }
-    th { color: #78716c; font-weight: 500; width: 38%; }
-    td { color: #141413; font-weight: 600; }
-    .message-box { background: #fbfbf9; border: 1px solid #e7e5e4; padding: 14px; border-radius: 4px; font-size: 13px; line-height: 1.5; color: #292524; margin-top: 12px; }
-    .footer { background: #fbfbf9; border-top: 1px solid #e7e5e4; padding: 14px 24px; text-align: center; font-size: 11px; color: #78716c; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #FBFBF9; color: #141413; margin: 0; padding: 24px; }
+    .card { max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #E7E5E4; border-radius: 4px; overflow: hidden; }
+    .header { background: #1E3A2F; color: #FBFBF9; padding: 28px 32px; }
+    .header h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+    .header p { margin: 6px 0 0; font-size: 13px; color: #D6CFC2; }
+    .content { padding: 32px; }
+    .field-row { display: flex; margin-bottom: 14px; border-bottom: 1px solid #F5F5F4; padding-bottom: 10px; }
+    .field-label { width: 160px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #78716C; }
+    .field-value { flex: 1; font-size: 14px; color: #1C1917; font-weight: 500; }
+    .message-box { background: #F9F9F8; border-left: 3px solid #1E3A2F; padding: 16px; margin: 20px 0; font-style: italic; color: #292524; font-size: 14px; }
+    .footer { background: #F5F5F4; padding: 18px 32px; font-size: 11px; color: #A8A29E; text-align: center; }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="header">
-      <h2>Trinetra Realty — New Customer Enquiry</h2>
-      <p>Direct lead dispatched from public platform</p>
+      <h1>New Property Enquiry</h1>
+      <p>Trinetra Realty Client Acquisition Protocol</p>
     </div>
     <div class="content">
-      <div class="badge">${lead.type}</div>
-      <table>
-        <tr>
-          <th>Customer Name</th>
-          <td>${lead.name}</td>
-        </tr>
-        <tr>
-          <th>Mobile / Phone</th>
-          <td><a href="tel:${lead.phone}" style="color: #1E3A2F; text-decoration: none;">${lead.phone}</a></td>
-        </tr>
-        <tr>
-          <th>Customer Email</th>
-          <td><a href="mailto:${lead.email}" style="color: #1E3A2F; text-decoration: none;">${lead.email}</a></td>
-        </tr>
-        <tr>
-          <th>Property Title</th>
-          <td>${lead.propertyTitle || 'General Portfolio'}</td>
-        </tr>
-        <tr>
-          <th>Property Reference ID</th>
-          <td><code>${lead.propertyId || 'N/A'}</code></td>
-        </tr>
-        <tr>
-          <th>Enquiry Timestamp</th>
-          <td>${formattedDate}</td>
-        </tr>
-        <tr>
-          <th>Lead Tracking ID</th>
-          <td><code>${lead.id}</code></td>
-        </tr>
-      </table>
+      <div class="field-row">
+        <div class="field-label">Customer Name</div>
+        <div class="field-value">${escapeHtml(lead.name)}</div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Phone Number</div>
+        <div class="field-value"><a href="tel:${escapeHtml(lead.phone)}" style="color: #1E3A2F; text-decoration: none;">${escapeHtml(lead.phone)}</a></div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Email Address</div>
+        <div class="field-value"><a href="mailto:${escapeHtml(lead.email)}" style="color: #1E3A2F; text-decoration: none;">${escapeHtml(lead.email)}</a></div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Enquiry Type</div>
+        <div class="field-value">${escapeHtml(lead.type)}</div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Interested Property</div>
+        <div class="field-value"><strong>${escapeHtml(lead.propertyTitle || 'General Portfolio')}</strong> (ID: ${escapeHtml(lead.propertyId || 'N/A')})</div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Submission Date</div>
+        <div class="field-value">${escapeHtml(formattedDate)}</div>
+      </div>
+      <div class="field-row">
+        <div class="field-label">Lead Source</div>
+        <div class="field-value">${escapeHtml(lead.leadSource || 'Website Direct')}</div>
+      </div>
 
-      <div style="font-size: 12px; font-weight: 600; color: #78716c; text-transform: uppercase;">Customer Message</div>
+      <div style="margin-top: 24px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #78716C;">Customer Message:</div>
       <div class="message-box">
-        "${lead.message || 'No additional message provided.'}"
+        "${escapeHtml(lead.message || 'No additional note provided by the client.')}"
       </div>
     </div>
     <div class="footer">
-      This is an automated advisory notification from Trinetra Realty Real Estate Platform.
+      Trinetra Realty CRM Auto-Notification · Pipeline ID: ${escapeHtml(lead.id)}
     </div>
   </div>
 </body>
 </html>
 `.trim();
 
-  // If SMTP credentials are not configured, log clear advisory and return clean result
   if (!smtpHost || !smtpUser || !smtpPass) {
-    const error = 'SMTP credentials not configured (requires SMTP_HOST, SMTP_USER, SMTP_PASS in .env)';
-    console.warn(`⚠️ [Email Notification] ${error}. Configured owner email: ${ownerEmail}`);
+    const errorMsg = 'SMTP credentials not configured (requires SMTP_HOST, SMTP_USER, SMTP_PASS in .env)';
+    console.warn(`⚠️ [Email Notification] ${errorMsg}. Configured owner email: ${ownerEmail}`);
     return {
       sent: false,
       channel: 'email',
       recipient: ownerEmail,
-      error,
+      error: errorMsg,
     };
   }
 
@@ -174,154 +168,11 @@ Trinetra Realty CRM Automated Dispatch
   }
 }
 
-/**
- * Send WhatsApp Notification to Business Owner immediately upon new enquiry submission.
- * Supports Twilio WhatsApp API or Meta WhatsApp Cloud API via standard HTTP requests.
- */
-export async function sendOwnerWhatsAppNotification(lead: CustomerLead): Promise<NotificationResult> {
-  const ownerWhatsApp = process.env.OWNER_WHATSAPP_NUMBER;
-
-  const formattedDate = new Date(lead.createdAt).toLocaleString('en-IN', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone: process.env.TIMEZONE || 'Asia/Kolkata',
-  });
-
-  const whatsappMessageText = `🏠 *NEW PROPERTY ENQUIRY RECEIVED*
-
-👤 *Customer Name:* ${lead.name}
-📱 *Phone Number:* ${lead.phone}
-📧 *Email:* ${lead.email}
-🏛️ *Property:* ${lead.propertyTitle || 'General Portfolio'} (Ref: ${lead.propertyId || 'N/A'})
-💬 *Message:* "${lead.message || 'No message provided'}"
-📅 *Date & Time:* ${formattedDate}
-🆔 *Lead ID:* ${lead.id}
-
-_Trinetra Realty CRM Auto-Dispatch_`;
-
-  if (!ownerWhatsApp) {
-    const error = 'OWNER_WHATSAPP_NUMBER not configured in environment variables.';
-    console.warn(`⚠️ [WhatsApp Notification] ${error}`);
-    return {
-      sent: false,
-      channel: 'whatsapp',
-      error,
-    };
-  }
-
-  // --- Option 1: Twilio WhatsApp Messaging API ---
-  const twilioSid = process.env.TWILIO_ACCOUNT_SID;
-  const twilioToken = process.env.TWILIO_AUTH_TOKEN;
-  const twilioFrom = process.env.TWILIO_WHATSAPP_FROM || 'whatsapp:+14155238886'; // default Twilio sandbox
-
-  if (twilioSid && twilioToken) {
-    try {
-      let rawNumber = ownerWhatsApp.replace(/^(whatsapp:)/i, '').replace(/\s+/g, '');
-      if (!rawNumber.startsWith('+')) {
-        rawNumber = `+91${rawNumber}`;
-      }
-      const recipientNumber = `whatsapp:${rawNumber}`;
-
-      const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`;
-      const bodyParams = new URLSearchParams({
-        From: twilioFrom.startsWith('whatsapp:') ? twilioFrom : `whatsapp:${twilioFrom}`,
-        To: recipientNumber,
-        Body: whatsappMessageText,
-      });
-
-      const response = await fetch(twilioUrl, {
-        method: 'POST',
-        headers: {
-          Authorization: 'Basic ' + Buffer.from(`${twilioSid}:${twilioToken}`).toString('base64'),
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: bodyParams.toString(),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || `Twilio error status ${response.status}`);
-      }
-
-      console.log(`📱 [WhatsApp Notification] Sent successfully via Twilio to ${recipientNumber}. SID: ${data.sid}`);
-      return {
-        sent: true,
-        channel: 'whatsapp',
-        recipient: recipientNumber,
-        messageId: data.sid,
-      };
-    } catch (err: any) {
-      console.error(`❌ [WhatsApp Notification] Twilio API dispatch failed:`, err.message);
-      return {
-        sent: false,
-        channel: 'whatsapp',
-        recipient: ownerWhatsApp,
-        error: err.message,
-      };
-    }
-  }
-
-  // --- Option 2: Meta WhatsApp Cloud API (Graph API) ---
-  const metaToken = process.env.WHATSAPP_API_TOKEN;
-  const metaPhoneId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-
-  if (metaToken && metaPhoneId) {
-    try {
-      const cleanTo = ownerWhatsApp.replace(/[^0-9]/g, '');
-      const metaUrl = `https://graph.facebook.com/v19.0/${metaPhoneId}/messages`;
-
-      const response = await fetch(metaUrl, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${metaToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messaging_product: 'whatsapp',
-          recipient_type: 'individual',
-          to: cleanTo,
-          type: 'text',
-          text: {
-            preview_url: false,
-            body: whatsappMessageText,
-          },
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data?.error?.message || `Meta WhatsApp error status ${response.status}`);
-      }
-
-      const msgId = data?.messages?.[0]?.id;
-      console.log(`📱 [WhatsApp Notification] Sent successfully via Meta Cloud API to ${cleanTo}. ID: ${msgId}`);
-      return {
-        sent: true,
-        channel: 'whatsapp',
-        recipient: cleanTo,
-        messageId: msgId,
-      };
-    } catch (err: any) {
-      console.error(`❌ [WhatsApp Notification] Meta Cloud API dispatch failed:`, err.message);
-      return {
-        sent: false,
-        channel: 'whatsapp',
-        recipient: ownerWhatsApp,
-        error: err.message,
-      };
-    }
-  }
-
-  // If neither provider has API keys configured
-  const error = 'No WhatsApp API credentials configured (requires TWILIO_ACCOUNT_SID/TWILIO_AUTH_TOKEN or WHATSAPP_API_TOKEN/WHATSAPP_PHONE_NUMBER_ID in .env)';
-  console.warn(`⚠️ [WhatsApp Notification] ${error}. Target number: ${ownerWhatsApp}`);
-  return {
-    sent: false,
-    channel: 'whatsapp',
-    recipient: ownerWhatsApp,
-    error,
-  };
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
-

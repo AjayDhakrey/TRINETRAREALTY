@@ -25,7 +25,6 @@ import { connectMongoDB, getMongoStatus, isMongoConnected } from './db/mongo';
 import * as store from './db/store';
 import {
   sendOwnerEmailNotification,
-  sendOwnerWhatsAppNotification,
 } from './services/notificationService';
 
 const ADMIN_SESSION_DURATION_MS = 8 * 60 * 60 * 1000;
@@ -639,22 +638,13 @@ async function startServer() {
 
       const created = await store.createLead(newLead);
 
-      // Trigger Email + WhatsApp notifications immediately to the Business Owner
-      void Promise.allSettled([
-        sendOwnerEmailNotification(created),
-        sendOwnerWhatsAppNotification(created),
-      ])
-        .then(([emailRes, waRes]) => {
-          if (emailRes.status === 'fulfilled' && emailRes.value.sent) {
-            console.log(`📧 [Notification] Email successfully sent to owner (${emailRes.value.recipient}) for lead ${created.id}`);
-          } else if (emailRes.status === 'fulfilled' && emailRes.value.error) {
-            console.warn(`⚠️ [Notification] Email not dispatched: ${emailRes.value.error}`);
-          }
-
-          if (waRes.status === 'fulfilled' && waRes.value.sent) {
-            console.log(`📱 [Notification] WhatsApp successfully sent to owner (${waRes.value.recipient}) for lead ${created.id}`);
-          } else if (waRes.status === 'fulfilled' && waRes.value.error) {
-            console.warn(`⚠️ [Notification] WhatsApp not dispatched: ${waRes.value.error}`);
+      // Trigger Email notification immediately to the Business Owner
+      void sendOwnerEmailNotification(created)
+        .then((emailRes) => {
+          if (emailRes.sent) {
+            console.log(`📧 [Notification] Email successfully sent to owner (${emailRes.recipient}) for lead ${created.id}`);
+          } else if (emailRes.error) {
+            console.warn(`⚠️ [Notification] Email not dispatched: ${emailRes.error}`);
           }
         })
         .catch((err) => {
