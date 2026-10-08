@@ -13,6 +13,9 @@ import {
   Trash2,
   Upload,
   CheckCircle2,
+  AlertCircle,
+  ExternalLink,
+  ArrowLeft,
   LogOut,
   Star,
   Image as ImageIcon,
@@ -32,6 +35,7 @@ import {
   FurnishedStatus,
   LeadStatus,
   LeadType,
+  ActiveRoute,
 } from '../types/realestate';
 import { ArchitecturalImage } from './ArchitecturalImage';
 import { AdminOurProjectsManager } from './AdminOurProjectsManager';
@@ -42,6 +46,8 @@ interface AdminPanelViewProps {
   adminToken?: string;
   onLoginSuccess: (token?: string) => void;
   onLogout: () => void;
+  onNavigate?: (route: ActiveRoute) => void;
+  onSelectProperty?: (propertyId: string) => void;
   properties: Property[];
   projects: CompanyProject[];
   leads: CustomerLead[];
@@ -62,6 +68,8 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   adminToken = '',
   onLoginSuccess,
   onLogout,
+  onNavigate,
+  onSelectProperty,
   properties,
   projects,
   leads,
@@ -118,6 +126,8 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     media[0] ? [media[0].url] : []
   );
   const [formFeedback, setFormFeedback] = useState('');
+  const [formError, setFormError] = useState('');
+  const [lastCreatedProperty, setLastCreatedProperty] = useState<Property | null>(null);
   const [savingProperty, setSavingProperty] = useState(false);
 
   // --- UPLOAD IMAGES STATE ---
@@ -189,6 +199,8 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
       setFormImages(media[0] ? [media[0].url] : []);
     }
     setFormFeedback('');
+    setFormError('');
+    setLastCreatedProperty(null);
   }, [activeTab, editingPropertyId]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -230,8 +242,16 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     if (!formTitle.trim()) return;
     setSavingProperty(true);
     setFormFeedback('');
+    setFormError('');
 
     try {
+      const selectedImages = formImages.filter((img) => typeof img === 'string' && img.trim().length > 0);
+      const imagesPayload = selectedImages.length > 0
+        ? selectedImages
+        : media[0]?.url
+        ? [media[0].url]
+        : [];
+
       const res = await apiFetch('/api/properties', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -259,18 +279,25 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
             .split(',')
             .map((a) => a.trim())
             .filter(Boolean),
-          images: formImages.length > 0 ? formImages : [media[0]?.url],
+          images: imagesPayload,
         }),
       });
 
-      if (!res.ok) throw new Error('Failed to create listing');
+      if (!res.ok) {
+        if (res.status === 401) {
+          throw new Error('Your admin session has expired. Please sign out and sign in again.');
+        }
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error || errJson.details || 'Failed to create listing. Please verify all required fields.');
+      }
       const created: Property = await res.json();
       onPropertyAdded(created);
+      setLastCreatedProperty(created);
       setFormFeedback(`Published "${created.title}" (${created.code}) to live portfolio.`);
       setFormTitle('');
       setFormSubtitle('');
     } catch (err: any) {
-      setFormFeedback(err.message || 'Error creating property.');
+      setFormError(err.message || 'Error creating property.');
     } finally {
       setSavingProperty(false);
     }
@@ -314,12 +341,19 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
         }),
       });
 
-      if (!res.ok) throw new Error('Failed to update property');
+      if (!res.ok) {
+        if (res.status === 401) {
+          throw new Error('Your admin session has expired. Please sign out and sign in again.');
+        }
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error || errJson.details || 'Failed to update property.');
+      }
       const updated: Property = await res.json();
       onPropertyUpdated(updated);
+      setFormError('');
       setFormFeedback(`Saved changes to "${updated.title}" (${updated.code}).`);
     } catch (err: any) {
-      setFormFeedback(err.message || 'Error updating property.');
+      setFormError(err.message || 'Error updating property.');
     } finally {
       setSavingProperty(false);
     }
@@ -559,6 +593,17 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
             <span>·</span>
             <span>Studio Assets: {media.length}</span>
           </div>
+
+          {onNavigate && (
+            <button
+              type="button"
+              onClick={() => onNavigate('home')}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Public Website</span>
+            </button>
+          )}
 
           <button
             type="button"
@@ -802,19 +847,74 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
             )}
           </div>
 
-          {formFeedback && (
-            <div className="p-4 bg-[#F3F2EE] border border-[#1E3A2F] text-xs text-[#1E3A2F] font-medium flex items-center justify-between">
+          {formError && (
+            <div className="p-4 bg-red-50 border border-red-300 text-xs text-red-800 font-medium flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4" />
-                <span>{formFeedback}</span>
+                <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                <span>{formError}</span>
               </div>
-              <button
-                type="button"
-                onClick={() => setActiveTab('listings')}
-                className="underline font-semibold cursor-pointer"
-              >
-                View in Manage Listings →
-              </button>
+              {formError.includes('expired') && (
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  className="px-3 py-1 bg-red-800 text-white font-semibold text-[11px] hover:bg-red-900 cursor-pointer"
+                >
+                  Sign Out &amp; Sign In Again
+                </button>
+              )}
+            </div>
+          )}
+
+          {formFeedback && (
+            <div className="p-4 bg-[#F3F2EE] border-2 border-[#1E3A2F] text-xs text-[#1E3A2F] font-medium space-y-3">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-[#1E3A2F]" />
+                  <span className="font-semibold text-sm">{formFeedback}</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  {lastCreatedProperty && onSelectProperty && (
+                    <button
+                      type="button"
+                      onClick={() => onSelectProperty(lastCreatedProperty.id)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1E3A2F] text-white font-semibold cursor-pointer hover:bg-[#141413] transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>View Live Property Details →</span>
+                    </button>
+                  )}
+                  {onNavigate && (
+                    <button
+                      type="button"
+                      onClick={() => onNavigate('search')}
+                      className="underline font-semibold cursor-pointer hover:text-[#141413]"
+                    >
+                      View in Property Search →
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('listings')}
+                    className="underline font-semibold cursor-pointer hover:text-[#141413]"
+                  >
+                    View in Manage Listings →
+                  </button>
+                </div>
+              </div>
+
+              {lastCreatedProperty && (
+                <div className="pt-2 border-t border-stone-300 text-[11px] text-[#57534E]">
+                  {lastCreatedProperty.featured ? (
+                    <span>
+                      ⭐ <strong>Featured Property:</strong> This residence is live on both the <strong>Homepage Showcase</strong> and the <strong>Property Search</strong> directory.
+                    </span>
+                  ) : (
+                    <span>
+                      ℹ️ <strong>Standard Listing:</strong> This residence is live in the <strong>Property Search</strong>, <strong>{lastCreatedProperty.transactionType}</strong>, and <strong>{lastCreatedProperty.locality}</strong> directories. (To feature it on the Homepage Showcase, check the "Feature on Homepage Showcase" box).
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

@@ -29,6 +29,7 @@ import {
 } from '../frontend/src/types/realestate';
 import { connectMongoDB, getMongoStatus, isMongoConnected } from './db/mongo';
 import * as store from './db/store';
+import { AdminSessionModel } from './models/AdminSession';
 import {
   sendOwnerEmailNotification,
 } from './services/notificationService';
@@ -53,25 +54,46 @@ function getAdminToken(req: express.Request): string {
   return token || (typeof headerToken === 'string' ? headerToken : '');
 }
 
-function isAdminAuthorized(req: express.Request): boolean {
+async function isAdminAuthorized(req: express.Request): Promise<boolean> {
   const token = getAdminToken(req);
+  if (!token) return false;
   const expiresAt = activeAdminTokens.get(token);
-  if (!expiresAt) return false;
-  if (expiresAt <= Date.now()) {
+  if (expiresAt && expiresAt > Date.now()) {
+    return true;
+  }
+  if (expiresAt && expiresAt <= Date.now()) {
     activeAdminTokens.delete(token);
     return false;
   }
-  return true;
+
+  // Fallback to MongoDB persistent session (survives Render restarts & sleep cycles)
+  if (isMongoConnected()) {
+    try {
+      const session = await AdminSessionModel.findOne({
+        token,
+        expiresAt: { $gt: new Date() },
+      }).lean();
+      if (session) {
+        activeAdminTokens.set(token, new Date(session.expiresAt).getTime());
+        return true;
+      }
+    } catch {
+      // Ignore DB read error and fall through
+    }
+  }
+
+  return false;
 }
 
-function requireAdminAuth(
+async function requireAdminAuth(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
-): void {
-  if (!isAdminAuthorized(req)) {
+): Promise<void> {
+  const authorized = await isAdminAuthorized(req);
+  if (!authorized) {
     res.status(401).json({
-      error: 'Unauthorized. Admin authentication is required.',
+      error: 'Unauthorized. Admin session has expired or is invalid. Please sign in again.',
     });
     return;
   }
@@ -134,7 +156,7 @@ async function startServer() {
   // --- API: Bootstrap all platform data ---
   app.get('/api/bootstrap', async (req, res) => {
     try {
-      const isAdmin = isAdminAuthorized(req);
+      const isAdmin = await isAdminAuthorized(req);
       const data = await store.getBootstrapData(isAdmin);
       res.json(data);
     } catch (err: any) {
@@ -164,7 +186,7 @@ async function startServer() {
   app.get('/api/projects/:slugOrId', async (req, res) => {
     try {
       const param = req.params.slugOrId;
-      const isAdmin = isAdminAuthorized(req);
+      const isAdmin = await isAdminAuthorized(req);
       const project = await store.getProjectBySlugOrId(param, isAdmin);
 
       if (!project) {
@@ -510,8 +532,9 @@ async function startServer() {
         furnishedStatus: body.furnishedStatus || 'Bespoke Millwork',
         featured: Boolean(body.featured),
         images:
-          Array.isArray(body.images) && body.images.length > 0
-            ? body.images
+          Array.isArray(body.images) &&
+          body.images.filter((img) => typeof img === 'string' && img.trim().length > 0).length > 0
+            ? body.images.filter((img): img is string => typeof img === 'string' && img.trim().length > 0)
             : [INITIAL_PROPERTIES[0].images[0]],
         description:
           body.description?.trim() ||
@@ -776,7 +799,7 @@ async function startServer() {
   });
 
   // --- API: Admin Authentication ---
-  app.post('/api/admin/login', (req, res) => {
+  app.post('/api/admin/login', async (req, res) => {
     res.setHeader('Cache-Control', 'no-store');
     const email = req.body?.email;
     const password = req.body?.password;
@@ -796,6 +819,19 @@ async function startServer() {
       const token = randomUUID();
       const expiresAt = now + ADMIN_SESSION_DURATION_MS;
       activeAdminTokens.set(token, expiresAt);
+
+      if (isMongoConnected()) {
+        try {
+          await AdminSessionModel.create({
+            token,
+            email,
+            expiresAt: new Date(expiresAt),
+          });
+        } catch (err) {
+          console.error('Failed to persist admin session in MongoDB:', err);
+        }
+      }
+
       res.json({
         authenticated: true,
         token,
@@ -814,8 +850,16 @@ async function startServer() {
     });
   });
 
-  app.post('/api/admin/logout', (req, res) => {
-    activeAdminTokens.delete(getAdminToken(req));
+  app.post('/api/admin/logout', async (req, res) => {
+    const token = getAdminToken(req);
+    if (token) {
+      activeAdminTokens.delete(token);
+      if (isMongoConnected()) {
+        try {
+          await AdminSessionModel.deleteOne({ token });
+        } catch {}
+      }
+    }
     res.setHeader('Cache-Control', 'no-store');
     res.status(204).end();
   });

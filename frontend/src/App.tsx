@@ -1166,6 +1166,12 @@ export default function App() {
             leads={leads}
             media={media}
             localities={localities}
+            onNavigate={setActiveRoute}
+            onSelectProperty={(id) => {
+              setSelectedPropertyId(id);
+              setActiveRoute('details');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             onProjectsUpdated={(updatedProjects) => setProjects(updatedProjects)}
             onPreviewProject={handlePreviewProjectFromAdmin}
             onPropertyAdded={(created) =>
