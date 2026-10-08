@@ -32,6 +32,7 @@ import * as store from './db/store';
 import { AdminSessionModel } from './models/AdminSession';
 import {
   sendOwnerEmailNotification,
+  sendClientConfirmationEmail,
 } from './services/notificationService';
 
 const ADMIN_SESSION_DURATION_MS = 8 * 60 * 60 * 1000;
@@ -667,18 +668,24 @@ async function startServer() {
 
       const created = await store.createLead(newLead);
 
-      // Trigger Email notification immediately to the Business Owner
-      void sendOwnerEmailNotification(created)
-        .then((emailRes) => {
-          if (emailRes.sent) {
-            console.log(`📧 [Notification] Email successfully sent to owner (${emailRes.recipient}) for lead ${created.id}`);
-          } else if (emailRes.error) {
-            console.warn(`⚠️ [Notification] Email not dispatched: ${emailRes.error}`);
+      // Trigger Email notifications:
+      // 1. Business Owner lead dossier dispatch (dhakreyajay444@gmail.com)
+      // 2. Client confirmation email (e.g. dhakreyajay1356@gmail.com)
+      void Promise.allSettled([
+        sendOwnerEmailNotification(created),
+        sendClientConfirmationEmail(created),
+      ]).then((results) => {
+        results.forEach((r, idx) => {
+          const target = idx === 0 ? 'Owner' : 'Client';
+          if (r.status === 'fulfilled' && r.value.sent) {
+            console.log(`📧 [Notification] ${target} email sent successfully (${r.value.recipient}) for lead ${created.id}`);
+          } else if (r.status === 'fulfilled' && r.value.error) {
+            console.warn(`⚠️ [Notification] ${target} email not dispatched: ${r.value.error}`);
+          } else if (r.status === 'rejected') {
+            console.error(`❌ [Notification] ${target} email rejected:`, r.reason);
           }
-        })
-        .catch((err) => {
-          console.error('❌ [Notification] Dispatcher error:', err);
         });
+      });
 
       res.status(201).json(created);
     } catch (err: any) {

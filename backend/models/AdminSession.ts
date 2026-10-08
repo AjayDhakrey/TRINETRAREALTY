@@ -19,3 +19,4 @@ const AdminSessionSchema = new Schema<AdminSessionDocument>(
 export const AdminSessionModel =
   mongoose.models.AdminSession ||
   mongoose.model<AdminSessionDocument>('AdminSession', AdminSessionSchema);
+
