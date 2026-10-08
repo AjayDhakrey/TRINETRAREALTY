@@ -20,27 +20,36 @@ function escapeHtml(str: string): string {
 }
 
 /**
- * Creates a nodemailer transporter strictly configured for IPv4 to prevent
- * ENETUNREACH errors in cloud container environments (like Render).
+ * Creates a nodemailer transporter strictly configured for direct IPv4 connection
+ * with SNI servername validation to bypass container IPv6 ENETUNREACH errors.
  */
-function createSmtpTransporter() {
+async function createSmtpTransporter() {
   const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
   const smtpPort = Number(process.env.SMTP_PORT || 587);
   const smtpUser = process.env.SMTP_USER;
   const smtpPass = process.env.SMTP_PASS;
 
   const isGmail = smtpHost.includes('gmail') || Boolean(smtpUser?.includes('@gmail.com'));
-  const host = isGmail ? 'smtp.gmail.com' : smtpHost;
+  const targetHost = isGmail ? 'smtp.gmail.com' : smtpHost;
   const port = isGmail ? 587 : smtpPort;
   const secure = isGmail ? false : (String(process.env.SMTP_SECURE || '').toLowerCase() === 'true' || port === 465);
 
+  let hostToConnect = targetHost;
+  try {
+    const lookupResult = await dns.promises.lookup(targetHost, { family: 4 });
+    if (lookupResult && lookupResult.address) {
+      hostToConnect = lookupResult.address;
+    }
+  } catch (err) {
+    console.warn(`⚠️ [SMTP DNS] IPv4 lookup for ${targetHost} failed, falling back to hostname:`, err);
+  }
+
   return nodemailer.createTransport({
-    host,
+    host: hostToConnect,
     port,
     secure,
-    family: 4,
-    lookup: (hostname: string, _options: any, callback: any) => {
-      dns.lookup(hostname, { family: 4 }, callback);
+    tls: {
+      servername: targetHost,
     },
     auth: {
       user: smtpUser,
@@ -196,7 +205,7 @@ Trinetra Realty CRM Automated Dispatch
   }
 
   try {
-    const transporter = createSmtpTransporter();
+    const transporter = await createSmtpTransporter();
     const info = await transporter.sendMail({
       from: smtpFrom,
       to: ownerEmail,
@@ -343,7 +352,7 @@ Executive Concierge: admin@trinetrarealty.com
   }
 
   try {
-    const transporter = createSmtpTransporter();
+    const transporter = await createSmtpTransporter();
     const info = await transporter.sendMail({
       from: smtpFrom,
       to: customerEmail,
