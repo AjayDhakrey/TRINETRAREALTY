@@ -1,11 +1,11 @@
 {
   "rewrites": [
     {
-      "source": "/api/send-lead-email",
-      "destination": "/api/send-lead-email"
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
