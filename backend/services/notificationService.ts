@@ -216,9 +216,11 @@ _Trinetra Realty CRM Auto-Dispatch_`;
 
   if (twilioSid && twilioToken) {
     try {
-      const recipientNumber = ownerWhatsApp.startsWith('whatsapp:')
-        ? ownerWhatsApp
-        : `whatsapp:${ownerWhatsApp.replace(/\s+/g, '')}`;
+      let rawNumber = ownerWhatsApp.replace(/^(whatsapp:)/i, '').replace(/\s+/g, '');
+      if (!rawNumber.startsWith('+')) {
+        rawNumber = `+91${rawNumber}`;
+      }
+      const recipientNumber = `whatsapp:${rawNumber}`;
 
       const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`;
       const bodyParams = new URLSearchParams({
