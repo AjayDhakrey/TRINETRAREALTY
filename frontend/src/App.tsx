@@ -110,11 +110,12 @@ export default function App() {
   const [activeRoute, setActiveRoute] = useState<ActiveRoute>(() => {
     if (typeof window !== 'undefined') {
       const p = window.location.pathname;
-      if (p === '/admin' || p === '/admin/') return 'admin';
+      const h = window.location.hash.toLowerCase();
+      if (p === '/admin' || p === '/admin/' || h === '#admin' || h === '#/admin') return 'admin';
       if (p.startsWith('/projects/') && p.split('/projects/')[1]) {
         return 'project-details';
       }
-      if (p === '/projects' || p === '/projects/') {
+      if (p === '/projects' || p === '/projects/' || h === '#projects') {
         return 'projects';
       }
     }
