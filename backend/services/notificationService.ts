@@ -22,8 +22,7 @@ export async function sendOwnerEmailNotification(lead: CustomerLead): Promise<No
   const smtpPort = Number(process.env.SMTP_PORT || 587);
   const smtpUser = process.env.SMTP_USER;
   const smtpPass = process.env.SMTP_PASS;
-  const smtpSecure = process.env.SMTP_SECURE === 'true' || smtpPort === 465;
-  const smtpFrom = process.env.SMTP_FROM || `"Trinetra Realty CRM" <${smtpUser || ownerEmail}>`;
+  const smtpFrom = process.env.SMTP_FROM || smtpUser || ownerEmail;
 
   const formattedDate = new Date(lead.createdAt).toLocaleString('en-IN', {
     dateStyle: 'full',
