@@ -60,13 +60,25 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-[#FBFBF9]/95 backdrop-blur-md border-b border-stone-200/80">
       <div className="max-w-[1360px] mx-auto px-6 h-16 flex items-center justify-between gap-6">
-        {/* Zone 1: Single text element wordmark (Top Bar Contract) */}
+        {/* Zone 1: Single text element wordmark + Official Golden Emblem */}
         <button
           type="button"
           onClick={() => handleNav('home')}
-          className="font-serif-display text-2xl font-semibold tracking-tight text-[#141413] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1E3A2F] cursor-pointer"
+          className="flex items-center gap-2.5 sm:gap-3 group shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1E3A2F] cursor-pointer"
         >
-          Trinetra Realty
+          <img
+            src="/trinetra-logo-symbol.png"
+            alt="Trinetra Realty Official Logo"
+            className="h-8 sm:h-9 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+          />
+          <div className="flex flex-col text-left leading-tight">
+            <span className="font-serif-display text-xl sm:text-2xl font-semibold tracking-tight text-[#141413]">
+              Trinetra Realty
+            </span>
+            <span className="text-[9px] sm:text-[10px] tracking-[0.16em] uppercase text-[#1E3A2F] font-semibold">
+              Architectural Advisory
+            </span>
+          </div>
         </button>
 
         {/* Zone 2: 5 Primary Navigation Links + More Menu for Tools & Advisory */}
@@ -292,6 +304,22 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-[#FBFBF9] border-b border-stone-200 px-6 py-4 space-y-3">
+          <div className="flex items-center gap-3 pb-3 border-b border-stone-200">
+            <img
+              src="/trinetra-logo-symbol.png"
+              alt="Trinetra Realty Logo"
+              className="h-10 w-auto object-contain"
+            />
+            <div>
+              <div className="font-serif-display text-lg font-semibold text-[#141413]">
+                Trinetra Realty
+              </div>
+              <div className="text-[10px] tracking-wider uppercase text-[#1E3A2F] font-semibold">
+                Your Future, Our Focus.
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-2">
             {[
               { id: 'home' as ActiveRoute, label: 'Home' },

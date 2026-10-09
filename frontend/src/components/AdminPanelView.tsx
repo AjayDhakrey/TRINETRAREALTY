@@ -473,6 +473,13 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     return (
       <div className="max-w-md mx-auto px-6 py-20">
         <div className="bg-[#FBFBF9] border border-stone-300 p-8 space-y-6">
+          <div className="text-center pb-1">
+            <img
+              src="/trinetra-logo-gold.png"
+              alt="Trinetra Realty Official Logo"
+              className="h-16 sm:h-20 w-auto mx-auto object-contain mb-3"
+            />
+          </div>
           <div className="space-y-1">
             <div className="inline-flex items-center gap-1.5 text-xs text-[#1E3A2F] font-medium">
               <Lock className="w-3.5 h-3.5" />
@@ -577,13 +584,20 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     <div className="max-w-[1360px] mx-auto px-3.5 sm:px-6 py-6 sm:py-10 space-y-6 sm:space-y-8">
       {/* Admin Header & Executive Summary */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6 pb-6 border-b border-stone-200">
-        <div>
-          <div className="text-xs text-[#615E59]">
-            Trinetra Realty · Executive Inventory, Proprietary Projects &amp; Lead Management Suite
+        <div className="flex items-center gap-3.5">
+          <img
+            src="/trinetra-logo-symbol.png"
+            alt="Trinetra Realty Logo"
+            className="h-11 sm:h-12 w-auto object-contain shrink-0"
+          />
+          <div>
+            <div className="text-xs text-[#615E59]">
+              Trinetra Realty · Executive Inventory, Proprietary Projects &amp; Lead Management Suite
+            </div>
+            <h1 className="font-serif-display text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#141413] mt-0.5">
+              Admin Panel &amp; Portfolio Operations
+            </h1>
           </div>
-          <h1 className="font-serif-display text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#141413] mt-0.5">
-            Admin Panel &amp; Portfolio Operations
-          </h1>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 sm:gap-4">

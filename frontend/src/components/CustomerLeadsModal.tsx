@@ -203,16 +203,23 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
       <div className="bg-[#FBFBF9] border border-stone-300 w-full max-w-2xl overflow-hidden shadow-2xl my-auto sm:my-8 max-h-[92vh] flex flex-col rounded-sm">
         {/* Modal Header */}
         <div className="px-4 sm:px-6 py-3.5 sm:py-5 bg-[#F3F2EE] border-b border-stone-200 flex items-center justify-between shrink-0">
-          <div>
-            <p className="text-[11px] sm:text-xs text-[#615E59] tracking-wide">
-              Trinetra Realty · Business Owners: Rahul Khatri &amp; Rohit Joon
-            </p>
-            <h2
-              id="leads-modal-title"
-              className="font-serif-display text-xl sm:text-2xl font-semibold text-[#141413] mt-0.5"
-            >
-              Customer Leads &amp; Concierge Dispatch
-            </h2>
+          <div className="flex items-center gap-3">
+            <img
+              src="/trinetra-logo-symbol.png"
+              alt="Trinetra Realty Logo"
+              className="h-9 sm:h-10 w-auto object-contain shrink-0"
+            />
+            <div>
+              <p className="text-[11px] sm:text-xs text-[#615E59] tracking-wide">
+                Trinetra Realty · Business Owners: Rahul Khatri &amp; Rohit Joon
+              </p>
+              <h2
+                id="leads-modal-title"
+                className="font-serif-display text-xl sm:text-2xl font-semibold text-[#141413] mt-0.5"
+              >
+                Customer Leads &amp; Concierge Dispatch
+              </h2>
+            </div>
           </div>
           <button
             type="button"

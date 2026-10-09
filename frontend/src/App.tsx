@@ -1265,12 +1265,21 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-stone-300/80">
             {/* Office & Direct Contact Info */}
             <div className="lg:col-span-2 space-y-4">
-              <div>
-                <div className="font-serif-display text-2xl font-semibold text-[#141413]">
-                  Trinetra Realty
-                </div>
-                <div className="font-serif-display text-base text-[#1E3A2F] italic">
-                  Your Future, Our Focus.
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <img
+                    src="/trinetra-logo-symbol.png"
+                    alt="Trinetra Realty Logo"
+                    className="h-11 sm:h-12 w-auto object-contain"
+                  />
+                  <div>
+                    <div className="font-serif-display text-2xl sm:text-3xl font-semibold text-[#141413] leading-tight">
+                      Trinetra Realty
+                    </div>
+                    <div className="font-serif-display text-base text-[#1E3A2F] italic">
+                      Your Future, Our Focus.
+                    </div>
+                  </div>
                 </div>
                 <div className="pt-1 text-xs">
                   <span className="font-semibold text-[#141413]">Business Owners: </span>

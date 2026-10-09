@@ -1573,12 +1573,21 @@ export const ContactView: React.FC<ContactViewProps> = ({
             </div>
 
             <div>
-              <h3 className="font-serif-display text-xl sm:text-2xl font-semibold text-[#141413] mb-0.5">
-                Trinetra Realty
-              </h3>
-              <p className="text-xs text-[#57534E] mb-2 font-medium">
-                Business Owners: <span className="text-[#141413] font-semibold">Rahul Khatri</span> &amp; <span className="text-[#141413] font-semibold">Rohit Joon</span>
-              </p>
+              <div className="flex items-center gap-3 mb-2">
+                <img
+                  src="/trinetra-logo-symbol.png"
+                  alt="Trinetra Realty Logo"
+                  className="h-10 sm:h-11 w-auto object-contain shrink-0"
+                />
+                <div>
+                  <h3 className="font-serif-display text-xl sm:text-2xl font-semibold text-[#141413]">
+                    Trinetra Realty
+                  </h3>
+                  <p className="text-xs text-[#57534E] font-medium">
+                    Business Owners: <span className="text-[#141413] font-semibold">Rahul Khatri</span> &amp; <span className="text-[#141413] font-semibold">Rohit Joon</span>
+                  </p>
+                </div>
+              </div>
               {/* Clickable Full Address */}
               <a
                 href={MAPS_URL}
@@ -1800,9 +1809,16 @@ export const ContactView: React.FC<ContactViewProps> = ({
               <Send className="w-3.5 h-3.5" />
               <span>Direct Client Inquiry Desk</span>
             </div>
-            <h2 className="font-serif-display text-2xl sm:text-3xl font-semibold text-[#141413] mb-2">
-              Send an Enquiry
-            </h2>
+            <div className="flex items-center gap-3 mb-2">
+              <img
+                src="/trinetra-logo-symbol.png"
+                alt="Trinetra Realty Logo"
+                className="h-9 sm:h-10 w-auto object-contain shrink-0"
+              />
+              <h2 className="font-serif-display text-2xl sm:text-3xl font-semibold text-[#141413]">
+                Send an Enquiry
+              </h2>
+            </div>
             <p className="text-xs text-[#57534E] mb-6 leading-relaxed">
               For property enquiries, project details, investment opportunities, site visits and the latest inventory, feel free to connect with our team. All submissions trigger instant notification directly to our managing partners.
             </p>

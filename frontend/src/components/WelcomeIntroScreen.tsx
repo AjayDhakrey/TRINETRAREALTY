@@ -134,11 +134,20 @@ export const WelcomeIntroScreen: React.FC<WelcomeIntroScreenProps> = memo(
           }`}
         >
           <div className="tr-intro-arch-line h-px w-24 sm:w-36 bg-gradient-to-r from-[#D4AF6A]/70 via-[#D4AF6A]/25 to-transparent mb-2.5" />
-          <div className="font-serif-display text-sm sm:text-base tracking-[0.08em] text-[#FBFBF9]/90 font-medium">
-            Trinetra Realty
-          </div>
-          <div className="text-[10px] sm:text-[11px] tracking-[0.2em] uppercase text-[#D6CFC2]/65 mt-0.5">
-            Architectural Residences &amp; Private Advisory
+          <div className="flex items-center gap-3">
+            <img
+              src="/trinetra-logo-symbol.png"
+              alt="Trinetra Realty Logo"
+              className="h-8 sm:h-10 w-auto object-contain drop-shadow-md"
+            />
+            <div>
+              <div className="font-serif-display text-sm sm:text-base tracking-[0.08em] text-[#FBFBF9]/95 font-medium leading-tight">
+                Trinetra Realty
+              </div>
+              <div className="text-[10px] sm:text-[11px] tracking-[0.2em] uppercase text-[#D6CFC2]/75 mt-0.5">
+                Architectural Residences &amp; Private Advisory
+              </div>
+            </div>
           </div>
         </div>
 
