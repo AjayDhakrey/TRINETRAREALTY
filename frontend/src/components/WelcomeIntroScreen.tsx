@@ -30,11 +30,13 @@ export const WelcomeIntroScreen: React.FC<WelcomeIntroScreenProps> = memo(
       if (!video) return;
 
       let blockedFallbackTimer: number | undefined;
+      let autoExitTimer: number | undefined;
 
       video.muted = true;
       video.defaultMuted = true;
       video.playsInline = true;
       video.loop = false;
+      video.playbackRate = 2.75; // Fast-forward complete 10s video to play in ~3.6 seconds
 
       if (video.readyState >= 2) {
         setIsVideoReady(true);
@@ -51,7 +53,14 @@ export const WelcomeIntroScreen: React.FC<WelcomeIntroScreenProps> = memo(
         if (playPromise !== undefined) {
           playPromise
             .then(() => {
+              if (video) {
+                video.playbackRate = 2.75;
+              }
               setIsVideoReady(true);
+              // Complete video intro and transition to website in ~3.7 seconds
+              autoExitTimer = window.setTimeout(() => {
+                triggerCleanExit();
+              }, 3750);
             })
             .catch(() => {
               // Graceful handling if browser strictly blocks muted autoplay
@@ -69,22 +78,29 @@ export const WelcomeIntroScreen: React.FC<WelcomeIntroScreenProps> = memo(
         if (blockedFallbackTimer !== undefined) {
           window.clearTimeout(blockedFallbackTimer);
         }
+        if (autoExitTimer !== undefined) {
+          window.clearTimeout(autoExitTimer);
+        }
       };
     }, [triggerCleanExit]);
 
     const handleVideoReady = useCallback(() => {
+      const video = videoRef.current;
+      if (video) {
+        video.playbackRate = 2.75;
+      }
       setIsVideoReady(true);
     }, []);
 
     return (
       <div
-        className={`tr-intro-overlay flex items-center justify-center p-4 sm:p-6 md:p-8 ${
+        className={`tr-intro-overlay flex items-center justify-center p-3 sm:p-6 md:p-8 ${
           isFadingOut ? 'tr-intro-overlay--exiting' : 'tr-intro-overlay--active'
         }`}
         aria-label="Trinetra Realty Welcome Intro"
       >
-        {/* Centered Cinema Frame: Proportionately sized for laptops, tablets, and mobile screens */}
-        <div className="relative w-full max-w-[320px] xs:max-w-[380px] sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl max-h-[50vh] sm:max-h-[55vh] md:max-h-[60vh] aspect-video flex items-center justify-center mx-auto">
+        {/* Centered Cinema Frame: Optimized natural sizing for mobile phones and laptops */}
+        <div className="relative w-full max-w-[94vw] sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl max-h-[50vh] sm:max-h-[55vh] md:max-h-[60vh] aspect-video flex items-center justify-center mx-auto">
           <video
             ref={videoRef}
             src="/welcome-intro.mp4"
@@ -124,10 +140,10 @@ export const WelcomeIntroScreen: React.FC<WelcomeIntroScreenProps> = memo(
           />
         )}
 
-        {/* Bottom-Left Subtle Brand Reveal & Single Architectural Line */}
+        {/* Bottom-Left Subtle Brand Reveal & Single Architectural Line (Shown on tablets & desktops) */}
         <div
           aria-hidden="true"
-          className={`fixed bottom-6 left-6 sm:bottom-9 sm:left-10 z-20 pointer-events-none max-w-xs sm:max-w-md tr-intro-brand ${
+          className={`hidden sm:block fixed bottom-6 left-6 sm:bottom-9 sm:left-10 z-20 pointer-events-none max-w-xs sm:max-w-md tr-intro-brand ${
             isFadingOut
               ? 'tr-intro-brand--exiting'
               : isVideoReady
@@ -153,12 +169,12 @@ export const WelcomeIntroScreen: React.FC<WelcomeIntroScreenProps> = memo(
           </div>
         </div>
 
-        {/* Bottom-Right Subtle "Skip Intro" Control */}
+        {/* Subtle "Skip Intro" Control: Top-right on mobile for clean viewing, bottom-right on desktop */}
         <button
           type="button"
           onClick={handleSkipClick}
           aria-label="Skip Intro"
-          className={`fixed bottom-6 right-6 sm:bottom-9 sm:right-10 z-30 px-4 py-2 text-[10px] sm:text-[11px] font-medium tracking-[0.2em] uppercase text-[#E8D7B9]/85 hover:text-[#FBFBF9] bg-[#0B0C0E]/60 hover:bg-[#141413]/85 border border-[#D4AF6A]/30 hover:border-[#D4AF6A]/65 transition-colors duration-250 ease-out cursor-pointer focus:outline-none ${
+          className={`fixed top-4 right-4 sm:top-auto sm:bottom-8 sm:right-10 z-30 px-3.5 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-[11px] font-medium tracking-[0.2em] uppercase text-[#E8D7B9]/90 hover:text-[#FBFBF9] bg-[#0B0C0E]/75 hover:bg-[#141413]/90 border border-[#D4AF6A]/35 hover:border-[#D4AF6A]/70 rounded-full sm:rounded-none transition-colors duration-200 cursor-pointer focus:outline-none ${
             isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
           }`}
         >
