@@ -432,8 +432,9 @@ Submitted Phone:   ${lead.phone}
 --------------------------------------------------
 
 Warm regards,
-Trinetra Realty · Private Client Advisory
-Executive Concierge: admin@trinetrarealty.com
+Trinetra Realty · Your Future, Our Focus.
+F3, Supermax Galleria Market, Sector 33, Sonipat, Haryana, India
+Executive Concierge: trinetrarealty29@gmail.com · +91 9186221008 / +91 9034969308
 `.trim();
 
   const visitDetailsHtml = isVisit
@@ -484,12 +485,12 @@ Executive Concierge: admin@trinetrarealty.com
       ${visitDetailsHtml}
 
       <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #E7E5E4; font-size: 12px; color: #78716C;">
-        <div><strong>Direct Advisory Desk:</strong> admin@trinetrarealty.com</div>
-        <div><strong>Operating Headquarters:</strong> Trinetra Realty Executive Suites, NCR · New York</div>
+        <div><strong>Direct Advisory Desk:</strong> trinetrarealty29@gmail.com · +91 9186221008 / +91 9034969308</div>
+        <div><strong>Operating Headquarters:</strong> F3, Supermax Galleria Market, Sector 33, Sonipat, Haryana, India</div>
       </div>
     </div>
     <div class="footer">
-      © ${new Date().getFullYear()} Trinetra Realty Private Limited. Confidential Client Advisory Communication.
+      © ${new Date().getFullYear()} Trinetra Realty. Your Future, Our Focus. All Rights Reserved.
     </div>
   </div>
 </body>

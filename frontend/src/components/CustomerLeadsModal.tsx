@@ -283,27 +283,47 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
                   <p className="text-xs text-[#57534E] italic bg-white p-3 border border-stone-200">
                     "{whatsappFormattedText}"
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigator.clipboard.writeText(whatsappFormattedText);
-                      setCopiedWhatsApp(true);
-                      setTimeout(() => setCopiedWhatsApp(false), 2500);
-                    }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-[#1E3A2F] text-white cursor-pointer"
-                  >
-                    {copiedWhatsApp ? (
-                      <>
-                        <Check className="w-3.5 h-3.5" />
-                        <span>Copied to Clipboard</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5" />
-                        <span>Copy WhatsApp Dispatch Text</span>
-                      </>
-                    )}
-                  </button>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <a
+                      href={`https://wa.me/919186221008?text=${encodeURIComponent(whatsappFormattedText)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors cursor-pointer"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>WhatsApp Rahul (+91 9186221008)</span>
+                    </a>
+                    <a
+                      href={`https://wa.me/919034969308?text=${encodeURIComponent(whatsappFormattedText)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors cursor-pointer"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>WhatsApp Rohit (+91 9034969308)</span>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(whatsappFormattedText);
+                        setCopiedWhatsApp(true);
+                        setTimeout(() => setCopiedWhatsApp(false), 2500);
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-stone-300 text-[#141413] hover:bg-stone-50 cursor-pointer"
+                    >
+                      {copiedWhatsApp ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-700" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span>Copy Message Text</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -369,7 +389,7 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+1 (212) 555-0199"
+                    placeholder="+91 9186221008"
                     className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
                   />
                 </div>
@@ -628,7 +648,7 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
                 <div className="space-y-4">
                   <div className="p-4 bg-[#F3F2EE] border border-stone-200 space-y-2">
                     <div className="text-xs font-semibold text-[#1E3A2F]">
-                      Encrypted WhatsApp Private Client Desk (+1 212-555-0140)
+                      Direct WhatsApp Advisory Desk (+91 9186221008 · +91 9034969308)
                     </div>
                     <p className="text-xs text-[#57534E] leading-relaxed">
                       Submitting this form logs your priority WhatsApp dispatch directly in our Admin CRM and prepares an instant encrypted message thread with our duty partner.

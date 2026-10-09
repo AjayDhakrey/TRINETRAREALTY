@@ -13,6 +13,12 @@ import {
   RotateCcw,
   Building2,
   ShieldCheck,
+  MapPin,
+  Phone,
+  Mail,
+  Instagram,
+  Facebook,
+  MessageCircle,
 } from 'lucide-react';
 import {
   Property,
@@ -1205,19 +1211,131 @@ export default function App() {
         )}
       </main>
 
+      {/* Ready to Explore Your Next Property? Global CTA (Shown on public pages except contact/admin) */}
+      {activeRoute !== 'contact' && activeRoute !== 'admin' && (
+        <section className="max-w-[1360px] mx-auto px-6 mt-20">
+          <div className="bg-[#1E3A2F] text-white p-8 sm:p-12 rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-md">
+            <div className="space-y-2 max-w-2xl">
+              <div className="text-xs uppercase tracking-widest text-emerald-200/80 font-medium">
+                Trinetra Realty · Your Future, Our Focus.
+              </div>
+              <h2 className="font-serif-display text-3xl sm:text-4xl font-semibold text-white">
+                Ready to Explore Your Next Property?
+              </h2>
+              <p className="text-sm text-stone-200 font-medium">
+                Have a property enquiry or want to schedule a site visit?
+              </p>
+              <p className="text-xs text-stone-300/90 leading-relaxed pt-1">
+                Our team will help you with project details, availability and the next steps.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-4 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveRoute('contact');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="px-6 py-3.5 text-xs font-semibold bg-white text-[#141413] hover:bg-stone-100 transition-colors cursor-pointer shadow-sm text-center"
+              >
+                Get in Touch
+              </button>
+              <button
+                type="button"
+                onClick={() => handleOpenLeadModal('Schedule Visit')}
+                className="px-6 py-3.5 text-xs font-semibold border-2 border-white/80 text-white hover:bg-white hover:text-[#1E3A2F] transition-all cursor-pointer text-center"
+              >
+                Schedule a Site Visit
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Quiet Architectural Footer (Complete Sitemap Mirror) */}
       <footer className="bg-[#F3F2EE] border-t border-stone-200 mt-20">
         <div className="max-w-[1360px] mx-auto px-6 py-14">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-stone-300/80">
-            <div className="lg:col-span-2 space-y-3">
-              <div className="font-serif-display text-2xl font-semibold text-[#141413]">
-                Trinetra Realty
+            {/* Office & Direct Contact Info */}
+            <div className="lg:col-span-2 space-y-4">
+              <div>
+                <div className="font-serif-display text-2xl font-semibold text-[#141413]">
+                  Trinetra Realty
+                </div>
+                <div className="font-serif-display text-base text-[#1E3A2F] italic">
+                  Your Future, Our Focus.
+                </div>
               </div>
-              <p className="text-xs text-[#57534E] max-w-sm leading-relaxed">
-                Architectural Real Estate Representation, Algorithmic Valuation & Private Wealth Advisory across New York, Beverly Hills, and San Francisco.
-              </p>
-              <div className="text-xs text-[#615E59] font-mono-tabular pt-1">
-                Licensed Real Estate Brokerage · Equal Housing Opportunity
+
+              <div className="space-y-2 text-xs text-[#57534E]">
+                {/* Clickable Office Location to Google Maps */}
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-4 h-4 text-[#1E3A2F] shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-semibold text-[#141413]">Office: </span>
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=F3%2C+Supermax+Galleria+Market%2C+Sector+33%2C+Sonipat%2C+Haryana%2C+India"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Open in Google Maps"
+                      className="hover:text-[#1E3A2F] hover:underline"
+                    >
+                      F3, Supermax Galleria Market, Sector 33, Sonipat, Haryana, India
+                    </a>
+                  </div>
+                </div>
+
+                {/* Clickable Phone Numbers */}
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-[#1E3A2F] shrink-0" />
+                  <div>
+                    <span className="font-semibold text-[#141413]">Phone: </span>
+                    <a href="tel:+919186221008" className="hover:text-[#1E3A2F] hover:underline font-mono-tabular">
+                      +91 9186221008
+                    </a>
+                    <span className="mx-1.5 text-stone-300">·</span>
+                    <a href="tel:+919034969308" className="hover:text-[#1E3A2F] hover:underline font-mono-tabular">
+                      +91 9034969308
+                    </a>
+                  </div>
+                </div>
+
+                {/* Clickable Email */}
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-[#1E3A2F] shrink-0" />
+                  <div>
+                    <span className="font-semibold text-[#141413]">Email: </span>
+                    <a
+                      href="mailto:trinetrarealty29@gmail.com"
+                      className="hover:text-[#1E3A2F] hover:underline"
+                    >
+                      trinetrarealty29@gmail.com
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Social Channels */}
+              <div className="flex items-center gap-3 pt-2 text-xs">
+                <a
+                  href="https://www.instagram.com/trinetrarealty_?stkn=MW52OXVra2cxcXhmaw=="
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-stone-200 text-[#141413] hover:text-pink-600 hover:border-pink-300 rounded-sm transition-colors"
+                >
+                  <Instagram className="w-3.5 h-3.5 text-pink-600" />
+                  <span>Instagram</span>
+                </a>
+                <a
+                  href="https://www.facebook.com/share/1VBsJ1bSHk/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-stone-200 text-[#141413] hover:text-blue-600 hover:border-blue-300 rounded-sm transition-colors"
+                >
+                  <Facebook className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Facebook</span>
+                </a>
               </div>
             </div>
 
@@ -1328,8 +1446,11 @@ export default function App() {
                 <li>
                   <button
                     type="button"
-                    onClick={() => setActiveRoute('contact')}
-                    className="hover:text-[#141413] cursor-pointer"
+                    onClick={() => {
+                      setActiveRoute('contact');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="hover:text-[#141413] font-medium text-[#1E3A2F] cursor-pointer"
                   >
                     Contact Desks
                   </button>
@@ -1394,14 +1515,14 @@ export default function App() {
 
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-[#615E59] gap-4">
             <div>
-              © {new Date().getFullYear()} Trinetra Realty Real Estate Platform. All rights reserved.
+              © Trinetra Realty. All Rights Reserved.
             </div>
             <div className="flex items-center gap-4">
-              <span>Privacy Protocol</span>
+              <span>Your Future, Our Focus.</span>
               <span>·</span>
-              <span>Fair Housing Notice</span>
+              <span>Sonipat, Haryana</span>
               <span>·</span>
-              <span>Terms of Representation</span>
+              <span>Licensed Real Estate Advisory</span>
             </div>
           </div>
         </div>

@@ -10,6 +10,13 @@ import {
   Send,
   Calendar,
   MessageSquare,
+  MapPin,
+  Phone,
+  Mail,
+  Instagram,
+  Facebook,
+  MessageCircle,
+  ExternalLink,
 } from 'lucide-react';
 import {
   Property,
@@ -1488,18 +1495,25 @@ export const ContactView: React.FC<ContactViewProps> = ({
     }
   };
 
+  const MAPS_URL =
+    'https://www.google.com/maps/search/?api=1&query=F3%2C+Supermax+Galleria+Market%2C+Sector+33%2C+Sonipat%2C+Haryana%2C+India';
+
   return (
     <div className="max-w-[1360px] mx-auto px-6 py-12 space-y-12">
+      {/* Header Banner */}
       <div className="border-b border-stone-200 pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div className="space-y-2 max-w-2xl">
-          <div className="text-xs text-[#615E59]">
-            Private Client Desks · New York · Beverly Hills · San Francisco
+        <div className="space-y-3 max-w-2xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#1E3A2F]/10 text-[#1E3A2F] text-xs font-semibold tracking-wider uppercase rounded-full">
+            Get in Touch · Trinetra Realty
           </div>
           <h1 className="font-serif-display text-4xl sm:text-5xl font-semibold text-[#141413]">
-            Direct Partner & Concierge Contact
+            Trinetra Realty
           </h1>
+          <p className="font-serif-display text-2xl text-[#1E3A2F] italic">
+            Your Future, Our Focus.
+          </p>
           <p className="text-base text-[#57534E] leading-relaxed">
-            Connect with our managing partners for private showings, off-market portfolio inquiries, property valuations, or encrypted WhatsApp dispatch.
+            Whether you&apos;re looking for a new property, exploring an investment opportunity, or planning a site visit, our team is here to help you find the right opportunity.
           </p>
         </div>
 
@@ -1507,204 +1521,437 @@ export const ContactView: React.FC<ContactViewProps> = ({
           <button
             type="button"
             onClick={() => onOpenLeadModal('Schedule Visit')}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold border border-[#141413] text-[#141413] hover:bg-[#141413] hover:text-white transition-colors cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-3 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors cursor-pointer shadow-sm"
           >
-            <Calendar className="w-3.5 h-3.5" />
-            <span>Schedule Private Visit</span>
+            <Calendar className="w-4 h-4" />
+            <span>Schedule a Site Visit</span>
           </button>
-          <button
-            type="button"
-            onClick={() => onOpenLeadModal('WhatsApp Contact')}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors cursor-pointer"
+          <a
+            href="https://wa.me/919186221008?text=Hello%2C%20I%20am%20interested%20in%20Trinetra%20Realty%20properties."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-5 py-3 text-xs font-semibold border border-stone-300 text-[#141413] hover:bg-[#141413] hover:text-white transition-colors cursor-pointer"
           >
-            <Send className="w-3.5 h-3.5" />
-            <span>Launch WhatsApp Concierge</span>
-          </button>
+            <MessageCircle className="w-4 h-4 text-emerald-600" />
+            <span>WhatsApp Our Desk</span>
+          </a>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Left 5 Cols: Regional Offices */}
-        <div className="lg:col-span-5 space-y-6">
-          <div className="p-6 bg-[#F3F2EE] border border-stone-200 space-y-2">
-            <div className="text-xs font-mono-tabular text-[#1E3A2F] font-semibold">
-              01. New York Flagship Gallery
+        {/* Left 6 Cols: Office, Team, Email, Socials */}
+        <div className="lg:col-span-6 space-y-6">
+          {/* 1. Visit Our Office Card (Clickable Google Maps) */}
+          <div className="p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-4 relative overflow-hidden group hover:border-[#1E3A2F]/40 transition-colors">
+            <div className="flex items-center justify-between">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold text-[#1E3A2F] uppercase tracking-wider">
+                <MapPin className="w-4 h-4 text-[#1E3A2F]" />
+                <span>Visit Our Office</span>
+              </div>
+              <a
+                href={MAPS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-medium text-[#1E3A2F] hover:underline inline-flex items-center gap-1"
+              >
+                <span>Open in Maps</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
             </div>
-            <h3 className="font-serif-display text-2xl font-semibold text-[#141413]">
-              Tribeca & SoHo Desk
-            </h3>
-            <p className="text-xs text-[#57534E]">458 Broome Street, Penthouse Suite, New York, NY 10013</p>
-            <p className="text-xs font-mono-tabular text-[#141413] pt-1">
-              +1 (212) 555-0140 · ny@trinetrarealty.com
-            </p>
+
+            <div>
+              <h3 className="font-serif-display text-2xl font-semibold text-[#141413] mb-1">
+                Trinetra Realty
+              </h3>
+              {/* Clickable Full Address */}
+              <a
+                href={MAPS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Click to open full location on Google Maps"
+                className="block text-sm text-[#44403C] hover:text-[#1E3A2F] leading-relaxed transition-colors group/addr"
+              >
+                <div className="font-medium text-[#141413] group-hover/addr:underline">F3, Supermax Galleria Market</div>
+                <div>Sector 33, Sonipat, Haryana, India</div>
+              </a>
+            </div>
+
+            <div className="pt-2 border-t border-stone-300/60">
+              <a
+                href={MAPS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-xs font-semibold text-[#1E3A2F] hover:text-[#141413] transition-colors"
+              >
+                <span>Get Directions →</span>
+              </a>
+            </div>
           </div>
 
-          <div className="p-6 bg-[#F3F2EE] border border-stone-200 space-y-2">
-            <div className="text-xs font-mono-tabular text-[#1E3A2F] font-semibold">
-              02. Southern California Atelier
+          {/* 2. Contact Our Team Card */}
+          <div className="p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-5">
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#1E3A2F] uppercase tracking-wider">
+              <Phone className="w-4 h-4 text-[#1E3A2F]" />
+              <span>Contact Our Team</span>
             </div>
-            <h3 className="font-serif-display text-2xl font-semibold text-[#141413]">
-              Beverly Hills Desk
-            </h3>
-            <p className="text-xs text-[#57534E]">9601 Wilshire Blvd, Suite 800, Beverly Hills, CA 90210</p>
-            <p className="text-xs font-mono-tabular text-[#141413] pt-1">
-              +1 (310) 555-0188 · la@trinetrarealty.com
-            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Rahul Khatri */}
+              <div className="p-4 bg-white border border-stone-200 rounded-sm space-y-2">
+                <div className="text-xs text-stone-500 uppercase tracking-wider">Advisory Partner</div>
+                <div className="font-serif-display text-lg font-semibold text-[#141413]">
+                  Rahul Khatri
+                </div>
+                <div className="text-sm font-semibold text-[#1E3A2F]">
+                  <a href="tel:+919186221008" className="hover:underline">
+                    +91 9186221008
+                  </a>
+                </div>
+                <div className="pt-2 flex flex-wrap items-center gap-2 text-xs border-t border-stone-100">
+                  <a
+                    href="tel:+919186221008"
+                    className="inline-flex items-center gap-1 text-[#141413] hover:text-[#1E3A2F] font-medium"
+                  >
+                    <Phone className="w-3 h-3" />
+                    <span>Call Rahul</span>
+                  </a>
+                  <span className="text-stone-300">·</span>
+                  <a
+                    href="https://wa.me/919186221008?text=Hello%20Rahul%2C%20I%20am%20interested%20in%20Trinetra%20Realty%20properties."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-900 font-medium"
+                  >
+                    <MessageCircle className="w-3 h-3" />
+                    <span>WhatsApp Rahul</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Rohit Joon */}
+              <div className="p-4 bg-white border border-stone-200 rounded-sm space-y-2">
+                <div className="text-xs text-stone-500 uppercase tracking-wider">Managing Partner</div>
+                <div className="font-serif-display text-lg font-semibold text-[#141413]">
+                  Rohit Joon
+                </div>
+                <div className="text-sm font-semibold text-[#1E3A2F]">
+                  <a href="tel:+919034969308" className="hover:underline">
+                    +91 9034969308
+                  </a>
+                </div>
+                <div className="pt-2 flex flex-wrap items-center gap-2 text-xs border-t border-stone-100">
+                  <a
+                    href="tel:+919034969308"
+                    className="inline-flex items-center gap-1 text-[#141413] hover:text-[#1E3A2F] font-medium"
+                  >
+                    <Phone className="w-3 h-3" />
+                    <span>Call Rohit</span>
+                  </a>
+                  <span className="text-stone-300">·</span>
+                  <a
+                    href="https://wa.me/919034969308?text=Hello%20Rohit%2C%20I%20am%20interested%20in%20Trinetra%20Realty%20properties."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-900 font-medium"
+                  >
+                    <MessageCircle className="w-3 h-3" />
+                    <span>WhatsApp Rohit</span>
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="p-6 bg-[#F3F2EE] border border-stone-200 space-y-2">
-            <div className="text-xs font-mono-tabular text-[#1E3A2F] font-semibold">
-              03. Northern California & Marin
+          {/* 3. Email Us Card */}
+          <div className="p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-3">
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#1E3A2F] uppercase tracking-wider">
+              <Mail className="w-4 h-4 text-[#1E3A2F]" />
+              <span>Email Us</span>
             </div>
-            <h3 className="font-serif-display text-2xl font-semibold text-[#141413]">
-              Pacific Heights Desk
-            </h3>
-            <p className="text-xs text-[#57534E]">2100 Jackson Street, San Francisco, CA 94115</p>
-            <p className="text-xs font-mono-tabular text-[#141413] pt-1">
-              +1 (415) 555-0162 · sf@trinetrarealty.com
+            <div>
+              <a
+                href="mailto:trinetrarealty29@gmail.com"
+                className="font-serif-display text-xl sm:text-2xl font-semibold text-[#141413] hover:text-[#1E3A2F] underline decoration-stone-300 hover:decoration-[#1E3A2F]"
+              >
+                trinetrarealty29@gmail.com
+              </a>
+            </div>
+            <p className="text-xs text-[#57534E] leading-relaxed">
+              For property enquiries, project details, investment opportunities, site visits and the latest inventory, feel free to connect with our team.
             </p>
+            <div className="pt-1">
+              <a
+                href="#enquiry-form"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('enquiry-form')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="inline-flex items-center gap-1 text-xs font-semibold text-[#1E3A2F] hover:underline"
+              >
+                <span>Send an Enquiry →</span>
+              </a>
+            </div>
+          </div>
+
+          {/* 4. Follow Trinetra Realty (Social Links) */}
+          <div className="p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-4">
+            <div>
+              <div className="text-xs font-semibold text-[#1E3A2F] uppercase tracking-wider">
+                Follow Trinetra Realty
+              </div>
+              <p className="text-xs text-[#57534E] mt-1">
+                Stay connected with Trinetra Realty for new projects, property updates, investment opportunities, site visits and latest inventory.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              {/* Instagram */}
+              <a
+                href="https://www.instagram.com/trinetrarealty_?stkn=MW52OXVra2cxcXhmaw=="
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-white border border-stone-200 rounded-sm hover:border-pink-500 group transition-all"
+              >
+                <div className="flex items-center gap-2 text-pink-600 mb-1">
+                  <Instagram className="w-4 h-4" />
+                  <span className="text-xs font-semibold text-[#141413]">Instagram</span>
+                </div>
+                <div className="text-xs text-stone-500 group-hover:text-pink-600 font-mono-tabular">
+                  @trinetrarealty_
+                </div>
+                <div className="text-[11px] font-semibold text-[#1E3A2F] mt-2 group-hover:underline">
+                  Follow on Instagram →
+                </div>
+              </a>
+
+              {/* Facebook Page 1 */}
+              <a
+                href="https://www.facebook.com/share/1VBsJ1bSHk/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-white border border-stone-200 rounded-sm hover:border-blue-600 group transition-all"
+              >
+                <div className="flex items-center gap-2 text-blue-600 mb-1">
+                  <Facebook className="w-4 h-4" />
+                  <span className="text-xs font-semibold text-[#141413]">Facebook</span>
+                </div>
+                <div className="text-xs text-stone-500 group-hover:text-blue-600">
+                  Trinetra Realty
+                </div>
+                <div className="text-[11px] font-semibold text-[#1E3A2F] mt-2 group-hover:underline">
+                  Visit Facebook →
+                </div>
+              </a>
+
+              {/* Facebook Page 2 */}
+              <a
+                href="https://www.facebook.com/share/1D3uLHSo58/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-white border border-stone-200 rounded-sm hover:border-blue-600 group transition-all"
+              >
+                <div className="flex items-center gap-2 text-blue-600 mb-1">
+                  <Facebook className="w-4 h-4" />
+                  <span className="text-xs font-semibold text-[#141413]">Facebook</span>
+                </div>
+                <div className="text-xs text-stone-500 group-hover:text-blue-600">
+                  Trinetra Realty
+                </div>
+                <div className="text-[11px] font-semibold text-[#1E3A2F] mt-2 group-hover:underline">
+                  Visit Facebook →
+                </div>
+              </a>
+            </div>
           </div>
         </div>
 
-        {/* Right 7 Cols: Direct Customer Lead Dispatch Form */}
-        <div className="lg:col-span-7 bg-[#FBFBF9] border border-stone-300 p-8">
-          <h2 className="font-serif-display text-3xl font-semibold text-[#141413] mb-2">
-            Direct Partner Dispatch
-          </h2>
-          <p className="text-xs text-[#57534E] mb-6">
-            All inquiries are routed directly into our Admin Lead Management system for immediate partner assignment.
-          </p>
-
-          {submitted ? (
-            <div className="p-8 bg-[#F3F2EE] border border-stone-200 text-center space-y-3">
-              <CheckCircle2 className="w-10 h-10 text-[#1E3A2F] mx-auto" />
-              <h3 className="font-serif-display text-2xl font-semibold text-[#141413]">
-                Dispatch Recorded
-              </h3>
-              <p className="text-xs text-[#57534E]">
-                Thank you, {name}. Your {leadType} has been assigned to a Managing Partner.
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSubmitted(false);
-                  setMessage('');
-                }}
-                className="px-4 py-2 text-xs font-medium bg-[#141413] text-white cursor-pointer"
-              >
-                Send Another Inquiry
-              </button>
+        {/* Right 6 Cols: Direct Customer Lead Dispatch Form */}
+        <div id="enquiry-form" className="lg:col-span-6 bg-[#FBFBF9] border border-stone-300 p-8 rounded-sm shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 text-xs font-semibold text-[#1E3A2F] uppercase tracking-wider mb-2">
+              <Send className="w-3.5 h-3.5" />
+              <span>Direct Client Inquiry Desk</span>
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {(
-                  [
-                    'Property Inquiry',
-                    'Schedule Visit',
-                    'Property Valuation',
-                    'WhatsApp Contact',
-                  ] as LeadType[]
-                ).map((t) => (
+            <h2 className="font-serif-display text-3xl font-semibold text-[#141413] mb-2">
+              Send an Enquiry
+            </h2>
+            <p className="text-xs text-[#57534E] mb-6 leading-relaxed">
+              For property enquiries, project details, investment opportunities, site visits and the latest inventory, feel free to connect with our team. All submissions trigger instant notification directly to our managing partners.
+            </p>
+
+            {submitted ? (
+              <div className="p-8 bg-[#F3F2EE] border border-stone-200 text-center space-y-4 rounded-sm">
+                <CheckCircle2 className="w-12 h-12 text-[#1E3A2F] mx-auto" />
+                <h3 className="font-serif-display text-2xl font-semibold text-[#141413]">
+                  Enquiry Received Successfully
+                </h3>
+                <p className="text-sm text-[#57534E] max-w-md mx-auto leading-relaxed">
+                  Thank you, <strong>{name}</strong>. Your enquiry for <strong>{leadType}</strong> has been received. Our team will help you with project details, availability, and the next steps.
+                </p>
+                <div className="pt-2">
                   <button
-                    key={t}
                     type="button"
-                    onClick={() => setLeadType(t)}
-                    className={`py-2 px-2 text-xs font-medium border text-center cursor-pointer ${
-                      leadType === t
-                        ? 'bg-[#141413] text-white border-[#141413]'
-                        : 'bg-[#F3F2EE] text-[#57534E] border-stone-200 hover:text-[#141413]'
-                    }`}
+                    onClick={() => {
+                      setSubmitted(false);
+                      setMessage('');
+                    }}
+                    className="px-5 py-2.5 text-xs font-medium bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors cursor-pointer"
                   >
-                    {t}
+                    Send Another Enquiry
                   </button>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-[#141413] mb-1">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Principal Name"
-                    className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-[#141413] mb-1">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@domain.com"
-                    className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-[#141413] mb-1">
-                    Phone / WhatsApp *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+1 (212) 555-0190"
-                    className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
-                  />
                 </div>
               </div>
-
-              <div>
-                <label className="block text-xs font-medium text-[#141413] mb-1">
-                  Reference Property (Optional)
-                </label>
-                <select
-                  value={propertyId}
-                  onChange={(e) => setPropertyId(e.target.value)}
-                  className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
-                >
-                  {properties.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.code} — {p.title} ({p.locality})
-                    </option>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {(
+                    [
+                      'Property Inquiry',
+                      'Schedule Visit',
+                      'Property Valuation',
+                      'WhatsApp Contact',
+                    ] as LeadType[]
+                  ).map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => setLeadType(t)}
+                      className={`py-2 px-2 text-xs font-medium border text-center cursor-pointer transition-colors ${
+                        leadType === t
+                          ? 'bg-[#141413] text-white border-[#141413]'
+                          : 'bg-[#F3F2EE] text-[#57534E] border-stone-200 hover:text-[#141413]'
+                      }`}
+                    >
+                      {t}
+                    </button>
                   ))}
-                </select>
-              </div>
+                </div>
 
-              <div>
-                <label className="block text-xs font-medium text-[#141413] mb-1">
-                  Confidential Message
-                </label>
-                <textarea
-                  rows={4}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Specify your acquisition criteria, preferred viewing dates, or property valuation details..."
-                  className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
-                />
-              </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-[#141413] mb-1">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Your Full Name"
+                      className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-[#141413] mb-1">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@email.com"
+                      className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-[#141413] mb-1">
+                      Phone / WhatsApp *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+91 9186221008"
+                      className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
+                    />
+                  </div>
+                </div>
 
-              <button
-                type="submit"
-                disabled={submitting}
-                className="inline-flex items-center gap-2 px-6 py-3 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors cursor-pointer"
-              >
-                <MessageSquare className="w-3.5 h-3.5" />
-                <span>{submitting ? 'Submitting...' : `Dispatch ${leadType}`}</span>
-              </button>
-            </form>
-          )}
+                <div>
+                  <label className="block text-xs font-medium text-[#141413] mb-1">
+                    Interested Property / Asset (Optional)
+                  </label>
+                  <select
+                    value={propertyId}
+                    onChange={(e) => setPropertyId(e.target.value)}
+                    className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
+                  >
+                    <option value="">General Portfolio Inquiry (Sonipat / NCR)</option>
+                    {properties.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.code} — {p.title} ({p.locality})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-[#141413] mb-1">
+                    Your Requirements & Inquiries
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Tell us what you're looking for, preferred budget, property type, or desired site visit date..."
+                    className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors cursor-pointer shadow-sm"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>{submitting ? 'Sending Enquiry...' : `Send ${leadType} →`}</span>
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Ready to Explore Your Next Property? Call-to-Action Section */}
+      <div className="bg-[#1E3A2F] text-white p-8 sm:p-12 rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-md">
+        <div className="space-y-2 max-w-2xl">
+          <div className="text-xs uppercase tracking-widest text-emerald-200/80 font-medium">
+            Trinetra Realty · Sonipat, Haryana
+          </div>
+          <h2 className="font-serif-display text-3xl sm:text-4xl font-semibold text-white">
+            Ready to Explore Your Next Property?
+          </h2>
+          <p className="text-sm text-stone-200 font-medium">
+            Have a property enquiry or want to schedule a site visit?
+          </p>
+          <p className="text-xs text-stone-300/90 leading-relaxed pt-1">
+            Our team will help you with project details, availability and the next steps.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-4 shrink-0">
+          <a
+            href="#enquiry-form"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('enquiry-form')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="px-6 py-3.5 text-xs font-semibold bg-white text-[#141413] hover:bg-stone-100 transition-colors cursor-pointer shadow-sm text-center"
+          >
+            Get in Touch
+          </a>
+          <button
+            type="button"
+            onClick={() => onOpenLeadModal('Schedule Visit')}
+            className="px-6 py-3.5 text-xs font-semibold border-2 border-white/80 text-white hover:bg-white hover:text-[#1E3A2F] transition-all cursor-pointer text-center"
+          >
+            Schedule a Site Visit
+          </button>
         </div>
       </div>
     </div>
   );
 };
+
