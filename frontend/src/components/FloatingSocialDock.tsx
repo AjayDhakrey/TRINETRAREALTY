@@ -224,3 +224,4 @@ export const FloatingSocialDock: React.FC = () => {
     </div>
   );
 };
+

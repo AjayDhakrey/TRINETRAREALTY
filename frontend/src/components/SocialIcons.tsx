@@ -52,3 +52,70 @@ export function GoogleMapsIcon({ className = 'w-4 h-4' }: { className?: string }
   );
 }
 
+export function LotusGoldIcon({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 28 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      {/* Central petal */}
+      <path
+        d="M14 2C14 2 11.2 7.5 11.2 12.5C11.2 15.5 12.4 17.5 14 18C15.6 17.5 16.8 15.5 16.8 12.5C16.8 7.5 14 2 14 2Z"
+        fill="url(#lotus-gold-center)"
+        stroke="#B38833"
+        strokeWidth="0.8"
+      />
+      {/* Mid left petal */}
+      <path
+        d="M11.2 12.5C11.2 8.5 7.8 5.5 7.8 5.5C7.8 5.5 6 10 6.6 13.5C7.2 16.5 9.2 18 11.2 18C11.2 16.2 11.2 14.2 11.2 12.5Z"
+        fill="url(#lotus-gold-mid)"
+        stroke="#B38833"
+        strokeWidth="0.8"
+      />
+      {/* Mid right petal */}
+      <path
+        d="M16.8 12.5C16.8 8.5 20.2 5.5 20.2 5.5C20.2 5.5 22 10 21.4 13.5C20.8 16.5 18.8 18 16.8 18C16.8 16.2 16.8 14.2 16.8 12.5Z"
+        fill="url(#lotus-gold-mid)"
+        stroke="#B38833"
+        strokeWidth="0.8"
+      />
+      {/* Outer left petal */}
+      <path
+        d="M6.6 13.5C4.8 12 2.5 11.5 2.5 11.5C2.5 11.5 3.2 15 5.5 17.2C7.2 18.8 9.5 19 11 18.8C9.2 18 7.5 16 6.6 13.5Z"
+        fill="#C99C4E"
+        stroke="#B38833"
+        strokeWidth="0.6"
+      />
+      {/* Outer right petal */}
+      <path
+        d="M21.4 13.5C23.2 12 25.5 11.5 25.5 11.5C25.5 11.5 24.8 15 22.5 17.2C20.8 18.8 18.5 19 17 18.8C18.8 18 20.5 16 21.4 13.5Z"
+        fill="#C99C4E"
+        stroke="#B38833"
+        strokeWidth="0.6"
+      />
+      {/* Lotus base arc */}
+      <path
+        d="M8.5 19.5C11.5 21 16.5 21 19.5 19.5"
+        stroke="#B38833"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
+      <defs>
+        <linearGradient id="lotus-gold-center" x1="14" y1="2" x2="14" y2="18" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#F9E8B2" />
+          <stop offset="0.5" stopColor="#E2BD68" />
+          <stop offset="1" stopColor="#B38833" />
+        </linearGradient>
+        <linearGradient id="lotus-gold-mid" x1="14" y1="5.5" x2="14" y2="18" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#FDEFC8" />
+          <stop offset="0.6" stopColor="#D5AA52" />
+          <stop offset="1" stopColor="#9C7323" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
