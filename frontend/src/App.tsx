@@ -1261,7 +1261,7 @@ export default function App() {
 
       {/* Quiet Architectural Footer (Complete Sitemap Mirror) */}
       <footer className="bg-[#F3F2EE] border-t border-stone-200 mt-20">
-        <div className="max-w-[1360px] mx-auto px-6 py-14">
+        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 pt-12 pb-24 sm:pb-14">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-stone-300/80">
             {/* Office & Direct Contact Info */}
             <div className="lg:col-span-2 space-y-4">
@@ -1544,15 +1544,15 @@ export default function App() {
             </div>
           </div>
 
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-[#615E59] gap-4">
-            <div>
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-[#615E59] gap-3 text-center sm:text-left">
+            <div className="leading-relaxed">
               © Trinetra Realty · Business Owners: Rahul Khatri &amp; Rohit Joon. All Rights Reserved.
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-2.5 gap-y-1 text-center text-[#78716C]">
               <span>Your Future, Our Focus.</span>
-              <span>·</span>
+              <span className="hidden sm:inline text-stone-300">·</span>
               <span>Sonipat, Haryana</span>
-              <span>·</span>
+              <span className="hidden sm:inline text-stone-300">·</span>
               <span>Licensed Real Estate Advisory</span>
             </div>
           </div>
@@ -1577,7 +1577,7 @@ export default function App() {
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
         title="Chat with Trinetra Realty on WhatsApp (+91 9186221008)"
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group"
+        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2 p-3 sm:px-4 sm:py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group"
       >
         <WhatsAppIcon className="w-5 h-5 text-white shrink-0 group-hover:rotate-12 transition-transform" />
         <span className="text-xs font-semibold tracking-wide hidden sm:inline">

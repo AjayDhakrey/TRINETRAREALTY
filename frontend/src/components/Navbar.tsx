@@ -59,23 +59,23 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 bg-[#FBFBF9]/95 backdrop-blur-md border-b border-stone-200/80">
-      <div className="max-w-[1360px] mx-auto px-6 h-16 flex items-center justify-between gap-6">
+      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3 sm:gap-6">
         {/* Zone 1: Single text element wordmark + Official Golden Emblem */}
         <button
           type="button"
           onClick={() => handleNav('home')}
-          className="flex items-center gap-2.5 sm:gap-3 group shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1E3A2F] cursor-pointer"
+          className="flex items-center gap-2 sm:gap-3 group shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1E3A2F] cursor-pointer"
         >
           <img
             src="/trinetra-logo-symbol.png"
             alt="Trinetra Realty Official Logo"
-            className="h-8 sm:h-9 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            className="h-7 sm:h-9 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
           />
           <div className="flex flex-col text-left leading-tight">
-            <span className="font-serif-display text-xl sm:text-2xl font-semibold tracking-tight text-[#141413]">
+            <span className="font-serif-display text-lg sm:text-2xl font-semibold tracking-tight text-[#141413]">
               Trinetra Realty
             </span>
-            <span className="text-[9px] sm:text-[10px] tracking-[0.16em] uppercase text-[#1E3A2F] font-semibold">
+            <span className="text-[8px] sm:text-[10px] tracking-[0.14em] sm:tracking-[0.16em] uppercase text-[#1E3A2F] font-semibold">
               Architectural Advisory
             </span>
           </div>
@@ -166,7 +166,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </nav>
 
         {/* Zone 3: 2 Primary Actions */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button
             type="button"
             onClick={() => onOpenLeadModal('Property Inquiry')}
@@ -178,7 +178,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             type="button"
             onClick={() => handleNav('admin')}
-            className={`inline-flex items-center justify-center px-4 py-2 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+            className={`hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
               activeRoute === 'admin'
                 ? 'bg-[#1E3A2F] text-white'
                 : 'bg-[#141413] text-white hover:bg-[#292524]'
@@ -191,7 +191,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             type="button"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle Menu"
-            className="lg:hidden p-2 text-[#141413] hover:bg-stone-100"
+            className="lg:hidden p-2 text-[#141413] hover:bg-stone-100 rounded-sm cursor-pointer"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -347,7 +347,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setMobileMenuOpen(false);
                 onOpenLeadModal('Property Inquiry');
               }}
-              className="px-3 py-2 text-xs font-medium bg-[#F3F2EE] text-[#141413]"
+              className="px-3 py-2 text-xs font-medium bg-[#F3F2EE] text-[#141413] cursor-pointer"
             >
               Property Inquiry
             </button>
@@ -357,7 +357,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setMobileMenuOpen(false);
                 onOpenLeadModal('Schedule Visit');
               }}
-              className="px-3 py-2 text-xs font-medium bg-[#F3F2EE] text-[#141413]"
+              className="px-3 py-2 text-xs font-medium bg-[#F3F2EE] text-[#141413] cursor-pointer"
             >
               Schedule Visit
             </button>
@@ -367,9 +367,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setMobileMenuOpen(false);
                 onOpenLeadModal('WhatsApp Contact');
               }}
-              className="px-3 py-2 text-xs font-medium bg-[#1E3A2F] text-white"
+              className="px-3 py-2 text-xs font-medium bg-[#1E3A2F] text-white cursor-pointer"
             >
               WhatsApp Contact
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                handleNav('admin');
+              }}
+              className="px-3 py-2 text-xs font-medium bg-[#141413] text-white cursor-pointer"
+            >
+              Admin Panel
             </button>
           </div>
         </div>
