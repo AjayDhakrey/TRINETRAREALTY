@@ -1260,23 +1260,23 @@ export default function App() {
       )}
 
       {/* Quiet Architectural Footer (Complete Sitemap Mirror) */}
-      <footer className="bg-[#F3F2EE] border-t border-stone-200 mt-20">
-        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 pt-12 pb-24 sm:pb-14">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-stone-300/80">
+      <footer className="bg-[#F3F2EE] border-t border-stone-200 mt-14 sm:mt-20">
+        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 pt-10 sm:pt-12 pb-24 sm:pb-14">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pb-10 sm:pb-12 border-b border-stone-300/80">
             {/* Office & Direct Contact Info */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="lg:col-span-5 space-y-4">
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
                   <img
                     src="/trinetra-logo-symbol.png"
                     alt="Trinetra Realty Logo"
-                    className="h-11 sm:h-12 w-auto object-contain"
+                    className="h-10 sm:h-12 w-auto object-contain shrink-0"
                   />
                   <div>
                     <div className="font-serif-display text-2xl sm:text-3xl font-semibold text-[#141413] leading-tight">
                       Trinetra Realty
                     </div>
-                    <div className="font-serif-display text-base text-[#1E3A2F] italic">
+                    <div className="font-serif-display text-sm sm:text-base text-[#1E3A2F] italic">
                       Your Future, Our Focus.
                     </div>
                   </div>
@@ -1287,11 +1287,11 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="space-y-2 text-xs text-[#57534E]">
+              <div className="space-y-2.5 text-xs text-[#57534E]">
                 {/* Clickable Office Location to Google Maps */}
                 <div className="flex items-start gap-2">
                   <GoogleMapsIcon className="w-4 h-4 text-[#EA4335] shrink-0 mt-0.5" />
-                  <div>
+                  <div className="leading-relaxed">
                     <span className="font-semibold text-[#141413]">Office: </span>
                     <a
                       href="https://www.google.com/maps/search/?api=1&query=F3%2C+Supermax+Galleria+Market%2C+Sector+33%2C+Sonipat%2C+Haryana%2C+India"
@@ -1306,15 +1306,23 @@ export default function App() {
                 </div>
 
                 {/* Clickable Phone Numbers */}
-                <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 text-[#1E3A2F] shrink-0" />
-                  <div>
+                <div className="flex items-start gap-2">
+                  <Phone className="w-4 h-4 text-[#1E3A2F] shrink-0 mt-0.5" />
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="font-semibold text-[#141413]">Phone: </span>
-                    <a href="tel:+919186221008" className="hover:text-[#1E3A2F] hover:underline font-mono-tabular" title="Call Rahul Khatri (Business Owner)">
+                    <a
+                      href="tel:+919186221008"
+                      className="hover:text-[#1E3A2F] hover:underline font-mono-tabular font-medium"
+                      title="Call Rahul Khatri (Business Owner)"
+                    >
                       +91 9186221008 (Rahul)
                     </a>
-                    <span className="mx-1.5 text-stone-300">·</span>
-                    <a href="tel:+919034969308" className="hover:text-[#1E3A2F] hover:underline font-mono-tabular" title="Call Rohit Joon (Business Owner)">
+                    <span className="text-stone-300">·</span>
+                    <a
+                      href="tel:+919034969308"
+                      className="hover:text-[#1E3A2F] hover:underline font-mono-tabular font-medium"
+                      title="Call Rohit Joon (Business Owner)"
+                    >
                       +91 9034969308 (Rohit)
                     </a>
                   </div>
@@ -1323,11 +1331,11 @@ export default function App() {
                 {/* Clickable Email */}
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-[#1E3A2F] shrink-0" />
-                  <div>
+                  <div className="min-w-0">
                     <span className="font-semibold text-[#141413]">Email: </span>
                     <a
                       href="mailto:trinetrarealty29@gmail.com"
-                      className="hover:text-[#1E3A2F] hover:underline"
+                      className="hover:text-[#1E3A2F] hover:underline break-all"
                     >
                       trinetrarealty29@gmail.com
                     </a>
@@ -1336,7 +1344,7 @@ export default function App() {
               </div>
 
               {/* Social Channels with Authentic Brand Icons */}
-              <div className="flex flex-wrap items-center gap-2.5 pt-2 text-xs">
+              <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
                 <a
                   href="https://www.instagram.com/trinetrarealty_?stkn=MW52OXVra2cxcXhmaw=="
                   target="_blank"
@@ -1370,181 +1378,185 @@ export default function App() {
               </div>
             </div>
 
-            {/* Column 1: Public Website */}
-            <div className="space-y-2.5 text-xs">
-              <div className="font-semibold text-[#141413]">Public Website</div>
-              <ul className="space-y-2 text-[#57534E]">
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => setActiveRoute('home')}
-                    className="hover:text-[#141413] cursor-pointer"
-                  >
-                    Home
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActiveRoute('projects');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className="font-medium text-[#1E3A2F] hover:text-[#141413] cursor-pointer"
-                  >
-                    Our Projects
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => setActiveRoute('search')}
-                    className="hover:text-[#141413] cursor-pointer"
-                  >
-                    Property Search
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => setActiveRoute('buy')}
-                    className="hover:text-[#141413] cursor-pointer"
-                  >
-                    Buy Residences
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => setActiveRoute('rent')}
-                    className="hover:text-[#141413] cursor-pointer"
-                  >
-                    Rent & Leases
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => setActiveRoute('sell')}
-                    className="hover:text-[#141413] cursor-pointer"
-                  >
-                    Sell & Valuation
-                  </button>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 2: Financial Tools & Editorial */}
-            <div className="space-y-2.5 text-xs">
-              <div className="font-semibold text-[#141413]">Tools & Intelligence</div>
-              <ul className="space-y-2 text-[#57534E]">
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => setActiveRoute('compare')}
-                    className="hover:text-[#141413] cursor-pointer"
-                  >
-                    Property Comparison ({compareIds.length}/3)
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => setActiveRoute('emi')}
-                    className="hover:text-[#141413] cursor-pointer"
-                  >
-                    EMI Calculator
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => setActiveRoute('localities')}
-                    className="hover:text-[#141413] cursor-pointer"
-                  >
-                    Localities Guide
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => setActiveRoute('blog')}
-                    className="hover:text-[#141413] cursor-pointer"
-                  >
-                    Editorial Blog
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActiveRoute('contact');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className="hover:text-[#141413] font-medium text-[#1E3A2F] cursor-pointer"
-                  >
-                    Contact Desks
-                  </button>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 3: Customer Leads & Admin Governance */}
-            <div className="space-y-2.5 text-xs">
-              <div className="font-semibold text-[#141413]">
-                Customer Leads & Admin
+            {/* Navigation Sitemap Columns (7 cols on lg, 2 cols on mobile, 3 cols on sm/tablet) */}
+            <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 pt-6 lg:pt-0 border-t lg:border-t-0 border-stone-200/70">
+              {/* Column 1: Public Website */}
+              <div className="space-y-2.5 text-xs">
+                <div className="font-semibold text-[#141413] tracking-wide uppercase text-[11px]">Public Website</div>
+                <ul className="space-y-1.5 text-[#57534E]">
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => setActiveRoute('home')}
+                      className="py-0.5 text-left hover:text-[#141413] cursor-pointer"
+                    >
+                      Home
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveRoute('projects');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="py-0.5 text-left font-medium text-[#1E3A2F] hover:text-[#141413] cursor-pointer"
+                    >
+                      Our Projects
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => setActiveRoute('search')}
+                      className="py-0.5 text-left hover:text-[#141413] cursor-pointer"
+                    >
+                      Property Search
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => setActiveRoute('buy')}
+                      className="py-0.5 text-left hover:text-[#141413] cursor-pointer"
+                    >
+                      Buy Residences
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => setActiveRoute('rent')}
+                      className="py-0.5 text-left hover:text-[#141413] cursor-pointer"
+                    >
+                      Rent &amp; Leases
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => setActiveRoute('sell')}
+                      className="py-0.5 text-left hover:text-[#141413] cursor-pointer"
+                    >
+                      Sell &amp; Valuation
+                    </button>
+                  </li>
+                </ul>
               </div>
-              <ul className="space-y-2 text-[#57534E]">
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenLeadModal('Property Inquiry')}
-                    className="hover:text-[#141413] cursor-pointer"
-                  >
-                    Property Inquiry
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenLeadModal('Schedule Visit')}
-                    className="hover:text-[#141413] cursor-pointer"
-                  >
-                    Schedule Visit
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenLeadModal('Property Valuation')}
-                    className="hover:text-[#141413] cursor-pointer"
-                  >
-                    Property Valuation
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenLeadModal('WhatsApp Contact')}
-                    className="hover:text-[#141413] cursor-pointer"
-                  >
-                    WhatsApp Contact
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => setActiveRoute('admin')}
-                    className="font-semibold text-[#1E3A2F] hover:underline cursor-pointer"
-                  >
-                    Admin Panel Suite →
-                  </button>
-                </li>
-              </ul>
+
+              {/* Column 2: Financial Tools & Editorial */}
+              <div className="space-y-2.5 text-xs">
+                <div className="font-semibold text-[#141413] tracking-wide uppercase text-[11px]">Tools &amp; Intelligence</div>
+                <ul className="space-y-1.5 text-[#57534E]">
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => setActiveRoute('compare')}
+                      className="py-0.5 text-left hover:text-[#141413] cursor-pointer"
+                    >
+                      Comparison ({compareIds.length}/3)
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => setActiveRoute('emi')}
+                      className="py-0.5 text-left hover:text-[#141413] cursor-pointer"
+                    >
+                      EMI Calculator
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => setActiveRoute('localities')}
+                      className="py-0.5 text-left hover:text-[#141413] cursor-pointer"
+                    >
+                      Localities Guide
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => setActiveRoute('blog')}
+                      className="py-0.5 text-left hover:text-[#141413] cursor-pointer"
+                    >
+                      Editorial Blog
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveRoute('contact');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="py-0.5 text-left hover:text-[#141413] font-medium text-[#1E3A2F] cursor-pointer"
+                    >
+                      Contact Desks
+                    </button>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Column 3: Customer Leads & Admin Governance */}
+              <div className="space-y-2.5 text-xs col-span-2 sm:col-span-1 pt-3 sm:pt-0 border-t sm:border-t-0 border-stone-200/60">
+                <div className="font-semibold text-[#141413] tracking-wide uppercase text-[11px]">
+                  Leads &amp; Admin
+                </div>
+                <ul className="space-y-1.5 text-[#57534E]">
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenLeadModal('Property Inquiry')}
+                      className="py-0.5 text-left hover:text-[#141413] cursor-pointer"
+                    >
+                      Property Inquiry
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenLeadModal('Schedule Visit')}
+                      className="py-0.5 text-left hover:text-[#141413] cursor-pointer"
+                    >
+                      Schedule Visit
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenLeadModal('Property Valuation')}
+                      className="py-0.5 text-left hover:text-[#141413] cursor-pointer"
+                    >
+                      Property Valuation
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenLeadModal('WhatsApp Contact')}
+                      className="py-0.5 text-left hover:text-[#141413] cursor-pointer"
+                    >
+                      WhatsApp Contact
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => setActiveRoute('admin')}
+                      className="py-0.5 text-left font-semibold text-[#1E3A2F] hover:underline cursor-pointer inline-flex items-center gap-1"
+                    >
+                      <span>Admin Panel</span>
+                      <span>→</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
 
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-[#615E59] gap-3 text-center sm:text-left">
+          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] sm:text-xs text-[#615E59] gap-3 text-center sm:text-left">
             <div className="leading-relaxed">
               © Trinetra Realty · Business Owners: Rahul Khatri &amp; Rohit Joon. All Rights Reserved.
             </div>
