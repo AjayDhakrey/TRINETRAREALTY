@@ -78,37 +78,39 @@ export const WelcomeIntroScreen: React.FC<WelcomeIntroScreenProps> = memo(
 
     return (
       <div
-        className={`tr-intro-overlay ${
+        className={`tr-intro-overlay flex items-center justify-center p-4 sm:p-6 md:p-8 ${
           isFadingOut ? 'tr-intro-overlay--exiting' : 'tr-intro-overlay--active'
         }`}
         aria-label="Trinetra Realty Welcome Intro"
       >
-        {/* Full-screen HTML5 Welcome Video — Plays ONCE, transitions on actual ended event */}
-        <video
-          ref={videoRef}
-          src="/welcome-intro.mp4"
-          poster="/welcome-poster.jpg"
-          autoPlay
-          muted
-          playsInline
-          preload="auto"
-          controls={false}
-          disablePictureInPicture
-          disableRemotePlayback
-          onLoadedData={handleVideoReady}
-          onCanPlay={handleVideoReady}
-          onEnded={triggerCleanExit}
-          onError={triggerCleanExit}
-          className={`intro-video-no-controls w-full h-full object-contain sm:object-cover object-center block m-0 p-0 border-0 outline-none pointer-events-none tr-intro-video ${
-            isFadingOut
-              ? 'tr-intro-video--exiting'
-              : isVideoReady
-              ? 'tr-intro-video--ready'
-              : ''
-          }`}
-        />
+        {/* Centered Cinema Frame: Proportionately sized for laptops, tablets, and mobile screens */}
+        <div className="relative w-full max-w-[320px] xs:max-w-[380px] sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl max-h-[50vh] sm:max-h-[55vh] md:max-h-[60vh] aspect-video flex items-center justify-center mx-auto">
+          <video
+            ref={videoRef}
+            src="/welcome-intro.mp4"
+            poster="/welcome-poster.jpg"
+            autoPlay
+            muted
+            playsInline
+            preload="auto"
+            controls={false}
+            disablePictureInPicture
+            disableRemotePlayback
+            onLoadedData={handleVideoReady}
+            onCanPlay={handleVideoReady}
+            onEnded={triggerCleanExit}
+            onError={triggerCleanExit}
+            className={`intro-video-no-controls w-full h-full object-contain object-center block m-0 p-0 border-0 outline-none pointer-events-none tr-intro-video ${
+              isFadingOut
+                ? 'tr-intro-video--exiting'
+                : isVideoReady
+                ? 'tr-intro-video--ready'
+                : ''
+            }`}
+          />
+        </div>
 
-        {/* Subtle Edge Vignette — Center kept completely clear */}
+        {/* Subtle Edge Vignette */}
         <div
           aria-hidden="true"
           className="tr-intro-vignette absolute inset-0 z-10 pointer-events-none"
