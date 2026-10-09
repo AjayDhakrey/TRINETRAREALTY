@@ -330,7 +330,7 @@ export function getWhatsAppStatus() {
 }
 
 /**
- * Format Customer Lead into a crisp, high-visibility WhatsApp Alert
+ * Format Customer Lead into a complete, high-visibility WhatsApp Dossier for Business Owners
  */
 export function buildLeadWhatsAppMessage(lead: CustomerLead): string {
   const dateStr = new Date(lead.createdAt).toLocaleString('en-IN', {
@@ -343,49 +343,144 @@ export function buildLeadWhatsAppMessage(lead: CustomerLead): string {
     lead.projectName ||
     lead.propertyTitle ||
     lead.valuationDetails?.locality ||
-    'Trinetra Portfolio Residence';
+    'Trinetra Realty Portfolio Residence';
+
+  const cleanDigits = lead.phone.replace(/\D/g, '');
+  const waLink = cleanDigits ? `https://wa.me/${cleanDigits.length === 10 ? '91' + cleanDigits : cleanDigits}` : '';
 
   const lines = [
-    `🏛️ *TRINETRA REALTY · NEW ENQUIRY ALERT* 🏛️`,
+    `🏛️ *TRINETRA REALTY · NEW CUSTOMER ENQUIRY* 🏛️`,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
-    `👤 *Client Name:* ${lead.name}`,
-    `📞 *Client Phone:* ${lead.phone}`,
-    `✉️ *Client Email:* ${lead.email}`,
-    `📋 *Enquiry Type:* ${lead.type}${lead.inquirySubType ? ` (${lead.inquirySubType})` : ''}`,
-    `🏡 *Property / Subject:* ${propertyOrProject}`,
+    `📋 *LEAD SUMMARY & METADATA:*`,
+    `• *Reference ID:* ${lead.id}`,
+    `• *Enquiry Category:* ${lead.type}${lead.inquirySubType ? ` · ${lead.inquirySubType}` : ''}`,
+    `• *Lead Source:* ${lead.leadSource || 'Website Direct Enquiry Portal'}`,
+    `• *Pipeline Status:* 🔴 ${lead.status || 'New Lead (Follow-Up Required)'}`,
+    ``,
+    `👤 *CUSTOMER CONTACT PROFILE:*`,
+    `• *Full Name:* ${lead.name}`,
+    `• *Direct Phone:* ${lead.phone}`,
+    `• *Confidential Email:* ${lead.email}`,
   ];
 
-  if (lead.propertyId) {
-    lines.push(`🆔 *Property ID:* ${lead.propertyId}`);
+  if (lead.financingType) {
+    lines.push(`• *Capital / Financing Structure:* ${lead.financingType}`);
   }
 
-  if (lead.preferredDate) {
-    lines.push(`📅 *Requested Tour Date:* ${lead.preferredDate} (${lead.preferredTimeSlot || 'Standard Slot'})`);
+  lines.push(
+    ``,
+    `🏡 *SUBJECT PROPERTY / PROJECT:*`,
+    `• *Title / Name:* ${propertyOrProject}`
+  );
+
+  if (lead.propertyId || lead.projectId) {
+    lines.push(`• *Asset Code / ID:* ${lead.propertyId || lead.projectId}`);
   }
 
-  if (lead.visitMode) {
-    lines.push(`🚗 *Tour Format:* ${lead.visitMode}`);
+  if (lead.type === 'Schedule Visit' || lead.preferredDate) {
+    lines.push(
+      ``,
+      `📅 *SCHEDULED SITE VISIT DETAILS:*`,
+      `• *Requested Date:* ${lead.preferredDate || 'Flexible / As soon as possible'}`,
+      `• *Preferred Slot:* ${lead.preferredTimeSlot || 'Standard Business Hours'}`,
+      `• *Tour Format:* ${lead.visitMode || 'In-Person Private Tour'}`
+    );
   }
 
   if (lead.valuationDetails) {
     lines.push(
-      `📊 *Valuation Estimate:* ${lead.valuationDetails.estimatedRange}`,
-      `📐 *Dimensions:* ${lead.valuationDetails.areaSqFt?.toLocaleString() || '-'} sq.ft. (${lead.valuationDetails.category || '-'})`
-    );
-  }
-
-  if (lead.whatsappContext || lead.message) {
-    lines.push(
       ``,
-      `💬 *Client Notes / Topic:*`,
-      `"${(lead.whatsappContext || lead.message || '').trim()}"`
+      `📊 *PROPERTY VALUATION PARAMETERS:*`,
+      `• *Algorithmic Benchmark:* ${lead.valuationDetails.estimatedRange}`,
+      `• *Micro-Market / Locality:* ${lead.valuationDetails.locality}`,
+      `• *Property Typology:* ${lead.valuationDetails.category}`,
+      `• *Interior Area:* ${lead.valuationDetails.areaSqFt?.toLocaleString() || '-'} sq.ft.`,
+      `• *Configuration:* ${lead.valuationDetails.bedrooms} BHK`,
+      `• *Condition:* ${lead.valuationDetails.condition}`,
+      `• *Disposition Timeline:* ${lead.valuationDetails.timeline}`
     );
   }
 
   lines.push(
+    ``,
+    `💬 *CLIENT ENQUIRY MESSAGE / TOPIC:*`,
+    `"${(lead.whatsappContext || lead.message || 'Direct enquiry submitted on website.').trim()}"`
+  );
+
+  if (lead.notes && lead.notes.trim()) {
+    lines.push(`• *Additional Notes:* ${lead.notes.trim()}`);
+  }
+
+  lines.push(
+    ``,
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `⚡ *DIRECT 1-TAP OWNER ACTIONS:*`
+  );
+
+  if (waLink) {
+    lines.push(`👉 *Chat with Client on WhatsApp:* ${waLink}`);
+    lines.push(`👉 *Call Client Directly:* tel:${cleanDigits}`);
+  }
+  lines.push(`👉 *Email Client:* mailto:${lead.email}`);
+
+  lines.push(
+    ``,
     `🕒 *Timestamp:* ${dateStr}`,
-    `⚡ *Trinetra Realty Direct Dispatch System*`
+    `🏢 *Trinetra Realty CRM Direct Dispatch System*`
+  );
+
+  return lines.join('\n');
+}
+
+/**
+ * Format Customer Confirmation message on WhatsApp containing full summary of their submitted info
+ */
+export function buildCustomerWhatsAppConfirmation(lead: CustomerLead): string {
+  const propertyOrProject =
+    lead.projectName ||
+    lead.propertyTitle ||
+    lead.valuationDetails?.locality ||
+    'Trinetra Realty Portfolio Residence';
+
+  const lines = [
+    `Dear *${lead.name}*,`,
+    ``,
+    `Thank you for contacting *Trinetra Realty*! We have successfully received your enquiry. Here is a copy of your submitted details:`,
+    ``,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `📋 *YOUR ENQUIRY SUMMARY:*`,
+    `• *Reference ID:* ${lead.id}`,
+    `• *Enquiry Type:* ${lead.type}${lead.inquirySubType ? ` (${lead.inquirySubType})` : ''}`,
+    `• *Subject Property / Project:* ${propertyOrProject}`,
+    `• *Registered Phone:* ${lead.phone}`,
+    `• *Registered Email:* ${lead.email}`,
+  ];
+
+  if (lead.preferredDate) {
+    lines.push(`• *Requested Tour Date:* ${lead.preferredDate} (${lead.preferredTimeSlot || 'Standard Slot'})`);
+    lines.push(`• *Tour Mode:* ${lead.visitMode || 'In-Person Private Tour'}`);
+  }
+
+  if (lead.valuationDetails) {
+    lines.push(`• *Estimated Valuation:* ${lead.valuationDetails.estimatedRange}`);
+    lines.push(`• *Area & Locality:* ${lead.valuationDetails.areaSqFt} sq.ft. in ${lead.valuationDetails.locality}`);
+  }
+
+  lines.push(
+    `• *Your Message / Topic:*`,
+    `"${(lead.whatsappContext || lead.message || 'General Property Inquiry').trim()}"`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    ``,
+    `Our Business Owners & Managing Partners will review your dossier and connect with you shortly:`,
+    `👤 *Rahul Khatri* (Advisory Partner): +91 9186221008`,
+    `👤 *Rohit Joon* (Managing Partner): +91 9034969308`,
+    ``,
+    `🏢 *Office:* F3, Supermax Galleria Market, Sector 33, Sonipat, Haryana`,
+    `🌐 *Website:* https://trinetrarealty.vercel.app`,
+    ``,
+    `Warm regards,`,
+    `*Trinetra Realty*`,
+    `_Your Future, Our Focus._`
   );
 
   return lines.join('\n');
@@ -416,7 +511,7 @@ export async function sendWhatsAppLeadNotification(lead: CustomerLead): Promise<
     try {
       await sock.sendMessage(jid, { text: messageText });
       successfulRecipients.push(phone);
-      console.log(`📱 [WhatsApp] Alert sent to Business Owner (+${phone}) for lead ${lead.id}`);
+      console.log(`📱 [WhatsApp] Full Lead Dossier sent to Business Owner (+${phone}) for lead ${lead.id}`);
       // Small pause between multiple recipients
       await new Promise((r) => setTimeout(r, 600));
     } catch (err: any) {
@@ -425,31 +520,15 @@ export async function sendWhatsAppLeadNotification(lead: CustomerLead): Promise<
     }
   }
 
-  // Also send polite confirmation greeting to customer if phone is valid
+  // Also send complete enquiry confirmation to customer if phone is valid
   const customerJid = formatToWhatsAppJid(lead.phone);
   if (customerJid) {
     try {
-      const customerGreeting = [
-        `Dear *${lead.name}*,`,
-        ``,
-        `Thank you for connecting with *Trinetra Realty*! We have successfully received your enquiry regarding *${
-          lead.propertyTitle || lead.projectName || 'our real estate portfolio'
-        }*.`,
-        ``,
-        `Our Business Owners & Managing Partners, *Rahul Khatri* (+91 9186221008) and *Rohit Joon* (+91 9034969308), are reviewing your request and will reach out to you shortly.`,
-        ``,
-        `🏢 *Office:* F3, Supermax Galleria Market, Sector 33, Sonipat, Haryana`,
-        `🌐 *Website:* https://trinetrarealty.vercel.app`,
-        ``,
-        `Warm regards,`,
-        `*Trinetra Realty*`,
-        `_Your Future, Our Focus._`,
-      ].join('\n');
-
+      const customerGreeting = buildCustomerWhatsAppConfirmation(lead);
       await sock.sendMessage(customerJid, { text: customerGreeting });
-      console.log(`📱 [WhatsApp] Customer greeting sent to ${lead.name} (+${lead.phone})`);
+      console.log(`📱 [WhatsApp] Complete Enquiry Confirmation sent to ${lead.name} (+${lead.phone})`);
     } catch (custErr: any) {
-      console.warn(`⚠️ [WhatsApp] Could not send customer greeting:`, custErr.message);
+      console.warn(`⚠️ [WhatsApp] Could not send customer confirmation:`, custErr.message);
     }
   }
 

@@ -23,3 +23,4 @@ const WhatsAppSessionSchema = new Schema<WhatsAppSessionDocument>(
 export const WhatsAppSessionModel =
   mongoose.models.WhatsAppSession ||
   mongoose.model<WhatsAppSessionDocument>('WhatsAppSession', WhatsAppSessionSchema);
+

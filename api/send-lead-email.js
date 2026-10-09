@@ -135,6 +135,15 @@ export default async function handler(req, res) {
 
     const [ownerResult, clientResult] = await Promise.allSettled([ownerMail, clientMail]);
 
+    // Forward lead to Render backend for live WhatsApp dispatch & MongoDB CRM logging
+    try {
+      fetch('https://trinetra-realty-backend.onrender.com/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(lead),
+      }).catch(() => {});
+    } catch {}
+
     return res.status(200).json({
       success: true,
       ownerSent: ownerResult.status === 'fulfilled',
@@ -147,3 +156,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: err.message });
   }
 }
+
