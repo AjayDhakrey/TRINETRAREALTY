@@ -104,7 +104,7 @@ export const PropertyDetailsView: React.FC<PropertyDetailsViewProps> = ({
   };
 
   return (
-    <div className="max-w-[1360px] mx-auto px-6 py-10">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-10">
       {/* Top Breadcrumb & Back Navigation */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-stone-200">
         <button
@@ -317,7 +317,7 @@ export const PropertyDetailsView: React.FC<PropertyDetailsViewProps> = ({
         </div>
 
         {/* RIGHT COLUMN (5 cols): Sticky Contiguous Purchase / Advisory Module */}
-        <aside className="lg:col-span-5 lg:sticky lg:top-28 bg-[#FBFBF9] border border-stone-300 p-6 sm:p-8 space-y-6">
+        <aside className="lg:col-span-5 lg:sticky lg:top-28 bg-[#FBFBF9] border border-stone-300 p-4 sm:p-8 space-y-5 sm:space-y-6">
           {/* Unboxed Metadata Line */}
           <div className="flex items-center justify-between text-xs text-[#615E59]">
             <span>
@@ -329,99 +329,101 @@ export const PropertyDetailsView: React.FC<PropertyDetailsViewProps> = ({
 
           {/* Residence Title & Address */}
           <div>
-            <h1 className="font-serif-display text-3xl sm:text-4xl font-semibold text-[#141413] leading-tight">
+            <h1 className="font-serif-display text-2xl sm:text-4xl font-semibold text-[#141413] leading-tight">
               {property.title}
             </h1>
             <p className="text-xs text-[#57534E] mt-1.5">{property.address}</p>
           </div>
 
           {/* Primary Price Display */}
-          <div className="py-4 border-y border-stone-200 flex items-baseline justify-between">
+          <div className="py-3.5 sm:py-4 border-y border-stone-200 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <div>
-              <div className="text-xs text-[#615E59]">Offering Price</div>
+              <div className="text-[11px] sm:text-xs text-[#615E59]">Offering Price</div>
               <div className="font-mono-tabular text-2xl sm:text-3xl font-semibold text-[#141413] mt-0.5">
                 {formatPropertyPrice(property.price, property.transactionType)}
               </div>
             </div>
-            <div className="text-right">
-              <div className="text-xs text-[#615E59]">Per Sq.Ft. Index</div>
-              <div className="font-mono-tabular text-sm font-medium text-[#141413] mt-0.5">
+            <div className="text-left sm:text-right">
+              <div className="text-[11px] sm:text-xs text-[#615E59]">Per Sq.Ft. Index</div>
+              <div className="font-mono-tabular text-xs sm:text-sm font-medium text-[#141413] mt-0.5">
                 ₹{formatNumber(property.pricePerSqFt)} / sq.ft.
               </div>
             </div>
           </div>
 
           {/* Tabular Specifications Matrix */}
-          <div className="grid grid-cols-2 gap-y-3 gap-x-6 text-xs border-b border-stone-200 pb-5">
-            <div className="flex justify-between">
-              <span className="text-[#615E59]">Interior Area</span>
-              <span className="font-mono-tabular font-medium text-[#141413]">
+          <div className="grid grid-cols-2 gap-y-3 gap-x-4 sm:gap-x-6 text-xs border-b border-stone-200 pb-5">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5 sm:gap-2">
+              <span className="text-[#615E59] text-[11px]">Interior Area</span>
+              <span className="font-mono-tabular font-medium text-[#141413] text-xs">
                 {formatNumber(property.areaSqFt)} sq.ft.
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-[#615E59]">Bedrooms</span>
-              <span className="font-mono-tabular font-medium text-[#141413]">
-                {property.bedrooms}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5 sm:gap-2">
+              <span className="text-[#615E59] text-[11px]">Bedrooms</span>
+              <span className="font-mono-tabular font-medium text-[#141413] text-xs">
+                {property.bedrooms} Beds
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-[#615E59]">Bathrooms</span>
-              <span className="font-mono-tabular font-medium text-[#141413]">
-                {property.bathrooms}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5 sm:gap-2">
+              <span className="text-[#615E59] text-[11px]">Bathrooms</span>
+              <span className="font-mono-tabular font-medium text-[#141413] text-xs">
+                {property.bathrooms} Baths
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-[#615E59]">Parking</span>
-              <span className="font-mono-tabular font-medium text-[#141413]">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5 sm:gap-2">
+              <span className="text-[#615E59] text-[11px]">Parking</span>
+              <span className="font-mono-tabular font-medium text-[#141413] text-xs">
                 {property.parkingSpaces} Spaces
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-[#615E59]">Delivery</span>
-              <span className="font-medium text-[#141413]">{property.furnishedStatus}</span>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5 sm:gap-2">
+              <span className="text-[#615E59] text-[11px]">Delivery</span>
+              <span className="font-medium text-[#141413] text-xs truncate" title={property.furnishedStatus}>
+                {property.furnishedStatus}
+              </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-[#615E59]">Completed</span>
-              <span className="font-mono-tabular font-medium text-[#141413]">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-0.5 sm:gap-2">
+              <span className="text-[#615E59] text-[11px]">Completed</span>
+              <span className="font-mono-tabular font-medium text-[#141413] text-xs">
                 {property.yearBuilt}
               </span>
             </div>
           </div>
 
           {/* Direct Customer Lead Action Buttons */}
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
             <button
               type="button"
               onClick={() => onOpenLeadModal('Schedule Visit', property.id)}
-              className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors whitespace-nowrap cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors cursor-pointer text-center"
             >
-              <Calendar className="w-3.5 h-3.5" />
+              <Calendar className="w-3.5 h-3.5 shrink-0" />
               <span>Schedule Visit</span>
             </button>
 
             <button
               type="button"
               onClick={() => onOpenLeadModal('WhatsApp Contact', property.id)}
-              className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#162B22] transition-colors whitespace-nowrap cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#162B22] transition-colors cursor-pointer text-center"
             >
-              <Send className="w-3.5 h-3.5" />
+              <Send className="w-3.5 h-3.5 shrink-0" />
               <span>WhatsApp Desk</span>
             </button>
 
             <button
               type="button"
               onClick={() => onOpenLeadModal('Property Inquiry', property.id)}
-              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-medium border border-stone-300 text-[#141413] hover:border-[#141413] transition-colors whitespace-nowrap cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 text-xs font-medium border border-stone-300 text-[#141413] hover:border-[#141413] transition-colors cursor-pointer text-center"
             >
-              <MessageSquare className="w-3.5 h-3.5" />
-              <span>Full Dossier Inquiry</span>
+              <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+              <span>Full Dossier</span>
             </button>
 
             <button
               type="button"
               onClick={() => onToggleCompare(property.id)}
-              className={`inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-medium border transition-colors whitespace-nowrap cursor-pointer ${
+              className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-2 text-xs font-medium border transition-colors cursor-pointer text-center ${
                 isCompared
                   ? 'bg-[#F3F2EE] border-[#141413] text-[#141413] font-semibold'
                   : 'border-stone-300 text-[#57534E] hover:border-[#141413] hover:text-[#141413]'
@@ -429,13 +431,13 @@ export const PropertyDetailsView: React.FC<PropertyDetailsViewProps> = ({
             >
               {isCompared ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-[#1E3A2F]" />
-                  <span>In Comparison</span>
+                  <Check className="w-3.5 h-3.5 text-[#1E3A2F] shrink-0" />
+                  <span>In Compare</span>
                 </>
               ) : (
                 <>
-                  <Scale className="w-3.5 h-3.5" />
-                  <span>Compare Residence</span>
+                  <Scale className="w-3.5 h-3.5 shrink-0" />
+                  <span>Compare</span>
                 </>
               )}
             </button>
@@ -443,7 +445,7 @@ export const PropertyDetailsView: React.FC<PropertyDetailsViewProps> = ({
 
           {/* Embedded Instant Lead Capture Form */}
           <div className="pt-4 border-t border-stone-200">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
               <span className="text-xs font-semibold text-[#141413]">
                 Direct Partner Dispatch
               </span>
