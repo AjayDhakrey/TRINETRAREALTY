@@ -1266,7 +1266,7 @@ export default function App() {
 
       {/* Quiet Architectural Footer (Complete Sitemap Mirror) */}
       <footer className="bg-[#F3F2EE] border-t border-stone-200 mt-14 sm:mt-20">
-        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 pt-10 sm:pt-12 pb-24 sm:pb-14">
+        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 pt-10 sm:pt-12 pb-36 sm:pb-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 pb-10 sm:pb-12 border-b border-stone-300/80">
             {/* Office & Direct Contact Info */}
             <div className="lg:col-span-5 space-y-4">
@@ -1599,20 +1599,56 @@ export default function App() {
         onLeadSubmitted={(newLead) => setLeads((prev) => [newLead, ...prev])}
       />
 
-      {/* Floating WhatsApp Quick Action Button */}
-      <a
-        href="https://wa.me/919186221008?text=Hello%2C%20I%20am%20interested%20in%20Trinetra%20Realty%20properties."
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Chat on WhatsApp"
-        title="Chat with Trinetra Realty on WhatsApp (+91 9186221008)"
-        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2 p-3 sm:px-4 sm:py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group"
+      {/* Floating Social & Quick Connect Cluster (Instagram, Facebook, WhatsApp) */}
+      <aside
+        aria-label="Quick Connect Social Desks"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-2.5"
       >
-        <WhatsAppIcon className="w-5 h-5 text-white shrink-0 group-hover:rotate-12 transition-transform" />
-        <span className="text-xs font-semibold tracking-wide hidden sm:inline">
-          WhatsApp Desk
-        </span>
-      </a>
+        {/* Floating Instagram Action */}
+        <a
+          href="https://www.instagram.com/trinetrarealty_?stkn=MW52OXVra2cxcXhmaw=="
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Follow Trinetra Realty on Instagram"
+          title="Follow Trinetra Realty on Instagram (@trinetrarealty_)"
+          className="flex items-center gap-2 p-3 sm:px-3.5 sm:py-2.5 bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] hover:opacity-95 text-white rounded-full shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group"
+        >
+          <InstagramIcon className="w-5 h-5 text-white shrink-0 group-hover:rotate-6 transition-transform" />
+          <span className="text-xs font-semibold tracking-wide hidden sm:inline">
+            Instagram
+          </span>
+        </a>
+
+        {/* Floating Facebook Action */}
+        <a
+          href="https://www.facebook.com/share/1VBsJ1bSHk/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visit Trinetra Realty on Facebook"
+          title="Visit Trinetra Realty on Facebook"
+          className="flex items-center gap-2 p-3 sm:px-3.5 sm:py-2.5 bg-[#1877F2] hover:bg-[#166fe5] text-white rounded-full shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group"
+        >
+          <FacebookIcon className="w-5 h-5 text-white shrink-0 group-hover:rotate-6 transition-transform" />
+          <span className="text-xs font-semibold tracking-wide hidden sm:inline">
+            Facebook
+          </span>
+        </a>
+
+        {/* Floating WhatsApp Action */}
+        <a
+          href="https://wa.me/919186221008?text=Hello%2C%20I%20am%20interested%20in%20Trinetra%20Realty%20properties."
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Chat on WhatsApp"
+          title="Chat with Trinetra Realty on WhatsApp (+91 9186221008)"
+          className="flex items-center gap-2 p-3 sm:px-4 sm:py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group"
+        >
+          <WhatsAppIcon className="w-5 h-5 text-white shrink-0 group-hover:rotate-12 transition-transform" />
+          <span className="text-xs font-semibold tracking-wide hidden sm:inline">
+            WhatsApp Desk
+          </span>
+        </a>
+      </aside>
       </div>
     </>
   );
