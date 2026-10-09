@@ -200,18 +200,18 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
       aria-modal="true"
       aria-labelledby="leads-modal-title"
     >
-      <div className="bg-[#FBFBF9] border border-stone-300 w-full max-w-2xl overflow-hidden shadow-2xl my-8">
+      <div className="bg-[#FBFBF9] border border-stone-300 w-full max-w-2xl overflow-hidden shadow-2xl my-auto sm:my-8 max-h-[92vh] flex flex-col rounded-sm">
         {/* Modal Header */}
-        <div className="px-6 py-5 bg-[#F3F2EE] border-b border-stone-200 flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-3.5 sm:py-5 bg-[#F3F2EE] border-b border-stone-200 flex items-center justify-between shrink-0">
           <div>
-            <p className="text-xs text-[#615E59] tracking-wide">
+            <p className="text-[11px] sm:text-xs text-[#615E59] tracking-wide">
               Trinetra Realty · Business Owners: Rahul Khatri &amp; Rohit Joon
             </p>
             <h2
               id="leads-modal-title"
-              className="font-serif-display text-2xl font-semibold text-[#141413] mt-0.5"
+              className="font-serif-display text-xl sm:text-2xl font-semibold text-[#141413] mt-0.5"
             >
-              Customer Leads & Concierge Dispatch
+              Customer Leads &amp; Concierge Dispatch
             </h2>
           </div>
           <button
@@ -225,7 +225,7 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
         </div>
 
         {/* 4 Interactive Segmented Lead Type Tabs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 border-b border-stone-200 bg-[#F3F2EE]/50">
+        <div className="grid grid-cols-2 sm:grid-cols-4 border-b border-stone-200 bg-[#F3F2EE]/50 shrink-0">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -235,7 +235,7 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
                 setSubmittedLead(null);
                 setErrorMsg('');
               }}
-              className={`px-3 py-3 text-xs font-medium text-center border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+              className={`px-2 sm:px-3 py-2.5 sm:py-3 text-[11px] sm:text-xs font-medium text-center border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
                 activeTab === tab.id
                   ? 'border-[#141413] bg-[#FBFBF9] text-[#141413] font-semibold'
                   : 'border-transparent text-[#615E59] hover:text-[#141413]'
@@ -247,7 +247,7 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
         </div>
 
         {/* Body */}
-        <div className="p-6 max-h-[78vh] overflow-y-auto">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1">
           {submittedLead ? (
             <div className="py-8 text-center space-y-4">
               <CheckCircle2 className="w-12 h-12 text-[#1E3A2F] mx-auto stroke-[1.5]" />
@@ -284,12 +284,12 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
                   <p className="text-xs text-[#57534E] italic bg-white p-3 border border-stone-200">
                     "{whatsappFormattedText}"
                   </p>
-                  <div className="flex flex-wrap gap-2 pt-1">
+                  <div className="flex flex-col sm:flex-row flex-wrap gap-2 pt-1">
                     <a
                       href={`https://wa.me/919186221008?text=${encodeURIComponent(whatsappFormattedText)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors cursor-pointer rounded-xs"
+                      className="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors cursor-pointer rounded-xs w-full sm:w-auto"
                     >
                       <WhatsAppIcon className="w-3.5 h-3.5" />
                       <span>WhatsApp Rahul (+91 9186221008)</span>
@@ -298,7 +298,7 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
                       href={`https://wa.me/919034969308?text=${encodeURIComponent(whatsappFormattedText)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors cursor-pointer rounded-xs"
+                      className="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors cursor-pointer rounded-xs w-full sm:w-auto"
                     >
                       <WhatsAppIcon className="w-3.5 h-3.5" />
                       <span>WhatsApp Rohit (+91 9034969308)</span>
@@ -310,7 +310,7 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
                         setCopiedWhatsApp(true);
                         setTimeout(() => setCopiedWhatsApp(false), 2500);
                       }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-stone-300 text-[#141413] hover:bg-stone-50 cursor-pointer"
+                      className="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium border border-stone-300 text-[#141413] hover:bg-stone-50 cursor-pointer w-full sm:w-auto"
                     >
                       {copiedWhatsApp ? (
                         <>
@@ -328,18 +328,18 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
                 </div>
               )}
 
-              <div className="pt-4 flex items-center justify-center gap-3">
+              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setSubmittedLead(null)}
-                  className="px-4 py-2 text-xs font-medium border border-stone-300 text-[#141413] hover:border-[#141413] cursor-pointer"
+                  className="w-full sm:w-auto px-4 py-2.5 text-xs font-medium border border-stone-300 text-[#141413] hover:border-[#141413] cursor-pointer text-center"
                 >
                   Submit Another Request
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-5 py-2 text-xs font-medium bg-[#141413] text-white hover:bg-[#292524] cursor-pointer"
+                  className="w-full sm:w-auto px-5 py-2.5 text-xs font-medium bg-[#141413] text-white hover:bg-[#292524] cursor-pointer text-center"
                 >
                   Return to Platform
                 </button>

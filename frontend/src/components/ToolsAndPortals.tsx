@@ -1550,11 +1550,11 @@ export const ContactView: React.FC<ContactViewProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10">
         {/* Left 6 Cols: Office, Team, Email, Socials */}
         <div className="lg:col-span-6 space-y-6">
           {/* 1. Visit Our Office Card (Clickable Google Maps) */}
-          <div className="p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-4 relative overflow-hidden group hover:border-[#1E3A2F]/40 transition-colors">
+          <div className="p-4 sm:p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-4 relative overflow-hidden group hover:border-[#1E3A2F]/40 transition-colors">
             <div className="flex items-center justify-between">
               <div className="inline-flex items-center gap-2 text-xs font-semibold text-[#1E3A2F] uppercase tracking-wider">
                 <GoogleMapsIcon className="w-4 h-4 text-red-500" />
@@ -1573,7 +1573,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
             </div>
 
             <div>
-              <h3 className="font-serif-display text-2xl font-semibold text-[#141413] mb-0.5">
+              <h3 className="font-serif-display text-xl sm:text-2xl font-semibold text-[#141413] mb-0.5">
                 Trinetra Realty
               </h3>
               <p className="text-xs text-[#57534E] mb-2 font-medium">
@@ -1606,7 +1606,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
           </div>
 
           {/* 2. Contact Business Owners & Team Card */}
-          <div className="p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-5">
+          <div className="p-4 sm:p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-4 sm:space-y-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs font-semibold text-[#1E3A2F] uppercase tracking-wider">
                 <Phone className="w-4 h-4 text-[#1E3A2F]" />
@@ -1617,9 +1617,9 @@ export const ContactView: React.FC<ContactViewProps> = ({
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
               {/* Rahul Khatri */}
-              <div className="p-4 bg-white border border-stone-200 rounded-sm space-y-2 hover:border-emerald-300 transition-colors shadow-2xs">
+              <div className="p-3.5 sm:p-4 bg-white border border-stone-200 rounded-sm space-y-2 hover:border-emerald-300 transition-colors shadow-2xs">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-stone-500 uppercase tracking-wider font-semibold">Business Owner</span>
                   <span className="text-[#1E3A2F] font-medium text-[11px]">Advisory Partner</span>
@@ -1638,7 +1638,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                     className="inline-flex items-center gap-1 text-[#141413] hover:text-[#1E3A2F] font-medium"
                   >
                     <Phone className="w-3 h-3 text-stone-600" />
-                    <span>Call Rahul</span>
+                    <span>Call</span>
                   </a>
                   <span className="text-stone-300">·</span>
                   <a
@@ -1648,13 +1648,13 @@ export const ContactView: React.FC<ContactViewProps> = ({
                     className="inline-flex items-center gap-1.5 text-[#25D366] hover:text-[#20bd5a] font-semibold"
                   >
                     <WhatsAppIcon className="w-3.5 h-3.5" />
-                    <span>WhatsApp Rahul</span>
+                    <span>WhatsApp</span>
                   </a>
                 </div>
               </div>
 
               {/* Rohit Joon */}
-              <div className="p-4 bg-white border border-stone-200 rounded-sm space-y-2 hover:border-emerald-300 transition-colors shadow-2xs">
+              <div className="p-3.5 sm:p-4 bg-white border border-stone-200 rounded-sm space-y-2 hover:border-emerald-300 transition-colors shadow-2xs">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-stone-500 uppercase tracking-wider font-semibold">Business Owner</span>
                   <span className="text-[#1E3A2F] font-medium text-[11px]">Managing Partner</span>
@@ -1673,7 +1673,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                     className="inline-flex items-center gap-1 text-[#141413] hover:text-[#1E3A2F] font-medium"
                   >
                     <Phone className="w-3 h-3 text-stone-600" />
-                    <span>Call Rohit</span>
+                    <span>Call</span>
                   </a>
                   <span className="text-stone-300">·</span>
                   <a
@@ -1683,7 +1683,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                     className="inline-flex items-center gap-1.5 text-[#25D366] hover:text-[#20bd5a] font-semibold"
                   >
                     <WhatsAppIcon className="w-3.5 h-3.5" />
-                    <span>WhatsApp Rohit</span>
+                    <span>WhatsApp</span>
                   </a>
                 </div>
               </div>
@@ -1691,7 +1691,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
           </div>
 
           {/* 3. Email Us Card */}
-          <div className="p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-3">
+          <div className="p-4 sm:p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-3">
             <div className="flex items-center gap-2 text-xs font-semibold text-[#1E3A2F] uppercase tracking-wider">
               <Mail className="w-4 h-4 text-[#1E3A2F]" />
               <span>Email Us</span>
@@ -1699,7 +1699,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
             <div>
               <a
                 href="mailto:trinetrarealty29@gmail.com"
-                className="font-serif-display text-xl sm:text-2xl font-semibold text-[#141413] hover:text-[#1E3A2F] underline decoration-stone-300 hover:decoration-[#1E3A2F]"
+                className="font-serif-display text-lg sm:text-2xl font-semibold text-[#141413] hover:text-[#1E3A2F] underline decoration-stone-300 hover:decoration-[#1E3A2F] break-all"
               >
                 trinetrarealty29@gmail.com
               </a>
@@ -1722,7 +1722,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
           </div>
 
           {/* 4. Follow Trinetra Realty (Social Links) */}
-          <div className="p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-4">
+          <div className="p-4 sm:p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-4">
             <div>
               <div className="text-xs font-semibold text-[#1E3A2F] uppercase tracking-wider">
                 Follow Trinetra Realty
@@ -1794,13 +1794,13 @@ export const ContactView: React.FC<ContactViewProps> = ({
         </div>
 
         {/* Right 6 Cols: Direct Customer Lead Dispatch Form */}
-        <div id="enquiry-form" className="lg:col-span-6 bg-[#FBFBF9] border border-stone-300 p-8 rounded-sm shadow-sm flex flex-col justify-between">
+        <div id="enquiry-form" className="lg:col-span-6 bg-[#FBFBF9] border border-stone-300 p-4 sm:p-6 lg:p-8 rounded-sm shadow-sm flex flex-col justify-between">
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-semibold text-[#1E3A2F] uppercase tracking-wider mb-2">
               <Send className="w-3.5 h-3.5" />
               <span>Direct Client Inquiry Desk</span>
             </div>
-            <h2 className="font-serif-display text-3xl font-semibold text-[#141413] mb-2">
+            <h2 className="font-serif-display text-2xl sm:text-3xl font-semibold text-[#141413] mb-2">
               Send an Enquiry
             </h2>
             <p className="text-xs text-[#57534E] mb-6 leading-relaxed">
@@ -1808,7 +1808,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
             </p>
 
             {submitted ? (
-              <div className="p-8 bg-[#F3F2EE] border border-stone-200 text-center space-y-4 rounded-sm">
+              <div className="p-5 sm:p-8 bg-[#F3F2EE] border border-stone-200 text-center space-y-4 rounded-sm">
                 <CheckCircle2 className="w-12 h-12 text-[#1E3A2F] mx-auto" />
                 <h3 className="font-serif-display text-2xl font-semibold text-[#141413]">
                   Enquiry Received Successfully
@@ -1823,7 +1823,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                       setSubmitted(false);
                       setMessage('');
                     }}
-                    className="px-5 py-2.5 text-xs font-medium bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors cursor-pointer"
+                    className="px-5 py-2.5 text-xs font-medium bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors cursor-pointer w-full sm:w-auto"
                   >
                     Send Another Enquiry
                   </button>
@@ -1831,7 +1831,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
                   {(
                     [
                       'Property Inquiry',
@@ -1844,7 +1844,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                       key={t}
                       type="button"
                       onClick={() => setLeadType(t)}
-                      className={`py-2 px-2 text-xs font-medium border text-center cursor-pointer transition-colors ${
+                      className={`py-2 px-1.5 sm:px-2 text-[11px] sm:text-xs font-medium border text-center cursor-pointer transition-colors ${
                         leadType === t
                           ? 'bg-[#141413] text-white border-[#141413]'
                           : 'bg-[#F3F2EE] text-[#57534E] border-stone-200 hover:text-[#141413]'
@@ -1855,7 +1855,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                   ))}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                   <div>
                     <label className="block text-xs font-medium text-[#141413] mb-1">
                       Full Name *
@@ -1917,7 +1917,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
 
                 <div>
                   <label className="block text-xs font-medium text-[#141413] mb-1">
-                    Your Requirements & Inquiries
+                    Your Requirements &amp; Inquiries
                   </label>
                   <textarea
                     rows={4}
@@ -1943,12 +1943,12 @@ export const ContactView: React.FC<ContactViewProps> = ({
       </div>
 
       {/* Ready to Explore Your Next Property? Call-to-Action Section */}
-      <div className="bg-[#1E3A2F] text-white p-8 sm:p-12 rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-md">
+      <div className="bg-[#1E3A2F] text-white p-5 sm:p-8 md:p-12 rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-6 sm:gap-8 shadow-md">
         <div className="space-y-2 max-w-2xl">
           <div className="text-xs uppercase tracking-widest text-emerald-200/80 font-medium">
             Trinetra Realty · Sonipat, Haryana
           </div>
-          <h2 className="font-serif-display text-3xl sm:text-4xl font-semibold text-white">
+          <h2 className="font-serif-display text-2xl sm:text-3xl md:text-4xl font-semibold text-white">
             Ready to Explore Your Next Property?
           </h2>
           <p className="text-sm text-stone-200 font-medium">
@@ -1959,7 +1959,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-4 shrink-0">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 shrink-0 w-full md:w-auto">
           <a
             href="#enquiry-form"
             onClick={(e) => {

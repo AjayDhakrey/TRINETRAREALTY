@@ -574,20 +574,20 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   ];
 
   return (
-    <div className="max-w-[1360px] mx-auto px-6 py-10 space-y-8">
+    <div className="max-w-[1360px] mx-auto px-3.5 sm:px-6 py-6 sm:py-10 space-y-6 sm:space-y-8">
       {/* Admin Header & Executive Summary */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-stone-200">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6 pb-6 border-b border-stone-200">
         <div>
           <div className="text-xs text-[#615E59]">
             Trinetra Realty · Executive Inventory, Proprietary Projects &amp; Lead Management Suite
           </div>
-          <h1 className="font-serif-display text-3xl sm:text-4xl font-semibold text-[#141413] mt-0.5">
+          <h1 className="font-serif-display text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#141413] mt-0.5">
             Admin Panel &amp; Portfolio Operations
           </h1>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-5 px-4 py-2 bg-[#F3F2EE] border border-stone-200 text-xs font-mono-tabular">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-4">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 px-3 sm:px-4 py-2 bg-[#F3F2EE] border border-stone-200 text-[11px] sm:text-xs font-mono-tabular w-full sm:w-auto">
             <span className="font-semibold text-[#1E3A2F]">Our Projects: {projects.length}</span>
             <span>·</span>
             <span>Mandates: {properties.length}</span>
@@ -597,34 +597,36 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
             <span>Studio Assets: {media.length}</span>
           </div>
 
-          {onNavigate && (
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
+            {onNavigate && (
+              <button
+                type="button"
+                onClick={() => onNavigate('home')}
+                className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors cursor-pointer flex-1 sm:flex-initial"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Public Website</span>
+              </button>
+            )}
+
             <button
               type="button"
-              onClick={() => onNavigate('home')}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors cursor-pointer"
+              onClick={() => setActiveTab('whatsapp')}
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors rounded-sm cursor-pointer shadow-2xs flex-1 sm:flex-initial"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to Public Website</span>
+              <WhatsAppIcon className="w-3.5 h-3.5" />
+              <span>WhatsApp QR</span>
             </button>
-          )}
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('whatsapp')}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors rounded-sm cursor-pointer shadow-2xs"
-          >
-            <WhatsAppIcon className="w-3.5 h-3.5" />
-            <span>WhatsApp QR &amp; Automation</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onLogout}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium border border-stone-300 text-[#57534E] hover:text-[#141413] hover:border-[#141413] cursor-pointer"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            <span>Sign Out</span>
-          </button>
+            <button
+              type="button"
+              onClick={onLogout}
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-medium border border-stone-300 text-[#57534E] hover:text-[#141413] hover:border-[#141413] cursor-pointer flex-1 sm:flex-initial"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Sign Out</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -633,13 +635,13 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
       )}
 
       {/* Sub-Navigation Tabs for the 5 Authenticated Admin Modules */}
-      <div className="flex flex-wrap items-center gap-1.5 border-b border-stone-200 pb-3">
+      <div className="flex items-center gap-1.5 border-b border-stone-200 pb-3 overflow-x-auto scrollbar-none -mx-3.5 px-3.5 sm:mx-0 sm:px-0 flex-nowrap sm:flex-wrap">
         {adminTabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 text-xs font-medium transition-colors flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+            className={`px-3.5 sm:px-4 py-2 text-xs font-medium transition-colors flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
               activeTab === tab.id
                 ? 'bg-[#141413] text-white font-semibold'
                 : 'bg-[#F3F2EE] text-[#57534E] hover:text-[#141413]'
