@@ -1623,7 +1623,46 @@ export default function App() {
         onLeadSubmitted={(newLead) => setLeads((prev) => [newLead, ...prev])}
       />
 
-      {/* Draggable & Adjustable Social Connect Dock (Instagram, Facebook, WhatsApp) */}
+      {/* Mobile Floating Comparison Bar (when properties are selected and not currently on compare view) */}
+      {compareIds.length > 0 && activeRoute !== 'compare' && (
+        <aside
+          aria-label="Active Comparison Floating Bar"
+          className="md:hidden fixed bottom-4 left-4 right-4 z-40 bg-[#141413] text-white px-4 py-3 shadow-2xl border border-stone-800 flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-3 duration-200"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <Scale className="w-4 h-4 text-[#D4AF6A] shrink-0" />
+            <div className="min-w-0">
+              <div className="text-xs font-semibold truncate text-[#FBFBF9]">
+                {compareIds.length} Residence{compareIds.length > 1 ? 's' : ''} in Compare
+              </div>
+              <div className="text-[10px] text-stone-400 truncate">
+                Up to 3 residences side-by-side
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => setCompareIds([])}
+              className="text-[11px] text-stone-400 hover:text-white px-2 py-1 cursor-pointer"
+            >
+              Clear
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveRoute('compare');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="px-3 py-1.5 text-xs font-semibold bg-[#D4AF6A] text-[#141413] hover:bg-[#c39e5b] transition-colors cursor-pointer"
+            >
+              Compare
+            </button>
+          </div>
+        </aside>
+      )}
+
+      {/* Floating Social Quick Links */}
       <FloatingSocialDock />
       </div>
     </>
