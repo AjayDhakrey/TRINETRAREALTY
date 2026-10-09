@@ -2,6 +2,7 @@ node_modules/
 frontend/dist/
 backend/data/*.json
 !backend/data/.gitkeep
+backend/data/whatsapp-auth/
 coverage/
 .DS_Store
 *.log

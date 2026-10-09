@@ -39,6 +39,8 @@ import {
 } from '../types/realestate';
 import { ArchitecturalImage } from './ArchitecturalImage';
 import { AdminOurProjectsManager } from './AdminOurProjectsManager';
+import { AdminWhatsAppManager } from './AdminWhatsAppManager';
+import { WhatsAppIcon } from './SocialIcons';
 import { formatPropertyPrice, formatNumber } from '../utils/formatters';
 
 interface AdminPanelViewProps {
@@ -568,6 +570,7 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     { id: 'edit-property', label: 'Edit Property' },
     { id: 'upload-images', label: 'Upload Images', count: media.length },
     { id: 'leads', label: 'Manage Leads', count: leads.length },
+    { id: 'whatsapp', label: 'WhatsApp Automation' },
   ];
 
   return (
@@ -604,6 +607,15 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
               <span>Back to Public Website</span>
             </button>
           )}
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('whatsapp')}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors rounded-sm cursor-pointer shadow-2xs"
+          >
+            <WhatsAppIcon className="w-3.5 h-3.5" />
+            <span>WhatsApp QR &amp; Automation</span>
+          </button>
 
           <button
             type="button"
@@ -1637,6 +1649,11 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* =====================================================================
+       * MODULE 6: WHATSAPP AUTOMATION (NO-API QR CODE MULTI-DEVICE PAIRING)
+       * =================================================================== */}
+      {activeTab === 'whatsapp' && <AdminWhatsAppManager />}
     </div>
   );
 };

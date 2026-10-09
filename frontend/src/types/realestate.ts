@@ -223,4 +223,5 @@ export type AdminSubTab =
   | 'add-property'
   | 'edit-property'
   | 'upload-images'
-  | 'leads';
+  | 'leads'
+  | 'whatsapp';

@@ -34,6 +34,13 @@ import {
   sendOwnerEmailNotification,
   sendClientConfirmationEmail,
 } from './services/notificationService';
+import {
+  initWhatsApp,
+  getWhatsAppStatus,
+  disconnectWhatsApp,
+  sendWhatsAppLeadNotification,
+  sendTestWhatsAppMessage,
+} from './services/whatsappService';
 
 const ADMIN_SESSION_DURATION_MS = 8 * 60 * 60 * 1000;
 const activeAdminTokens = new Map<string, number>();
@@ -698,6 +705,18 @@ async function startServer() {
         } catch (err: any) {
           console.error(`❌ [Notification] Client email error:`, err.message);
         }
+
+        // 3. Direct WhatsApp notification to Business Owners (Rahul Khatri & Rohit Joon)
+        try {
+          const waRes = await sendWhatsAppLeadNotification(created);
+          if (waRes.sent) {
+            console.log(`📱 [WhatsApp] Lead alert dispatched to owners: ${waRes.recipients.join(', ')}`);
+          } else if (waRes.errors.length) {
+            console.warn(`⚠️ [WhatsApp] Lead alert status: ${waRes.errors.join('; ')}`);
+          }
+        } catch (err: any) {
+          console.error(`❌ [WhatsApp] Lead alert error:`, err.message);
+        }
       })();
 
       res.status(201).json(created);
@@ -884,9 +903,37 @@ async function startServer() {
     res.status(204).end();
   });
 
+  // ==========================================
+  // WHATSAPP AUTOMATION (NO-API / QR-CODE)
+  // ==========================================
+
+  app.get('/api/whatsapp/status', (_req, res) => {
+    res.json(getWhatsAppStatus());
+  });
+
+  app.post('/api/whatsapp/init', async (req, res) => {
+    const forceNew = req.body?.forceNew === true;
+    void initWhatsApp(forceNew);
+    res.json({ message: 'WhatsApp initialization initiated', status: getWhatsAppStatus() });
+  });
+
+  app.post('/api/whatsapp/disconnect', async (_req, res) => {
+    await disconnectWhatsApp();
+    res.json({ message: 'Disconnected', status: getWhatsAppStatus() });
+  });
+
+  app.post('/api/whatsapp/test', async (req, res) => {
+    const target = req.body?.phone;
+    const result = await sendTestWhatsAppMessage(target);
+    res.json(result);
+  });
+
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Trinetra Realty Real Estate Server running on http://localhost:${PORT}`);
     console.log(`Storage Engine: ${isMongoConnected() ? '🍃 MongoDB' : '📁 JSON File Storage'}`);
+
+    // Auto-initialize WhatsApp automation socket
+    void initWhatsApp(false);
   });
 }
 
