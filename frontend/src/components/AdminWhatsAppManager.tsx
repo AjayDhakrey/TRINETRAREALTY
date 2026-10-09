@@ -375,7 +375,7 @@ export const AdminWhatsAppManager: React.FC = () => {
               <div className="p-3.5 sm:p-4 bg-white border border-stone-200 rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 shadow-2xs">
                 <div className="space-y-0.5">
                   <div className="text-[11px] text-stone-500 uppercase font-semibold">Business Owner &amp; Advisory Partner</div>
-                  <div className="font-serif-display text-base font-semibold text-[#141413]">
+                  <div className="font-owner-brand text-lg font-bold text-[#141413] tracking-wide text-emerald-950">
                     Rahul Khatri
                   </div>
                   <div className="text-xs font-mono-tabular text-[#1E3A2F] font-semibold">
@@ -392,7 +392,7 @@ export const AdminWhatsAppManager: React.FC = () => {
               <div className="p-3.5 sm:p-4 bg-white border border-stone-200 rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 shadow-2xs">
                 <div className="space-y-0.5">
                   <div className="text-[11px] text-stone-500 uppercase font-semibold">Business Owner &amp; Managing Partner</div>
-                  <div className="font-serif-display text-base font-semibold text-[#141413]">
+                  <div className="font-owner-brand text-lg font-bold text-[#141413] tracking-wide text-emerald-950">
                     Rohit Joon
                   </div>
                   <div className="text-xs font-mono-tabular text-[#1E3A2F] font-semibold">

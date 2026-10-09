@@ -210,8 +210,11 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
               className="h-9 sm:h-10 w-auto object-contain shrink-0"
             />
             <div>
-              <p className="text-[11px] sm:text-xs text-[#615E59] tracking-wide">
-                Trinetra Realty · Business Owners: Rahul Khatri &amp; Rohit Joon
+              <p className="text-[11px] sm:text-xs text-[#615E59] tracking-wide flex flex-wrap items-center gap-1.5">
+                <span>Trinetra Realty · Owners:</span>
+                <span className="font-owner-brand font-bold text-[#141413] tracking-wide text-xs">Rahul Khatri</span>
+                <span className="text-[#D4AF6A] text-[10px]">✦</span>
+                <span className="font-owner-brand font-bold text-[#141413] tracking-wide text-xs">Rohit Joon</span>
               </p>
               <h2
                 id="leads-modal-title"
@@ -655,8 +658,13 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
               {activeTab === 'WhatsApp Contact' && (
                 <div className="space-y-4">
                   <div className="p-4 bg-[#F3F2EE] border border-stone-200 space-y-2">
-                    <div className="text-xs font-semibold text-[#1E3A2F]">
-                      Direct WhatsApp Advisory Desk · Business Owners: Rahul Khatri (+91 9186221008) · Rohit Joon (+91 9034969308)
+                    <div className="text-xs font-semibold text-[#1E3A2F] flex flex-wrap items-center gap-1.5">
+                      <span>Direct WhatsApp Advisory Desk · Business Owners:</span>
+                      <strong className="font-owner-brand font-bold text-[#141413] tracking-wide">Rahul Khatri</strong>
+                      <span className="font-mono-tabular text-stone-600 font-normal">(+91 9186221008)</span>
+                      <span className="text-[#D4AF6A]">✦</span>
+                      <strong className="font-owner-brand font-bold text-[#141413] tracking-wide">Rohit Joon</strong>
+                      <span className="font-mono-tabular text-stone-600 font-normal">(+91 9034969308)</span>
                     </div>
                     <p className="text-xs text-[#57534E] leading-relaxed">
                       Submitting this form logs your priority WhatsApp dispatch directly in our Admin CRM and prepares an instant encrypted message thread with our duty partner.

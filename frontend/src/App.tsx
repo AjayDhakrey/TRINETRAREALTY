@@ -1221,9 +1221,14 @@ export default function App() {
       {activeRoute !== 'contact' && activeRoute !== 'admin' && (
         <section className="max-w-[1360px] mx-auto px-6 mt-20">
           <div className="bg-[#1E3A2F] text-white p-8 sm:p-12 rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-md">
-            <div className="space-y-2 max-w-2xl">
-              <div className="text-xs uppercase tracking-widest text-emerald-200/80 font-medium">
-                Trinetra Realty · Business Owners: Rahul Khatri &amp; Rohit Joon
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex flex-wrap items-center gap-2 px-3.5 py-1.5 bg-white/10 backdrop-blur-xs border border-emerald-400/30 rounded-full text-xs text-emerald-100">
+                <span className="uppercase tracking-widest text-[10px] text-emerald-200/90 font-medium">Trinetra Realty</span>
+                <span className="text-emerald-400/50">·</span>
+                <span className="text-[11px] text-emerald-100/90">Business Owners:</span>
+                <span className="font-owner-brand font-bold text-white tracking-wider text-xs sm:text-sm">Rahul Khatri</span>
+                <span className="text-[#D4AF6A] text-xs">✦</span>
+                <span className="font-owner-brand font-bold text-white tracking-wider text-xs sm:text-sm">Rohit Joon</span>
               </div>
               <h2 className="font-serif-display text-3xl sm:text-4xl font-semibold text-white">
                 Ready to Explore Your Next Property?
@@ -1232,7 +1237,7 @@ export default function App() {
                 Have a property enquiry or want to schedule a site visit?
               </p>
               <p className="text-xs text-stone-300/90 leading-relaxed pt-1">
-                Connect directly with business owners Rahul Khatri &amp; Rohit Joon for project details, inventory availability, and site visits.
+                Connect directly with business owners <strong className="font-owner-brand text-white font-bold tracking-wide text-xs sm:text-sm underline decoration-[#D4AF6A]/60 underline-offset-2">Rahul Khatri</strong> &amp; <strong className="font-owner-brand text-white font-bold tracking-wide text-xs sm:text-sm underline decoration-[#D4AF6A]/60 underline-offset-2">Rohit Joon</strong> for project details, inventory availability, and site visits.
               </p>
             </div>
 
@@ -1281,9 +1286,19 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-                <div className="pt-1 text-xs">
-                  <span className="font-semibold text-[#141413]">Business Owners: </span>
-                  <span className="text-[#1E3A2F] font-semibold">Rahul Khatri &amp; Rohit Joon</span>
+
+                {/* Highlighted Business Owners Badge */}
+                <div className="pt-1.5 flex flex-wrap items-center gap-2">
+                  <span className="text-[11px] font-semibold text-[#57534E] uppercase tracking-wider">Business Owners:</span>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-[#1E3A2F]/10 via-[#D4AF6A]/20 to-[#1E3A2F]/10 border border-[#D4AF6A]/50 rounded-sm shadow-2xs">
+                    <span className="font-owner-brand font-bold text-[#141413] tracking-wide text-xs sm:text-sm">
+                      Rahul Khatri
+                    </span>
+                    <span className="text-[#D4AF6A] text-xs">✦</span>
+                    <span className="font-owner-brand font-bold text-[#141413] tracking-wide text-xs sm:text-sm">
+                      Rohit Joon
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -1305,25 +1320,27 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Clickable Phone Numbers */}
+                {/* Clickable Phone Numbers with Highlighted Owner Chips */}
                 <div className="flex items-start gap-2">
-                  <Phone className="w-4 h-4 text-[#1E3A2F] shrink-0 mt-0.5" />
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <span className="font-semibold text-[#141413]">Phone: </span>
+                  <Phone className="w-4 h-4 text-[#1E3A2F] shrink-0 mt-1" />
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                    <span className="font-semibold text-[#141413]">Direct Line: </span>
                     <a
                       href="tel:+919186221008"
-                      className="hover:text-[#1E3A2F] hover:underline font-mono-tabular font-medium"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-stone-200 hover:border-[#1E3A2F] text-[#141413] hover:text-[#1E3A2F] rounded-sm shadow-2xs transition-all"
                       title="Call Rahul Khatri (Business Owner)"
                     >
-                      +91 9186221008 (Rahul)
+                      <span className="font-owner-brand font-bold tracking-wide text-xs text-emerald-950">Rahul Khatri:</span>
+                      <span className="font-mono-tabular text-stone-600 text-xs font-semibold">+91 9186221008</span>
                     </a>
                     <span className="text-stone-300">·</span>
                     <a
                       href="tel:+919034969308"
-                      className="hover:text-[#1E3A2F] hover:underline font-mono-tabular font-medium"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-stone-200 hover:border-[#1E3A2F] text-[#141413] hover:text-[#1E3A2F] rounded-sm shadow-2xs transition-all"
                       title="Call Rohit Joon (Business Owner)"
                     >
-                      +91 9034969308 (Rohit)
+                      <span className="font-owner-brand font-bold tracking-wide text-xs text-emerald-950">Rohit Joon:</span>
+                      <span className="font-mono-tabular text-stone-600 text-xs font-semibold">+91 9034969308</span>
                     </a>
                   </div>
                 </div>
@@ -1558,7 +1575,7 @@ export default function App() {
 
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] sm:text-xs text-[#615E59] gap-3 text-center sm:text-left">
             <div className="leading-relaxed">
-              © Trinetra Realty · Business Owners: Rahul Khatri &amp; Rohit Joon. All Rights Reserved.
+              © Trinetra Realty · Business Owners: <strong className="font-owner-brand font-bold text-[#141413] tracking-wider">Rahul Khatri</strong> &amp; <strong className="font-owner-brand font-bold text-[#141413] tracking-wider">Rohit Joon</strong>. All Rights Reserved.
             </div>
             <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-2.5 gap-y-1 text-center text-[#78716C]">
               <span>Your Future, Our Focus.</span>

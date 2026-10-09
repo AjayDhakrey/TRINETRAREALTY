@@ -5,6 +5,8 @@
     --font-display: 'Cormorant Garamond', Georgia, serif;
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
+    --font-owner: 'Cinzel', 'Cormorant Garamond', Georgia, serif;
+    --font-signature: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
   }
 
   body {
@@ -16,6 +18,15 @@
 
   h1, h2, h3, .font-serif-display {
     font-family: var(--font-display);
+  }
+
+  .font-owner-brand {
+    font-family: var(--font-owner);
+    letter-spacing: 0.05em;
+  }
+
+  .font-owner-signature {
+    font-family: var(--font-signature);
   }
 
   .font-mono-tabular {
