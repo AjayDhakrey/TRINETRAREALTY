@@ -205,7 +205,7 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
         <div className="px-6 py-5 bg-[#F3F2EE] border-b border-stone-200 flex items-center justify-between">
           <div>
             <p className="text-xs text-[#615E59] tracking-wide">
-              Trinetra Realty · Private Client Advisory Desk
+              Trinetra Realty · Business Owners: Rahul Khatri &amp; Rohit Joon
             </p>
             <h2
               id="leads-modal-title"
@@ -649,7 +649,7 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
                 <div className="space-y-4">
                   <div className="p-4 bg-[#F3F2EE] border border-stone-200 space-y-2">
                     <div className="text-xs font-semibold text-[#1E3A2F]">
-                      Direct WhatsApp Advisory Desk (+91 9186221008 · +91 9034969308)
+                      Direct WhatsApp Advisory Desk · Business Owners: Rahul Khatri (+91 9186221008) · Rohit Joon (+91 9034969308)
                     </div>
                     <p className="text-xs text-[#57534E] leading-relaxed">
                       Submitting this form logs your priority WhatsApp dispatch directly in our Admin CRM and prepares an instant encrypted message thread with our duty partner.

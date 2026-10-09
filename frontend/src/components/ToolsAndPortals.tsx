@@ -1518,6 +1518,12 @@ export const ContactView: React.FC<ContactViewProps> = ({
           <p className="font-serif-display text-2xl text-[#1E3A2F] italic">
             Your Future, Our Focus.
           </p>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-stone-200 text-xs font-medium text-[#141413] rounded-sm shadow-2xs">
+            <span className="font-semibold text-[#1E3A2F]">Business Owners:</span>
+            <span className="font-semibold text-[#141413]">Rahul Khatri</span>
+            <span className="text-stone-300">·</span>
+            <span className="font-semibold text-[#141413]">Rohit Joon</span>
+          </div>
           <p className="text-base text-[#57534E] leading-relaxed">
             Whether you&apos;re looking for a new property, exploring an investment opportunity, or planning a site visit, our team is here to help you find the right opportunity.
           </p>
@@ -1567,9 +1573,12 @@ export const ContactView: React.FC<ContactViewProps> = ({
             </div>
 
             <div>
-              <h3 className="font-serif-display text-2xl font-semibold text-[#141413] mb-1">
+              <h3 className="font-serif-display text-2xl font-semibold text-[#141413] mb-0.5">
                 Trinetra Realty
               </h3>
+              <p className="text-xs text-[#57534E] mb-2 font-medium">
+                Business Owners: <span className="text-[#141413] font-semibold">Rahul Khatri</span> &amp; <span className="text-[#141413] font-semibold">Rohit Joon</span>
+              </p>
               {/* Clickable Full Address */}
               <a
                 href={MAPS_URL}
@@ -1596,17 +1605,25 @@ export const ContactView: React.FC<ContactViewProps> = ({
             </div>
           </div>
 
-          {/* 2. Contact Our Team Card */}
+          {/* 2. Contact Business Owners & Team Card */}
           <div className="p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-5">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#1E3A2F] uppercase tracking-wider">
-              <Phone className="w-4 h-4 text-[#1E3A2F]" />
-              <span>Contact Our Team</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#1E3A2F] uppercase tracking-wider">
+                <Phone className="w-4 h-4 text-[#1E3A2F]" />
+                <span>Contact Business Owners</span>
+              </div>
+              <span className="text-[11px] font-semibold px-2 py-0.5 bg-[#1E3A2F]/10 text-[#1E3A2F] rounded-xs uppercase tracking-wide">
+                Owners &amp; Principals
+              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Rahul Khatri */}
               <div className="p-4 bg-white border border-stone-200 rounded-sm space-y-2 hover:border-emerald-300 transition-colors shadow-2xs">
-                <div className="text-xs text-stone-500 uppercase tracking-wider">Advisory Partner</div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-stone-500 uppercase tracking-wider font-semibold">Business Owner</span>
+                  <span className="text-[#1E3A2F] font-medium text-[11px]">Advisory Partner</span>
+                </div>
                 <div className="font-serif-display text-lg font-semibold text-[#141413]">
                   Rahul Khatri
                 </div>
@@ -1638,7 +1655,10 @@ export const ContactView: React.FC<ContactViewProps> = ({
 
               {/* Rohit Joon */}
               <div className="p-4 bg-white border border-stone-200 rounded-sm space-y-2 hover:border-emerald-300 transition-colors shadow-2xs">
-                <div className="text-xs text-stone-500 uppercase tracking-wider">Managing Partner</div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-stone-500 uppercase tracking-wider font-semibold">Business Owner</span>
+                  <span className="text-[#1E3A2F] font-medium text-[11px]">Managing Partner</span>
+                </div>
                 <div className="font-serif-display text-lg font-semibold text-[#141413]">
                   Rohit Joon
                 </div>

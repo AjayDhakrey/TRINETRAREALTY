@@ -1223,7 +1223,7 @@ export default function App() {
           <div className="bg-[#1E3A2F] text-white p-8 sm:p-12 rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-md">
             <div className="space-y-2 max-w-2xl">
               <div className="text-xs uppercase tracking-widest text-emerald-200/80 font-medium">
-                Trinetra Realty · Your Future, Our Focus.
+                Trinetra Realty · Business Owners: Rahul Khatri &amp; Rohit Joon
               </div>
               <h2 className="font-serif-display text-3xl sm:text-4xl font-semibold text-white">
                 Ready to Explore Your Next Property?
@@ -1232,7 +1232,7 @@ export default function App() {
                 Have a property enquiry or want to schedule a site visit?
               </p>
               <p className="text-xs text-stone-300/90 leading-relaxed pt-1">
-                Our team will help you with project details, availability and the next steps.
+                Connect directly with business owners Rahul Khatri &amp; Rohit Joon for project details, inventory availability, and site visits.
               </p>
             </div>
 
@@ -1272,6 +1272,10 @@ export default function App() {
                 <div className="font-serif-display text-base text-[#1E3A2F] italic">
                   Your Future, Our Focus.
                 </div>
+                <div className="pt-1 text-xs">
+                  <span className="font-semibold text-[#141413]">Business Owners: </span>
+                  <span className="text-[#1E3A2F] font-semibold">Rahul Khatri &amp; Rohit Joon</span>
+                </div>
               </div>
 
               <div className="space-y-2 text-xs text-[#57534E]">
@@ -1297,12 +1301,12 @@ export default function App() {
                   <Phone className="w-4 h-4 text-[#1E3A2F] shrink-0" />
                   <div>
                     <span className="font-semibold text-[#141413]">Phone: </span>
-                    <a href="tel:+919186221008" className="hover:text-[#1E3A2F] hover:underline font-mono-tabular">
-                      +91 9186221008
+                    <a href="tel:+919186221008" className="hover:text-[#1E3A2F] hover:underline font-mono-tabular" title="Call Rahul Khatri (Business Owner)">
+                      +91 9186221008 (Rahul)
                     </a>
                     <span className="mx-1.5 text-stone-300">·</span>
-                    <a href="tel:+919034969308" className="hover:text-[#1E3A2F] hover:underline font-mono-tabular">
-                      +91 9034969308
+                    <a href="tel:+919034969308" className="hover:text-[#1E3A2F] hover:underline font-mono-tabular" title="Call Rohit Joon (Business Owner)">
+                      +91 9034969308 (Rohit)
                     </a>
                   </div>
                 </div>
@@ -1533,7 +1537,7 @@ export default function App() {
 
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-[#615E59] gap-4">
             <div>
-              © Trinetra Realty. All Rights Reserved.
+              © Trinetra Realty · Business Owners: Rahul Khatri &amp; Rohit Joon. All Rights Reserved.
             </div>
             <div className="flex items-center gap-4">
               <span>Your Future, Our Focus.</span>
