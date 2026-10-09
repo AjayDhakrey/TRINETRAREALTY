@@ -66,6 +66,7 @@ import { AdminPanelView } from './components/AdminPanelView';
 import { ArchitecturalImage } from './components/ArchitecturalImage';
 import { WelcomeIntroScreen } from './components/WelcomeIntroScreen';
 import { HeroBackgroundVideo } from './components/HeroBackgroundVideo';
+import { FloatingSocialDock } from './components/FloatingSocialDock';
 import { formatCurrency } from './utils/formatters';
 
 export default function App() {
@@ -1599,56 +1600,8 @@ export default function App() {
         onLeadSubmitted={(newLead) => setLeads((prev) => [newLead, ...prev])}
       />
 
-      {/* Floating Social & Quick Connect Cluster (Instagram, Facebook, WhatsApp) */}
-      <aside
-        aria-label="Quick Connect Social Desks"
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-2.5"
-      >
-        {/* Floating Instagram Action */}
-        <a
-          href="https://www.instagram.com/trinetrarealty_?stkn=MW52OXVra2cxcXhmaw=="
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Follow Trinetra Realty on Instagram"
-          title="Follow Trinetra Realty on Instagram (@trinetrarealty_)"
-          className="flex items-center gap-2 p-3 sm:px-3.5 sm:py-2.5 bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] hover:opacity-95 text-white rounded-full shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group"
-        >
-          <InstagramIcon className="w-5 h-5 text-white shrink-0 group-hover:rotate-6 transition-transform" />
-          <span className="text-xs font-semibold tracking-wide hidden sm:inline">
-            Instagram
-          </span>
-        </a>
-
-        {/* Floating Facebook Action */}
-        <a
-          href="https://www.facebook.com/share/1VBsJ1bSHk/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Visit Trinetra Realty on Facebook"
-          title="Visit Trinetra Realty on Facebook"
-          className="flex items-center gap-2 p-3 sm:px-3.5 sm:py-2.5 bg-[#1877F2] hover:bg-[#166fe5] text-white rounded-full shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group"
-        >
-          <FacebookIcon className="w-5 h-5 text-white shrink-0 group-hover:rotate-6 transition-transform" />
-          <span className="text-xs font-semibold tracking-wide hidden sm:inline">
-            Facebook
-          </span>
-        </a>
-
-        {/* Floating WhatsApp Action */}
-        <a
-          href="https://wa.me/919186221008?text=Hello%2C%20I%20am%20interested%20in%20Trinetra%20Realty%20properties."
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Chat on WhatsApp"
-          title="Chat with Trinetra Realty on WhatsApp (+91 9186221008)"
-          className="flex items-center gap-2 p-3 sm:px-4 sm:py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group"
-        >
-          <WhatsAppIcon className="w-5 h-5 text-white shrink-0 group-hover:rotate-12 transition-transform" />
-          <span className="text-xs font-semibold tracking-wide hidden sm:inline">
-            WhatsApp Desk
-          </span>
-        </a>
-      </aside>
+      {/* Draggable & Adjustable Social Connect Dock (Instagram, Facebook, WhatsApp) */}
+      <FloatingSocialDock />
       </div>
     </>
   );
