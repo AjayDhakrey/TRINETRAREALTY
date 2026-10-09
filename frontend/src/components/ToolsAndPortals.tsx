@@ -662,13 +662,13 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   const availableToAdd = properties.filter((p) => !compareIds.includes(p.id));
 
   return (
-    <div className="max-w-[1360px] mx-auto px-6 py-12 space-y-10">
-      <div className="border-b border-stone-200 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-6 sm:space-y-10">
+      <div className="border-b border-stone-200 pb-5 sm:pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <div className="text-xs text-[#615E59]">
             Side-by-Side Architectural & Financial Matrix
           </div>
-          <h1 className="font-serif-display text-4xl font-semibold text-[#141413] mt-1">
+          <h1 className="font-serif-display text-2xl sm:text-4xl font-semibold text-[#141413] mt-1">
             Property Comparison ({comparedProperties.length} of 3 Selected)
           </h1>
         </div>
@@ -685,7 +685,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                 }
               }}
               defaultValue=""
-              className="px-3.5 py-2 text-xs bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
+              className="w-full sm:w-auto px-3 py-2 text-xs bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
             >
               <option value="" disabled>
                 + Add Residence to Compare...
@@ -701,12 +701,12 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
       </div>
 
       {comparedProperties.length === 0 ? (
-        <div className="bg-[#F3F2EE] border border-stone-200 p-12 text-center space-y-4">
+        <div className="bg-[#F3F2EE] border border-stone-200 p-8 sm:p-12 text-center space-y-4">
           <Building2 className="w-10 h-10 text-[#615E59] mx-auto stroke-[1.25]" />
-          <h2 className="font-serif-display text-2xl font-semibold text-[#141413]">
+          <h2 className="font-serif-display text-xl sm:text-2xl font-semibold text-[#141413]">
             No Residences Currently Selected for Comparison
           </h2>
-          <p className="text-sm text-[#57534E] max-w-md mx-auto">
+          <p className="text-xs sm:text-sm text-[#57534E] max-w-md mx-auto">
             Select up to three residences below to evaluate per-square-foot valuation, carrying costs, and architectural specifications side by side.
           </p>
           <div className="pt-2 flex flex-wrap justify-center gap-2">
@@ -715,7 +715,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                 key={p.id}
                 type="button"
                 onClick={() => onToggleCompare(p.id)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add {p.title}</span>
@@ -724,201 +724,233 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
           </div>
         </div>
       ) : (
-        <div className="overflow-x-auto border border-stone-200 bg-[#FBFBF9]">
-          <table className="w-full text-left border-collapse min-w-[780px]">
-            <thead>
-              <tr className="border-b border-stone-200 bg-[#F3F2EE]/70">
-                <th className="p-5 w-52 text-xs font-semibold text-[#615E59] align-top">
-                  Specification / Metric
-                </th>
-                {comparedProperties.map((prop) => (
-                  <th key={prop.id} className="p-5 border-l border-stone-200 align-top w-80">
-                    <div className="space-y-3">
-                      <div className="aspect-[16/10] w-full bg-stone-200 overflow-hidden relative">
-                        <ArchitecturalImage
-                          src={prop.images[0]}
-                          alt={prop.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => onToggleCompare(prop.id)}
-                          title="Remove from Comparison"
-                          className="absolute top-2 right-2 p-1.5 bg-black/75 text-white hover:bg-red-700 transition-colors cursor-pointer"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                      <div>
-                        <div className="text-xs text-[#615E59] font-mono-tabular">
-                          {prop.code} · {prop.locality}
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => onSelectProperty(prop)}
-                          className="font-serif-display text-xl font-semibold text-[#141413] hover:text-[#1E3A2F] text-left cursor-pointer mt-0.5"
-                        >
-                          {prop.title}
-                        </button>
-                      </div>
-                    </div>
+        <div className="space-y-2">
+          {/* Mobile swipe helper */}
+          <div className="flex sm:hidden items-center justify-between text-[11px] text-[#615E59] bg-[#F3F2EE] px-3 py-1.5 border border-stone-200">
+            <span>← Swipe horizontally to compare all residences →</span>
+            <span className="font-mono-tabular font-semibold text-[#1E3A2F]">
+              {comparedProperties.length}/3
+            </span>
+          </div>
+
+          <div className="overflow-x-auto border border-stone-200 bg-[#FBFBF9] shadow-xs">
+            <table className="w-full text-left border-collapse min-w-[560px] sm:min-w-[780px]">
+              <thead>
+                <tr className="border-b border-stone-200 bg-[#F3F2EE]/90">
+                  <th className="p-3 sm:p-5 w-28 sm:w-52 text-[11px] sm:text-xs font-semibold text-[#615E59] align-top sticky left-0 z-20 bg-[#F3F2EE] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Specification
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-stone-200 text-sm">
-              <tr>
-                <td className="p-4 text-xs font-medium text-[#615E59]">Offering Price</td>
-                {comparedProperties.map((p) => (
-                  <td
-                    key={p.id}
-                    className="p-4 border-l border-stone-200 font-mono-tabular font-semibold text-[#141413]"
-                  >
-                    {formatPropertyPrice(p.price, p.transactionType)}
+                  {comparedProperties.map((prop) => (
+                    <th key={prop.id} className="p-3 sm:p-5 border-l border-stone-200 align-top w-56 sm:w-80 min-w-[200px]">
+                      <div className="space-y-2 sm:space-y-3">
+                        <div className="aspect-[16/10] w-full bg-stone-200 overflow-hidden relative">
+                          <ArchitecturalImage
+                            src={prop.images[0]}
+                            alt={prop.title}
+                            className="w-full h-full object-cover"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => onToggleCompare(prop.id)}
+                            title="Remove from Comparison"
+                            className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 p-1.5 bg-black/75 text-white hover:bg-red-700 transition-colors cursor-pointer"
+                          >
+                            <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                          </button>
+                        </div>
+                        <div>
+                          <div className="text-[10px] sm:text-xs text-[#615E59] font-mono-tabular">
+                            {prop.code} · {prop.locality}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => onSelectProperty(prop)}
+                            className="font-serif-display text-base sm:text-xl font-semibold text-[#141413] hover:text-[#1E3A2F] text-left cursor-pointer mt-0.5 line-clamp-2"
+                          >
+                            {prop.title}
+                          </button>
+                        </div>
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-stone-200 text-xs sm:text-sm">
+                <tr>
+                  <td className="p-2.5 sm:p-4 text-[11px] sm:text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Offering Price
                   </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="p-4 text-xs font-medium text-[#615E59]">Price / Sq.Ft.</td>
-                {comparedProperties.map((p) => (
-                  <td
-                    key={p.id}
-                    className="p-4 border-l border-stone-200 font-mono-tabular text-[#141413]"
-                  >
-                    ₹{formatNumber(p.pricePerSqFt)} / sq.ft.
+                  {comparedProperties.map((p) => (
+                    <td
+                      key={p.id}
+                      className="p-2.5 sm:p-4 border-l border-stone-200 font-mono-tabular font-semibold text-[#141413]"
+                    >
+                      {formatPropertyPrice(p.price, p.transactionType)}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-2.5 sm:p-4 text-[11px] sm:text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Price / Sq.Ft.
                   </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="p-4 text-xs font-medium text-[#615E59]">Transaction Mandate</td>
-                {comparedProperties.map((p) => (
-                  <td key={p.id} className="p-4 border-l border-stone-200 text-[#141413]">
-                    {p.transactionType === 'Rent' ? 'Luxury Lease' : 'Freehold Acquisition'} ·{' '}
-                    {p.status}
+                  {comparedProperties.map((p) => (
+                    <td
+                      key={p.id}
+                      className="p-2.5 sm:p-4 border-l border-stone-200 font-mono-tabular text-[#141413]"
+                    >
+                      ₹{formatNumber(p.pricePerSqFt)} / sq.ft.
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-2.5 sm:p-4 text-[11px] sm:text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Transaction
                   </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="p-4 text-xs font-medium text-[#615E59]">Interior Area</td>
-                {comparedProperties.map((p) => (
-                  <td
-                    key={p.id}
-                    className="p-4 border-l border-stone-200 font-mono-tabular text-[#141413]"
-                  >
-                    {formatNumber(p.areaSqFt)} sq.ft.
+                  {comparedProperties.map((p) => (
+                    <td key={p.id} className="p-2.5 sm:p-4 border-l border-stone-200 text-[#141413]">
+                      {p.transactionType === 'Rent' ? 'Luxury Lease' : 'Freehold Acquisition'} ·{' '}
+                      {p.status}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-2.5 sm:p-4 text-[11px] sm:text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Interior Area
                   </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="p-4 text-xs font-medium text-[#615E59]">Bedrooms / Bathrooms</td>
-                {comparedProperties.map((p) => (
-                  <td
-                    key={p.id}
-                    className="p-4 border-l border-stone-200 font-mono-tabular text-[#141413]"
-                  >
-                    {p.bedrooms} Bedrooms · {p.bathrooms} Bathrooms
+                  {comparedProperties.map((p) => (
+                    <td
+                      key={p.id}
+                      className="p-2.5 sm:p-4 border-l border-stone-200 font-mono-tabular text-[#141413]"
+                    >
+                      {formatNumber(p.areaSqFt)} sq.ft.
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-2.5 sm:p-4 text-[11px] sm:text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Bedrooms / Baths
                   </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="p-4 text-xs font-medium text-[#615E59]">Architectural Style</td>
-                {comparedProperties.map((p) => (
-                  <td key={p.id} className="p-4 border-l border-stone-200 text-[#141413]">
-                    {p.architecturalStyle}
+                  {comparedProperties.map((p) => (
+                    <td
+                      key={p.id}
+                      className="p-2.5 sm:p-4 border-l border-stone-200 font-mono-tabular text-[#141413]"
+                    >
+                      {p.bedrooms} Beds · {p.bathrooms} Baths
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-2.5 sm:p-4 text-[11px] sm:text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Architectural Style
                   </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="p-4 text-xs font-medium text-[#615E59]">Architect of Record</td>
-                {comparedProperties.map((p) => (
-                  <td key={p.id} className="p-4 border-l border-stone-200 text-[#57534E]">
-                    {p.architect} ({p.yearBuilt})
+                  {comparedProperties.map((p) => (
+                    <td key={p.id} className="p-2.5 sm:p-4 border-l border-stone-200 text-[#141413]">
+                      {p.architecturalStyle}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-2.5 sm:p-4 text-[11px] sm:text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Architect of Record
                   </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="p-4 text-xs font-medium text-[#615E59]">Delivery Condition</td>
-                {comparedProperties.map((p) => (
-                  <td key={p.id} className="p-4 border-l border-stone-200 text-[#141413]">
-                    {p.furnishedStatus}
+                  {comparedProperties.map((p) => (
+                    <td key={p.id} className="p-2.5 sm:p-4 border-l border-stone-200 text-[#57534E]">
+                      {p.architect} ({p.yearBuilt})
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-2.5 sm:p-4 text-[11px] sm:text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Condition
                   </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="p-4 text-xs font-medium text-[#615E59]">Parking Allocation</td>
-                {comparedProperties.map((p) => (
-                  <td
-                    key={p.id}
-                    className="p-4 border-l border-stone-200 font-mono-tabular text-[#141413]"
-                  >
-                    {p.parkingSpaces} Private Spaces
+                  {comparedProperties.map((p) => (
+                    <td key={p.id} className="p-2.5 sm:p-4 border-l border-stone-200 text-[#141413]">
+                      {p.furnishedStatus}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-2.5 sm:p-4 text-[11px] sm:text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Parking
                   </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="p-4 text-xs font-medium text-[#615E59]">Monthly Maintenance</td>
-                {comparedProperties.map((p) => (
-                  <td
-                    key={p.id}
-                    className="p-4 border-l border-stone-200 font-mono-tabular text-[#141413]"
-                  >
-                    {p.monthlyMaintenance > 0
-                      ? `${formatCurrency(p.monthlyMaintenance)} / mo`
-                      : 'Included in Lease'}
+                  {comparedProperties.map((p) => (
+                    <td
+                      key={p.id}
+                      className="p-2.5 sm:p-4 border-l border-stone-200 font-mono-tabular text-[#141413]"
+                    >
+                      {p.parkingSpaces} Private Spaces
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-2.5 sm:p-4 text-[11px] sm:text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Maintenance
                   </td>
-                ))}
-              </tr>
-              <tr>
-                <td className="p-4 text-xs font-medium text-[#615E59]">
-                  Est. Monthly EMI (70% LTV, 20Y @ 6.25%)
-                </td>
-                {comparedProperties.map((p) => {
-                  if (p.transactionType === 'Rent') {
+                  {comparedProperties.map((p) => (
+                    <td
+                      key={p.id}
+                      className="p-2.5 sm:p-4 border-l border-stone-200 font-mono-tabular text-[#141413]"
+                    >
+                      {p.monthlyMaintenance > 0
+                        ? `${formatCurrency(p.monthlyMaintenance)} / mo`
+                        : 'Included in Lease'}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-2.5 sm:p-4 text-[11px] sm:text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Est. Monthly EMI
+                  </td>
+                  {comparedProperties.map((p) => {
+                    if (p.transactionType === 'Rent') {
+                      return (
+                        <td
+                          key={p.id}
+                          className="p-2.5 sm:p-4 border-l border-stone-200 font-mono-tabular text-[#615E59]"
+                        >
+                          N/A (Monthly Lease)
+                        </td>
+                      );
+                    }
+                    const emi = calculateMonthlyEMI(p.price * 0.7, 6.25, 20).monthlyEMI;
                     return (
                       <td
                         key={p.id}
-                        className="p-4 border-l border-stone-200 font-mono-tabular text-[#615E59]"
+                        className="p-2.5 sm:p-4 border-l border-stone-200 font-mono-tabular font-medium text-[#1E3A2F]"
                       >
-                        N/A (Monthly Lease)
+                        {formatCurrency(emi)} / mo
                       </td>
                     );
-                  }
-                  const emi = calculateMonthlyEMI(p.price * 0.7, 6.25, 20).monthlyEMI;
-                  return (
-                    <td
-                      key={p.id}
-                      className="p-4 border-l border-stone-200 font-mono-tabular font-medium text-[#1E3A2F]"
-                    >
-                      {formatCurrency(emi)} / mo
-                    </td>
-                  );
-                })}
-              </tr>
-              <tr>
-                <td className="p-4 text-xs font-medium text-[#615E59]">Advisory Actions</td>
-                {comparedProperties.map((p) => (
-                  <td key={p.id} className="p-4 border-l border-stone-200">
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        onClick={() => onSelectProperty(p)}
-                        className="px-3 py-1.5 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer"
-                      >
-                        Examine Dossier
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onOpenLeadModal('Schedule Visit', p.id)}
-                        className="px-3 py-1.5 text-xs font-medium border border-stone-300 text-[#141413] hover:border-[#141413] cursor-pointer"
-                      >
-                        Schedule Visit
-                      </button>
-                    </div>
+                  })}
+                </tr>
+                <tr>
+                  <td className="p-2.5 sm:p-4 text-[11px] sm:text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Actions
                   </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
+                  {comparedProperties.map((p) => (
+                    <td key={p.id} className="p-2.5 sm:p-4 border-l border-stone-200">
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => onSelectProperty(p)}
+                          className="px-2.5 py-1.5 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer"
+                        >
+                          Examine Dossier
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onOpenLeadModal('Schedule Visit', p.id)}
+                          className="px-2.5 py-1.5 text-xs font-medium border border-stone-300 text-[#141413] hover:border-[#141413] cursor-pointer"
+                        >
+                          Schedule Visit
+                        </button>
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
