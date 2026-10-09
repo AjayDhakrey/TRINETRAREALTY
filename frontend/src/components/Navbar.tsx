@@ -175,7 +175,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             Client Desk
           </button>
 
-          <button
+          {/* <button
             type="button"
             onClick={() => handleNav('admin')}
             className={`hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
@@ -185,7 +185,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             }`}
           >
             Admin Panel
-          </button>
+          </button> */}
 
           <button
             type="button"

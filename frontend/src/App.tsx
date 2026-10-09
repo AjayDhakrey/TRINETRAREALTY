@@ -1581,7 +1581,7 @@ export default function App() {
                         WhatsApp Contact
                       </button>
                     </li>
-                    <li>
+                    {/* <li>
                       <button
                         type="button"
                         onClick={() => setActiveRoute('admin')}
@@ -1590,7 +1590,7 @@ export default function App() {
                         <span>Admin Panel</span>
                         <span>→</span>
                       </button>
-                    </li>
+                    </li> */}
                   </ul>
                 </div>
               </div>
