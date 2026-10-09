@@ -671,21 +671,34 @@ async function startServer() {
       // Trigger Email notifications:
       // 1. Business Owner lead dossier dispatch (dhakreyajay444@gmail.com)
       // 2. Client confirmation email (e.g. dhakreyajay1356@gmail.com)
-      void Promise.allSettled([
-        sendOwnerEmailNotification(created),
-        sendClientConfirmationEmail(created),
-      ]).then((results) => {
-        results.forEach((r, idx) => {
-          const target = idx === 0 ? 'Owner' : 'Client';
-          if (r.status === 'fulfilled' && r.value.sent) {
-            console.log(`📧 [Notification] ${target} email sent successfully (${r.value.recipient}) for lead ${created.id}`);
-          } else if (r.status === 'fulfilled' && r.value.error) {
-            console.warn(`⚠️ [Notification] ${target} email not dispatched: ${r.value.error}`);
-          } else if (r.status === 'rejected') {
-            console.error(`❌ [Notification] ${target} email rejected:`, r.reason);
+      // Trigger Email notifications sequentially to prevent Google Script concurrency locking:
+      // 1. Business Owner lead dossier dispatch (dhakreyajay444@gmail.com)
+      // 2. Client confirmation email (e.g. dhakreyajay1356@gmail.com)
+      void (async () => {
+        try {
+          const ownerRes = await sendOwnerEmailNotification(created);
+          if (ownerRes.sent) {
+            console.log(`📧 [Notification] Owner email sent successfully (${ownerRes.recipient}) for lead ${created.id}`);
+          } else {
+            console.warn(`⚠️ [Notification] Owner email not dispatched: ${ownerRes.error}`);
           }
-        });
-      });
+        } catch (err: any) {
+          console.error(`❌ [Notification] Owner email error:`, err.message);
+        }
+
+        await new Promise((r) => setTimeout(r, 1200));
+
+        try {
+          const clientRes = await sendClientConfirmationEmail(created);
+          if (clientRes.sent) {
+            console.log(`📧 [Notification] Client email sent successfully (${clientRes.recipient}) for lead ${created.id}`);
+          } else {
+            console.warn(`⚠️ [Notification] Client email not dispatched: ${clientRes.error}`);
+          }
+        } catch (err: any) {
+          console.error(`❌ [Notification] Client email error:`, err.message);
+        }
+      })();
 
       res.status(201).json(created);
     } catch (err: any) {
