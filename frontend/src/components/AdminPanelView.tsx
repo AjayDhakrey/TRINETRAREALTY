@@ -471,8 +471,8 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   // --- IF NOT AUTHENTICATED: RENDER ADMIN LOGIN MODULE ---
   if (!isAuthenticated) {
     return (
-      <div className="max-w-md mx-auto px-6 py-20">
-        <div className="bg-[#FBFBF9] border border-stone-300 p-8 space-y-6">
+      <div className="max-w-md mx-auto px-4 sm:px-6 py-10 sm:py-20">
+        <div className="bg-[#FBFBF9] border border-stone-300 p-5 sm:p-8 space-y-6">
           <div className="text-center pb-1">
             <img
               src="/trinetra-logo-gold.png"
@@ -840,7 +840,7 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
        * MODULE 2 & 3: ADD PROPERTY & EDIT PROPERTY
        * =================================================================== */}
       {(activeTab === 'add-property' || activeTab === 'edit-property') && (
-        <div className="bg-[#FBFBF9] border border-stone-300 p-6 sm:p-8 space-y-6">
+        <div className="bg-[#FBFBF9] border border-stone-300 p-4 sm:p-8 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-200 pb-5">
             <div>
               <div className="text-xs text-[#615E59]">
@@ -1506,7 +1506,7 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
             {filteredLeads.map((lead) => (
               <div
                 key={lead.id}
-                className="bg-[#FBFBF9] border border-stone-200 p-6 flex flex-col lg:flex-row lg:items-start justify-between gap-6"
+                className="bg-[#FBFBF9] border border-stone-200 p-4 sm:p-6 flex flex-col lg:flex-row lg:items-start justify-between gap-4 sm:gap-6"
               >
                 <div className="space-y-2.5 max-w-3xl">
                   {/* Unboxed Metadata Header */}
@@ -1600,18 +1600,18 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
 
                   {/* Partner CRM Notes */}
                   {editingNotesId === lead.id ? (
-                    <div className="pt-2 flex items-center gap-2">
+                    <div className="pt-2 flex flex-wrap sm:flex-nowrap items-center gap-2">
                       <input
                         type="text"
                         value={notesDraft}
                         onChange={(e) => setNotesDraft(e.target.value)}
                         placeholder="Add partner follow-up notes..."
-                        className="px-3 py-1.5 text-xs bg-white border border-stone-300 w-80"
+                        className="px-3 py-1.5 text-xs bg-white border border-stone-300 flex-1 min-w-0 sm:w-80"
                       />
                       <button
                         type="button"
                         onClick={() => handleUpdateLead(lead.id, lead.status, notesDraft)}
-                        className="px-3 py-1.5 text-xs font-semibold bg-[#141413] text-white cursor-pointer"
+                        className="px-3 py-1.5 text-xs font-semibold bg-[#141413] text-white cursor-pointer shrink-0"
                       >
                         Save Note
                       </button>

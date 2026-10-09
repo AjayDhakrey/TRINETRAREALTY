@@ -242,7 +242,7 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
                 setSubmittedLead(null);
                 setErrorMsg('');
               }}
-              className={`px-2 sm:px-3 py-2.5 sm:py-3 text-[11px] sm:text-xs font-medium text-center border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+              className={`px-2 sm:px-3 py-2.5 sm:py-3 text-[11px] sm:text-xs font-medium text-center border-b-2 transition-colors cursor-pointer ${
                 activeTab === tab.id
                   ? 'border-[#141413] bg-[#FBFBF9] text-[#141413] font-semibold'
                   : 'border-transparent text-[#615E59] hover:text-[#141413]'
@@ -677,29 +677,29 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
               )}
 
               {/* Submit Footer */}
-              <div className="pt-3 border-t border-stone-200 flex items-center justify-between gap-4">
-                <span className="text-xs text-[#615E59]">
+              <div className="pt-3 border-t border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <span className="text-[11px] sm:text-xs text-[#615E59] text-center sm:text-left">
                   Strict confidentiality guaranteed under NDA protocol.
                 </span>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center justify-end gap-2.5 w-full sm:w-auto">
                   <button
                     type="button"
                     onClick={onClose}
-                    className="px-4 py-2.5 text-xs font-medium text-[#57534E] hover:text-[#141413] cursor-pointer"
+                    className="flex-1 sm:flex-none px-4 py-2.5 text-xs font-medium text-[#57534E] hover:text-[#141413] cursor-pointer text-center border border-stone-200 sm:border-transparent"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors whitespace-nowrap cursor-pointer disabled:opacity-50"
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors cursor-pointer disabled:opacity-50 text-center"
                   >
                     {activeTab === 'Property Inquiry' && <MessageSquare className="w-3.5 h-3.5" />}
                     {activeTab === 'Schedule Visit' && <Calendar className="w-3.5 h-3.5" />}
                     {activeTab === 'Property Valuation' && <Calculator className="w-3.5 h-3.5" />}
                     {activeTab === 'WhatsApp Contact' && <Send className="w-3.5 h-3.5" />}
                     <span>
-                      {submitting ? 'Recording Dossier...' : `Submit ${activeTab}`}
+                      {submitting ? 'Recording...' : `Submit ${activeTab}`}
                     </span>
                   </button>
                 </div>

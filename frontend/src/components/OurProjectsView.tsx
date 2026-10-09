@@ -84,34 +84,34 @@ export const OurProjectsView: React.FC<OurProjectsViewProps> = ({
   }, []);
 
   return (
-    <div className="max-w-[1360px] mx-auto px-6 py-12 lg:py-16">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-8 sm:py-12 lg:py-16">
       {/* Editorial Header */}
-      <div className="border-b border-stone-200 pb-10 mb-10">
+      <div className="border-b border-stone-200 pb-6 sm:pb-10 mb-6 sm:mb-10">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-          <div className="max-w-3xl space-y-3">
+          <div className="max-w-3xl space-y-2.5 sm:space-y-3">
             <div className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.14em] uppercase text-[#1E3A2F]">
               <Building2 className="w-3.5 h-3.5" />
               <span>Trinetra Realty · Proprietary Developments &amp; Mandates</span>
             </div>
-            <h1 className="font-serif-display text-4xl sm:text-5xl font-semibold text-[#141413] tracking-tight">
+            <h1 className="font-serif-display text-3xl sm:text-5xl font-semibold text-[#141413] tracking-tight">
               Our Signature Projects
             </h1>
-            <p className="text-sm sm:text-base text-[#57534E] leading-relaxed">
+            <p className="text-xs sm:text-base text-[#57534E] leading-relaxed">
               Every project conceived, developed, or exclusively represented by Trinetra Realty adheres to rigorous architectural provenance, low-density botanical planning, and full RERA statutory compliance.
             </p>
           </div>
 
-          <div className="flex items-center gap-6 text-xs text-[#615E59] bg-[#F3F2EE] px-5 py-3.5 border border-stone-200 shrink-0">
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 sm:gap-6 text-xs text-[#615E59] bg-[#F3F2EE] px-4 sm:px-5 py-3 sm:py-3.5 border border-stone-200 shrink-0">
             <div>
-              <div className="font-mono-tabular text-lg font-semibold text-[#141413]">
+              <div className="font-mono-tabular text-base sm:text-lg font-semibold text-[#141413]">
                 {publishedProjects.length}
               </div>
-              <div>Published Developments</div>
+              <div className="text-[11px] sm:text-xs">Published Developments</div>
             </div>
-            <div className="h-8 w-px bg-stone-300" />
-            <div className="inline-flex items-center gap-1.5 text-[#1E3A2F] font-medium">
+            <div className="hidden sm:block h-8 w-px bg-stone-300" />
+            <div className="inline-flex items-center gap-1.5 text-[#1E3A2F] font-medium text-[11px] sm:text-xs">
               <ShieldCheck className="w-4 h-4" />
-              <span>100% RERA Registered Portfolio</span>
+              <span>100% RERA Registered</span>
             </div>
           </div>
         </div>

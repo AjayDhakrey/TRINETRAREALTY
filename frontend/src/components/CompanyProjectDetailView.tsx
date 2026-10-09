@@ -327,10 +327,10 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
         </div>
       )}
 
-      <div className="max-w-[1360px] mx-auto px-6 py-8 lg:py-12 space-y-14">
+      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-8 lg:py-12 space-y-10 sm:space-y-14">
         {/* Top Breadcrumb & Share Bar */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-200 pb-4">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <button
               type="button"
               onClick={onBackToProjects}
@@ -340,7 +340,7 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
               <span>All Trinetra Projects</span>
             </button>
             <span className="text-stone-300">/</span>
-            <span className="text-xs font-mono-tabular text-[#615E59]">
+            <span className="text-xs font-mono-tabular text-[#615E59] truncate max-w-[180px] sm:max-w-none">
               /projects/{project.slug}
             </span>
           </div>
@@ -370,7 +370,7 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
          * 1. HERO SHOWCASE (Cover Image / Video + Core Valuation & CTAs)
          * ================================================================= */}
         <section className="space-y-6">
-          <div className="relative aspect-[16/9] min-h-[440px] w-full bg-[#141413] overflow-hidden border border-stone-300">
+          <div className="relative aspect-auto sm:aspect-[16/9] min-h-[460px] sm:min-h-[440px] w-full bg-[#141413] overflow-hidden border border-stone-300">
             {activeHeroMedia === 'video' && project.projectVideoUrl ? (
               <video
                 src={project.projectVideoUrl}
@@ -427,7 +427,7 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
             )}
 
             {activeHeroMedia === 'image' && (
-              <div className="absolute inset-0 p-6 sm:p-12 flex flex-col justify-between z-10">
+              <div className="absolute inset-0 p-4 sm:p-12 flex flex-col justify-between z-10">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="px-3 py-1 text-xs font-medium tracking-[0.15em] uppercase bg-[#1E3A2F] text-white border border-white/15">
                     {project.projectStatus}
@@ -456,7 +456,7 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
                     </p>
                   </div>
 
-                  <div className="lg:col-span-4 bg-[#FBFBF9] p-5 border border-stone-300 text-[#141413] space-y-3">
+                  <div className="lg:col-span-4 bg-[#FBFBF9] p-4 sm:p-5 border border-stone-300 text-[#141413] space-y-3">
                     <div className="flex items-baseline justify-between border-b border-stone-200 pb-3">
                       <div>
                         <div className="text-[11px] uppercase tracking-wider text-[#615E59]">
@@ -1031,7 +1031,7 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
           {/* RIGHT 4 COLUMNS: STICKY PROJECT LEAD / INQUIRY DESK */}
           <aside
             ref={inquirySectionRef}
-            className="lg:col-span-4 lg:sticky lg:top-24 bg-[#F3F2EE] border border-stone-300 p-6 space-y-5"
+            className="lg:col-span-4 lg:sticky lg:top-24 bg-[#F3F2EE] border border-stone-300 p-4 sm:p-6 space-y-4 sm:space-y-5"
           >
             <div className="border-b border-stone-200 pb-4">
               <div className="text-[11px] uppercase tracking-[0.14em] text-[#1E3A2F] font-semibold">

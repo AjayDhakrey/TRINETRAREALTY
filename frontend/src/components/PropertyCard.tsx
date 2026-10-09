@@ -117,12 +117,12 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         </div>
 
         {/* Content Block — Zero-Pill Metadata Discipline */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Quiet unboxed metadata with typographic separators */}
-          <div className="flex items-center gap-2 text-xs text-[#615E59] mb-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-[#615E59] mb-2">
             <span>{property.category}</span>
             <span aria-hidden="true">·</span>
-            <span className="truncate">{property.locality}</span>
+            <span className="truncate max-w-[120px] sm:max-w-none">{property.locality}</span>
             <span aria-hidden="true">·</span>
             <span>{property.architecturalStyle}</span>
           </div>
@@ -130,21 +130,21 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           {/* Primary Title */}
           <h3
             onClick={() => onSelect(property)}
-            className="font-serif-display text-2xl font-semibold text-[#141413] group-hover:text-[#1E3A2F] transition-colors duration-300 ease-out cursor-pointer line-clamp-1"
+            className="font-serif-display text-xl sm:text-2xl font-semibold text-[#141413] group-hover:text-[#1E3A2F] transition-colors duration-300 ease-out cursor-pointer line-clamp-1"
           >
             {property.title}
           </h3>
 
-          <p className="text-sm text-[#57534E] mt-1 line-clamp-2 leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#57534E] mt-1 line-clamp-2 leading-relaxed">
             {property.subtitle}
           </p>
 
           {/* Price & Specs in Tabular Numerals (Stable on Hover) */}
-          <div className="mt-5 pt-4 border-t border-stone-200/70 flex items-baseline justify-between gap-4">
-            <div className="font-mono-tabular text-lg font-medium text-[#141413]">
+          <div className="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-stone-200/70 flex flex-wrap items-baseline justify-between gap-2">
+            <div className="font-mono-tabular text-base sm:text-lg font-medium text-[#141413]">
               {formatPropertyPrice(property.price, property.transactionType)}
             </div>
-            <div className="text-xs text-[#615E59] font-mono-tabular whitespace-nowrap">
+            <div className="text-[11px] sm:text-xs text-[#615E59] font-mono-tabular">
               {property.bedrooms} BD · {property.bathrooms} BA · {formatNumber(property.areaSqFt)} sq.ft.
             </div>
           </div>
@@ -152,21 +152,21 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
       </div>
 
       {/* Action Bar — Functional Single-Line Controls with 250ms Subtle Hover Transitions */}
-      <div className="px-6 pb-5 pt-2 flex items-center justify-between gap-2 border-t border-stone-100">
+      <div className="px-4 sm:px-6 pb-4 sm:pb-5 pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-stone-100">
         <button
           type="button"
           onClick={() => onSelect(property)}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#141413] hover:text-[#1E3A2F] py-2 transition-colors duration-250 ease-out whitespace-nowrap cursor-pointer"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#141413] hover:text-[#1E3A2F] py-1.5 transition-colors duration-250 ease-out whitespace-nowrap cursor-pointer"
         >
           <span>Examine Dossier</span>
           <ArrowUpRight className="w-3.5 h-3.5 transition-colors duration-250 ease-out" />
         </button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <button
             type="button"
             onClick={() => onOpenLeadModal('Schedule Visit', property.id)}
-            className="px-3 py-1.5 text-xs font-medium text-[#57534E] hover:text-[#141413] hover:bg-[#F3F2EE]/70 border border-stone-200 hover:border-stone-400 transition-colors duration-250 ease-out whitespace-nowrap cursor-pointer"
+            className="px-2.5 sm:px-3 py-1.5 text-xs font-medium text-[#57534E] hover:text-[#141413] hover:bg-[#F3F2EE]/70 border border-stone-200 hover:border-stone-400 transition-colors duration-250 ease-out whitespace-nowrap cursor-pointer"
           >
             Schedule Visit
           </button>

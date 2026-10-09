@@ -456,8 +456,8 @@ export default function App() {
           <div>
             {/* SECTION 1: Architectural Hero Showcase (16:9) + Integrated Search */}
             <section className="relative border-b border-stone-200">
-              <div className="max-w-[1360px] mx-auto px-6 py-10 lg:py-14">
-                <div className="relative aspect-[16/9] min-h-[520px] sm:min-h-[460px] w-full bg-[#141413] overflow-hidden border border-stone-300 tr-reveal-hero">
+              <div className="max-w-[1360px] mx-auto px-3 sm:px-6 py-4 sm:py-10 lg:py-14">
+                <div className="relative aspect-auto sm:aspect-[16/9] min-h-[620px] sm:min-h-[480px] w-full bg-[#141413] overflow-hidden border border-stone-300 tr-reveal-hero">
                   {/* Lowest Layer (z-0): Hero Background Property Video (Memoized) */}
                   <HeroBackgroundVideo />
 
@@ -472,10 +472,10 @@ export default function App() {
                   />
 
                   {/* Foreground Layer (z-20): Existing Hero Content (opacity: 1) */}
-                  <div className="absolute inset-0 z-20 p-6 sm:p-12 flex flex-col justify-between opacity-100">
+                  <div className="absolute inset-0 z-20 p-4 sm:p-12 flex flex-col justify-between opacity-100">
                     {/* Top Regional Trust Marker (Placed in Hero, never Top Bar) */}
                     <div className="flex items-center justify-between text-xs text-white font-medium [text-shadow:0_1px_8px_rgba(0,0,0,0.6)] tr-reveal-supporting">
-                      <span>
+                      <span className="text-[11px] sm:text-xs">
                         New York · Beverly Hills · San Francisco · Marin Coast
                       </span>
                       <span className="font-mono-tabular hidden sm:inline">
@@ -484,16 +484,16 @@ export default function App() {
                     </div>
 
                     {/* Hero Focal Proposition */}
-                    <div className="max-w-3xl space-y-5 opacity-100">
-                      <h1 className="font-serif-display text-4xl sm:text-6xl font-semibold text-white leading-[1.08] tracking-tight text-balance [text-shadow:0_2px_16px_rgba(0,0,0,0.65)] tr-reveal-heading">
+                    <div className="max-w-3xl space-y-3 sm:space-y-5 opacity-100">
+                      <h1 className="font-serif-display text-2xl sm:text-4xl lg:text-6xl font-semibold text-white leading-[1.12] sm:leading-[1.08] tracking-tight text-balance [text-shadow:0_2px_16px_rgba(0,0,0,0.65)] tr-reveal-heading">
                         Architectural Residences of Enduring Provenance.
                       </h1>
-                      <p className="text-sm sm:text-base text-stone-100 max-w-2xl leading-relaxed [text-shadow:0_1px_10px_rgba(0,0,0,0.65)] tr-reveal-supporting">
+                      <p className="text-xs sm:text-base text-stone-100 max-w-2xl leading-relaxed [text-shadow:0_1px_10px_rgba(0,0,0,0.65)] tr-reveal-supporting">
                         Trinetra Realty represents collector-grade penthouses, modernist courtyard villas, and historic townhouses across North America’s premier residential enclaves.
                       </p>
 
                       {/* Primary Hero Search & Filter Bar */}
-                      <div className="bg-[#FBFBF9] p-3 sm:p-4 border border-stone-300 text-[#141413] shadow-xl mt-4 opacity-100 tr-reveal-controls">
+                      <div className="bg-[#FBFBF9] p-3 sm:p-4 border border-stone-300 text-[#141413] shadow-xl mt-3 sm:mt-4 opacity-100 tr-reveal-controls">
                         <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
                           {/* Segmented Buy / Rent Selector */}
                           <div className="sm:col-span-3 flex bg-[#F3F2EE] p-1 border border-stone-200">
@@ -567,22 +567,22 @@ export default function App() {
             </section>
 
             {/* SECTION 2: Featured Portfolio Collection Grid (3-Column Desktop) */}
-            <section className="max-w-[1360px] mx-auto px-6 py-16 space-y-10">
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-stone-200 pb-6">
+            <section className="max-w-[1360px] mx-auto px-4 sm:px-6 py-10 sm:py-16 space-y-6 sm:space-y-10">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 border-b border-stone-200 pb-5 sm:pb-6">
                 <div>
                   <div className="text-xs text-[#615E59]">
                     Curated Architectural Mandates · Available for Private Showing
                   </div>
-                  <h2 className="font-serif-display text-3xl sm:text-4xl font-semibold text-[#141413] mt-1">
+                  <h2 className="font-serif-display text-2xl sm:text-4xl font-semibold text-[#141413] mt-1">
                     Featured Residences & Estates
                   </h2>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
                   <button
                     type="button"
                     onClick={() => setActiveRoute('compare')}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium border border-stone-300 text-[#141413] hover:border-[#141413] transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium border border-stone-300 text-[#141413] hover:border-[#141413] transition-colors cursor-pointer"
                   >
                     <Scale className="w-3.5 h-3.5" />
                     <span>Compare Selected ({compareIds.length}/3)</span>
@@ -590,15 +590,15 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setActiveRoute('search')}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors cursor-pointer"
                   >
-                    <span>View Complete Portfolio ({properties.length})</span>
+                    <span>View All ({properties.length})</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 {featuredProperties.map((property, idx) => (
                   <PropertyCard
                     key={property.id}
@@ -615,14 +615,14 @@ export default function App() {
 
             {/* SECTION 2B: Trinetra Realty "Our Projects" Featured Showcase */}
             {featuredCompanyProjects.length > 0 && (
-              <section className="max-w-[1360px] mx-auto px-6 pb-16 space-y-10">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-stone-200 pb-6">
+              <section className="max-w-[1360px] mx-auto px-4 sm:px-6 pb-10 sm:pb-16 space-y-6 sm:space-y-10">
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 border-b border-stone-200 pb-5 sm:pb-6">
                   <div>
                     <div className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.14em] uppercase text-[#1E3A2F]">
                       <Building2 className="w-3.5 h-3.5" />
                       <span>Trinetra Realty · Proprietary Developments &amp; Official Projects</span>
                     </div>
-                    <h2 className="font-serif-display text-3xl sm:text-4xl font-semibold text-[#141413] mt-1">
+                    <h2 className="font-serif-display text-2xl sm:text-4xl font-semibold text-[#141413] mt-1">
                       Our Signature Projects
                     </h2>
                     <p className="text-xs sm:text-sm text-[#57534E] mt-1 max-w-2xl">
@@ -664,44 +664,44 @@ export default function App() {
             )}
 
             {/* SECTION 3: Capabilities, Quantified Proof of Impact & Customer Leads Hub */}
-            <section className="bg-[#F3F2EE] border-y border-stone-200 py-16">
-              <div className="max-w-[1360px] mx-auto px-6 space-y-14">
+            <section className="bg-[#F3F2EE] border-y border-stone-200 py-10 sm:py-16">
+              <div className="max-w-[1360px] mx-auto px-4 sm:px-6 space-y-10 sm:space-y-14">
                 {/* Quantified Proof of Impact adjacent to Advisory Claims */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end border-b border-stone-300 pb-12">
-                  <div className="lg:col-span-6 space-y-3">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-end border-b border-stone-300 pb-8 sm:pb-12">
+                  <div className="lg:col-span-6 space-y-2.5 sm:space-y-3">
                     <div className="text-xs text-[#615E59]">
                       Empirical Performance & Private Placement Advisory
                     </div>
-                    <h2 className="font-serif-display text-3xl sm:text-4xl font-semibold text-[#141413] text-balance">
+                    <h2 className="font-serif-display text-2xl sm:text-4xl font-semibold text-[#141413] text-balance">
                       Full-Spectrum Real Estate Advisory, Valuation, and Financing
                     </h2>
-                    <p className="text-sm text-[#57534E] leading-relaxed max-w-xl">
+                    <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed max-w-xl">
                       Whether acquiring a primary penthouse, leasing a turnkey courtyard villa, or appraising a generational townhouse for disposition, our integrated platform connects principals directly with quantitative market data and senior partners.
                     </p>
                   </div>
 
-                  <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div className="bg-[#FBFBF9] border border-stone-200 p-5">
+                  <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                    <div className="bg-[#FBFBF9] border border-stone-200 p-4 sm:p-5">
                       <div className="font-mono-tabular text-2xl sm:text-3xl font-semibold text-[#141413]">
                         ₹1,480 Cr
                       </div>
-                      <div className="text-xs text-[#615E59] mt-1">
+                      <div className="text-[11px] sm:text-xs text-[#615E59] mt-1">
                         Closed Transaction Volume Across 12 Months (2025–2026)
                       </div>
                     </div>
-                    <div className="bg-[#FBFBF9] border border-stone-200 p-5">
+                    <div className="bg-[#FBFBF9] border border-stone-200 p-4 sm:p-5">
                       <div className="font-mono-tabular text-2xl sm:text-3xl font-semibold text-[#1E3A2F]">
                         98.4%
                       </div>
-                      <div className="text-xs text-[#615E59] mt-1">
+                      <div className="text-[11px] sm:text-xs text-[#615E59] mt-1">
                         List-to-Close Realization on Verified Mandates
                       </div>
                     </div>
-                    <div className="bg-[#FBFBF9] border border-stone-200 p-5">
+                    <div className="bg-[#FBFBF9] border border-stone-200 p-4 sm:p-5">
                       <div className="font-mono-tabular text-2xl sm:text-3xl font-semibold text-[#141413]">
                         24 Days
                       </div>
-                      <div className="text-xs text-[#615E59] mt-1">
+                      <div className="text-[11px] sm:text-xs text-[#615E59] mt-1">
                         Median Private Placement Velocity for Valued Estates
                       </div>
                     </div>
@@ -710,37 +710,37 @@ export default function App() {
 
                 {/* Asymmetric Bento Grid of Platform Capabilities & Customer Lead Channels */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                  <div className="lg:col-span-7 bg-[#FBFBF9] border border-stone-200 p-8 flex flex-col justify-between space-y-6">
+                  <div className="lg:col-span-7 bg-[#FBFBF9] border border-stone-200 p-5 sm:p-8 flex flex-col justify-between space-y-5 sm:space-y-6">
                     <div className="space-y-2">
                       <div className="font-mono-tabular text-xs font-semibold text-[#1E3A2F]">
                         01. Algorithmic Property Valuation & Seller Mandates
                       </div>
-                      <h3 className="font-serif-display text-2xl sm:text-3xl font-semibold text-[#141413]">
+                      <h2 className="font-serif-display text-xl sm:text-3xl font-semibold text-[#141413]">
                         Instant Per-Square-Foot Benchmarking & Disposition Modeling
-                      </h3>
-                      <p className="text-sm text-[#57534E] leading-relaxed">
+                      </h2>
+                      <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed">
                         Calculate your residence’s fair market valuation range using live locality indices across Tribeca, Beverly Hills Trousdale, Gramercy, Sausalito, and Pacific Heights.
                       </p>
                     </div>
-                    <div className="flex flex-wrap gap-3 pt-2">
+                    <div className="flex flex-wrap gap-2.5 sm:gap-3 pt-2">
                       <button
                         type="button"
                         onClick={() => setActiveRoute('sell')}
-                        className="px-5 py-2.5 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors cursor-pointer"
+                        className="px-4 sm:px-5 py-2.5 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors cursor-pointer"
                       >
                         Launch Property Valuation Engine
                       </button>
                       <button
                         type="button"
                         onClick={() => handleOpenLeadModal('Property Valuation')}
-                        className="px-4 py-2.5 text-xs font-medium border border-stone-300 text-[#141413] hover:border-[#141413] cursor-pointer"
+                        className="px-3.5 sm:px-4 py-2.5 text-xs font-medium border border-stone-300 text-[#141413] hover:border-[#141413] cursor-pointer"
                       >
                         Quick Valuation Modal
                       </button>
                     </div>
                   </div>
 
-                  <div className="lg:col-span-5 bg-[#FBFBF9] border border-stone-200 p-8 flex flex-col justify-between space-y-6">
+                  <div className="lg:col-span-5 bg-[#FBFBF9] border border-stone-200 p-5 sm:p-8 flex flex-col justify-between space-y-5 sm:space-y-6">
                     <div className="space-y-2">
                       <div className="font-mono-tabular text-xs font-semibold text-[#1E3A2F]">
                         02. Jumbo Debt Service & EMI Modeling
@@ -854,13 +854,13 @@ export default function App() {
          * VIEW 2: PUBLIC WEBSITE -> PROPERTY SEARCH
          * =============================================================== */}
         {activeRoute === 'search' && (
-          <div className="max-w-[1360px] mx-auto px-6 py-12 space-y-10">
-            <div className="border-b border-stone-200 pb-6 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+          <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-6 sm:space-y-10">
+            <div className="border-b border-stone-200 pb-5 sm:pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
                 <div className="text-xs text-[#615E59]">
                   Multi-Facet Portfolio Search · {filteredProperties.length} Matching Mandates
                 </div>
-                <h1 className="font-serif-display text-4xl sm:text-5xl font-semibold text-[#141413] mt-1">
+                <h1 className="font-serif-display text-2xl sm:text-5xl font-semibold text-[#141413] mt-1">
                   Property Search & Directory
                 </h1>
               </div>
@@ -876,7 +876,7 @@ export default function App() {
             </div>
 
             {/* Comprehensive Filter Bar */}
-            <div className="bg-[#F3F2EE] border border-stone-200 p-6 space-y-4">
+            <div className="bg-[#F3F2EE] border border-stone-200 p-4 sm:p-6 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
                 {/* Keyword Search */}
                 <div className="lg:col-span-2">

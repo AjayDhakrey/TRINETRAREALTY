@@ -137,37 +137,37 @@ export const CompanyProjectCard: React.FC<CompanyProjectCardProps> = ({
         </div>
 
         {/* Editorial Content Block */}
-        <div className="p-6">
-          <div className="flex items-center gap-2 text-xs text-[#615E59] mb-2">
+        <div className="p-4 sm:p-6">
+          <div className="flex items-center gap-2 text-[11px] sm:text-xs text-[#615E59] mb-2">
             <span>{project.projectType}</span>
             <span aria-hidden="true">·</span>
-            <span className="truncate">{project.developerBrand}</span>
+            <span className="truncate max-w-[140px] sm:max-w-none">{project.developerBrand}</span>
           </div>
 
           <h3
             onClick={() => onSelectProject(project)}
-            className="font-serif-display text-2xl font-semibold text-[#141413] group-hover:text-[#1E3A2F] transition-colors duration-300 ease-out cursor-pointer line-clamp-1"
+            className="font-serif-display text-xl sm:text-2xl font-semibold text-[#141413] group-hover:text-[#1E3A2F] transition-colors duration-300 ease-out cursor-pointer line-clamp-1"
           >
             {project.name}
           </h3>
 
-          <p className="text-sm text-[#57534E] mt-1.5 line-clamp-2 leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#57534E] mt-1.5 line-clamp-2 leading-relaxed">
             {project.shortDescription}
           </p>
 
           {/* Price & Configuration Summary */}
-          <div className="mt-5 pt-4 border-t border-stone-200/70 space-y-2">
+          <div className="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-stone-200/70 space-y-2">
             <div className="flex items-baseline justify-between gap-4">
               <div>
-                <div className="text-[11px] uppercase tracking-wider text-[#615E59]">
+                <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#615E59]">
                   Starting Valuation
                 </div>
-                <div className="font-mono-tabular text-lg font-semibold text-[#141413] mt-0.5">
+                <div className="font-mono-tabular text-base sm:text-lg font-semibold text-[#141413] mt-0.5">
                   {formattedStartingPrice}
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-[11px] uppercase tracking-wider text-[#615E59]">
+                <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#615E59]">
                   Dimensions
                 </div>
                 <div className="font-mono-tabular text-xs font-medium text-[#141413] mt-0.5">
@@ -176,8 +176,8 @@ export const CompanyProjectCard: React.FC<CompanyProjectCardProps> = ({
               </div>
             </div>
 
-            <div className="pt-2 flex items-center justify-between text-xs text-[#57534E]">
-              <span className="font-medium text-[#141413] truncate">
+            <div className="pt-2 flex items-center justify-between text-[11px] sm:text-xs text-[#57534E]">
+              <span className="font-medium text-[#141413] truncate max-w-[160px] sm:max-w-none">
                 {project.configurationSummary}
               </span>
               <span className="inline-flex items-center gap-1 text-[#615E59] shrink-0 ml-2">
@@ -190,17 +190,17 @@ export const CompanyProjectCard: React.FC<CompanyProjectCardProps> = ({
       </div>
 
       {/* Action Bar */}
-      <div className="px-6 pb-5 pt-2 flex items-center justify-between gap-2 border-t border-stone-100">
+      <div className="px-4 sm:px-6 pb-4 sm:pb-5 pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-stone-100">
         <button
           type="button"
           onClick={() => onSelectProject(project)}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#141413] hover:text-[#1E3A2F] py-2 transition-colors duration-250 ease-out whitespace-nowrap cursor-pointer"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#141413] hover:text-[#1E3A2F] py-1.5 transition-colors duration-250 ease-out whitespace-nowrap cursor-pointer"
         >
           <span>Explore Project</span>
           <ArrowUpRight className="w-3.5 h-3.5 transition-colors duration-250 ease-out" />
         </button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <button
             type="button"
             onClick={() =>

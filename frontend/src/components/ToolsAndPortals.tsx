@@ -71,13 +71,13 @@ export const BuyView: React.FC<BuyRentViewProps> = ({
   const categories = ['All', 'Penthouse', 'Villa', 'Townhouse', 'Waterfront', 'Estate'];
 
   return (
-    <div className="max-w-[1360px] mx-auto px-6 py-12 space-y-14">
-      <div className="border-b border-stone-200 pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-10 sm:space-y-14">
+      <div className="border-b border-stone-200 pb-6 sm:pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div className="space-y-2 max-w-2xl">
           <div className="text-xs text-[#615E59]">
             Private Sales & Freehold Acquisitions · {buyProperties.length} Curated Mandates
           </div>
-          <h1 className="font-serif-display text-4xl sm:text-5xl font-semibold text-[#141413] text-balance">
+          <h1 className="font-serif-display text-2xl sm:text-5xl font-semibold text-[#141413] text-balance">
             Residences for Private Acquisition
           </h1>
           <p className="text-base text-[#57534E] leading-relaxed">
@@ -176,13 +176,13 @@ export const RentView: React.FC<BuyRentViewProps> = ({
   );
 
   return (
-    <div className="max-w-[1360px] mx-auto px-6 py-12 space-y-14">
-      <div className="border-b border-stone-200 pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-10 sm:space-y-14">
+      <div className="border-b border-stone-200 pb-6 sm:pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div className="space-y-2 max-w-2xl">
           <div className="text-xs text-[#615E59]">
             Executive & Diplomatic Leasing · Turnkey Architectural Residences
           </div>
-          <h1 className="font-serif-display text-4xl sm:text-5xl font-semibold text-[#141413] text-balance">
+          <h1 className="font-serif-display text-2xl sm:text-5xl font-semibold text-[#141413] text-balance">
             Architectural Residences for Lease
           </h1>
           <p className="text-base text-[#57534E] leading-relaxed">
@@ -345,16 +345,16 @@ export const SellView: React.FC<SellViewProps> = ({
   };
 
   return (
-    <div className="max-w-[1360px] mx-auto px-6 py-12 space-y-14">
-      <div className="border-b border-stone-200 pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-10 sm:space-y-14">
+      <div className="border-b border-stone-200 pb-6 sm:pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div className="space-y-2 max-w-2xl">
           <div className="text-xs text-[#615E59]">
             Seller Representation & Algorithmic Property Valuation
           </div>
-          <h1 className="font-serif-display text-4xl sm:text-5xl font-semibold text-[#141413] text-balance">
+          <h1 className="font-serif-display text-2xl sm:text-5xl font-semibold text-[#141413] text-balance">
             List Your Residence & Request a Private Valuation
           </h1>
-          <p className="text-base text-[#57534E] leading-relaxed">
+          <p className="text-xs sm:text-base text-[#57534E] leading-relaxed">
             Combine our real-time locality valuation index with bespoke editorial representation. Model your property’s current market basis below and dispatch a formal appraisal mandate to our partners.
           </p>
         </div>
@@ -369,9 +369,9 @@ export const SellView: React.FC<SellViewProps> = ({
       </div>
 
       {/* Interactive Split Valuation Engine + Lead Capture */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-start">
         {/* Left 7 Cols: Algorithmic Valuation Configurator */}
-        <div className="lg:col-span-7 bg-[#F3F2EE] border border-stone-200 p-6 sm:p-8 space-y-6">
+        <div className="lg:col-span-7 bg-[#F3F2EE] border border-stone-200 p-4 sm:p-8 space-y-5 sm:space-y-6">
           <div className="flex items-center justify-between border-b border-stone-300 pb-4">
             <div>
               <div className="text-xs text-[#615E59]">Step 01 · Property Parameters</div>
@@ -997,13 +997,13 @@ export const EmiCalculatorView: React.FC<EmiCalculatorViewProps> = ({
   const interestShare = 100 - principalShare;
 
   return (
-    <div className="max-w-[1360px] mx-auto px-6 py-12 space-y-12">
-      <div className="border-b border-stone-200 pb-6 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-8 sm:space-y-12">
+      <div className="border-b border-stone-200 pb-5 sm:pb-6 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
         <div className="space-y-1 max-w-2xl">
           <div className="text-xs text-[#615E59]">
             Private Wealth Debt Service & Amortization Modeling
           </div>
-          <h1 className="font-serif-display text-4xl sm:text-5xl font-semibold text-[#141413]">
+          <h1 className="font-serif-display text-2xl sm:text-5xl font-semibold text-[#141413]">
             Jumbo Mortgage & EMI Calculator
           </h1>
         </div>
@@ -1015,7 +1015,7 @@ export const EmiCalculatorView: React.FC<EmiCalculatorViewProps> = ({
           <select
             value={selectedPropId}
             onChange={(e) => handleSelectPreset(e.target.value)}
-            className="px-3.5 py-2 text-xs bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
+            className="w-full sm:w-auto px-3.5 py-2 text-xs bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
           >
             <option value="custom">Custom Principal Valuation</option>
             {buyProperties.map((p) => (
@@ -1027,9 +1027,9 @@ export const EmiCalculatorView: React.FC<EmiCalculatorViewProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-start">
         {/* Left 5 Cols: Interactive Sliders */}
-        <div className="lg:col-span-5 bg-[#F3F2EE] border border-stone-200 p-6 sm:p-8 space-y-6">
+        <div className="lg:col-span-5 bg-[#F3F2EE] border border-stone-200 p-4 sm:p-8 space-y-5 sm:space-y-6">
           <div>
             <div className="flex justify-between text-xs font-medium text-[#141413] mb-2">
               <span>Acquisition Price</span>
@@ -1181,8 +1181,8 @@ export const EmiCalculatorView: React.FC<EmiCalculatorViewProps> = ({
                 Values in INR (₹) · Tabular Figures
               </span>
             </div>
-            <div className="max-h-96 overflow-y-auto">
-              <table className="w-full text-left border-collapse text-xs">
+            <div className="max-h-96 overflow-y-auto overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs min-w-[500px]">
                 <thead className="bg-[#F3F2EE]/50 border-b border-stone-200 sticky top-0">
                   <tr>
                     <th className="py-3 px-4 font-semibold text-[#615E59]">Year</th>
@@ -1245,16 +1245,16 @@ export const LocalitiesView: React.FC<LocalitiesViewProps> = ({
   onOpenLeadModal,
 }) => {
   return (
-    <div className="max-w-[1360px] mx-auto px-6 py-12 space-y-12">
-      <div className="border-b border-stone-200 pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-8 sm:space-y-12">
+      <div className="border-b border-stone-200 pb-6 sm:pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div className="space-y-2 max-w-2xl">
           <div className="text-xs text-[#615E59]">
             Micro-Market Liquidity & Architectural Enclaves
           </div>
-          <h1 className="font-serif-display text-4xl sm:text-5xl font-semibold text-[#141413]">
+          <h1 className="font-serif-display text-2xl sm:text-5xl font-semibold text-[#141413]">
             Premier Localities & District Intelligence
           </h1>
-          <p className="text-base text-[#57534E] leading-relaxed">
+          <p className="text-xs sm:text-base text-[#57534E] leading-relaxed">
             Quantitative per-square-foot benchmarks, historical appreciation trajectories, and architectural zoning profiles across our core residential districts.
           </p>
         </div>
@@ -1262,13 +1262,13 @@ export const LocalitiesView: React.FC<LocalitiesViewProps> = ({
         <button
           type="button"
           onClick={() => onOpenLeadModal('Property Valuation')}
-          className="px-5 py-2.5 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors whitespace-nowrap cursor-pointer"
+          className="px-4 sm:px-5 py-2.5 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors whitespace-nowrap cursor-pointer text-center"
         >
           Benchmark Your Property in These Localities
         </button>
       </div>
 
-      <div className="space-y-10">
+      <div className="space-y-8 sm:space-y-10">
         {localities.map((loc, index) => {
           const matchingCount = properties.filter((p) => p.locality === loc.name).length;
           return (
@@ -1287,13 +1287,13 @@ export const LocalitiesView: React.FC<LocalitiesViewProps> = ({
                 </div>
               </div>
 
-              <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between space-y-6">
-                <div className="space-y-3">
+              <div className="lg:col-span-7 p-4 sm:p-8 flex flex-col justify-between space-y-5 sm:space-y-6">
+                <div className="space-y-2.5 sm:space-y-3">
                   <div className="text-xs text-[#615E59]">{loc.architecturalCharacter}</div>
-                  <h2 className="font-serif-display text-3xl font-semibold text-[#141413]">
+                  <h2 className="font-serif-display text-2xl sm:text-3xl font-semibold text-[#141413]">
                     {loc.name}
                   </h2>
-                  <p className="text-sm text-[#57534E] leading-relaxed">{loc.description}</p>
+                  <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed">{loc.description}</p>
 
                   <div className="pt-2 space-y-1.5">
                     {loc.keyHighlights.map((hl, i) => (
@@ -1307,8 +1307,8 @@ export const LocalitiesView: React.FC<LocalitiesViewProps> = ({
                   </div>
                 </div>
 
-                <div className="pt-5 border-t border-stone-200 flex flex-wrap items-center justify-between gap-6">
-                  <div className="grid grid-cols-4 gap-6">
+                <div className="pt-4 sm:pt-5 border-t border-stone-200 flex flex-wrap items-center justify-between gap-4 sm:gap-6">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 w-full sm:w-auto">
                     <div>
                       <div className="text-[11px] text-[#615E59]">Avg. Basis</div>
                       <div className="font-mono-tabular text-sm font-semibold text-[#141413]">
@@ -1365,19 +1365,19 @@ export const BlogView: React.FC<BlogViewProps> = ({ posts, onOpenLeadModal }) =>
   const [selectedPost, setSelectedPost] = useState<BlogPost>(posts[0]);
 
   return (
-    <div className="max-w-[1360px] mx-auto px-6 py-12 space-y-12">
-      <div className="border-b border-stone-200 pb-8">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-8 sm:space-y-12">
+      <div className="border-b border-stone-200 pb-5 sm:pb-8">
         <div className="text-xs text-[#615E59]">
           The Architectural Ledger · Quarterly Research & Advisory Essays
         </div>
-        <h1 className="font-serif-display text-4xl sm:text-5xl font-semibold text-[#141413] mt-1">
+        <h1 className="font-serif-display text-2xl sm:text-5xl font-semibold text-[#141413] mt-1">
           Editorial Journal & Market Monographs
         </h1>
       </div>
 
       {/* Featured Active Essay Reader */}
       {selectedPost && (
-        <article className="bg-[#F3F2EE] border border-stone-200 p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        <article className="bg-[#F3F2EE] border border-stone-200 p-4 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-start">
           <div className="lg:col-span-5 space-y-4">
             <div className="aspect-[4/3] w-full bg-stone-200 overflow-hidden">
               <ArchitecturalImage
@@ -1387,7 +1387,7 @@ export const BlogView: React.FC<BlogViewProps> = ({ posts, onOpenLeadModal }) =>
               />
             </div>
             {/* Unboxed Metadata */}
-            <div className="flex items-center gap-2 text-xs text-[#615E59]">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-[#615E59]">
               <span>{selectedPost.category}</span>
               <span aria-hidden="true">·</span>
               <span>{selectedPost.publishedAt}</span>
@@ -1400,11 +1400,11 @@ export const BlogView: React.FC<BlogViewProps> = ({ posts, onOpenLeadModal }) =>
             </div>
           </div>
 
-          <div className="lg:col-span-7 space-y-5">
-            <h2 className="font-serif-display text-3xl sm:text-4xl font-semibold text-[#141413] leading-tight">
+          <div className="lg:col-span-7 space-y-4 sm:space-y-5">
+            <h2 className="font-serif-display text-2xl sm:text-4xl font-semibold text-[#141413] leading-tight">
               {selectedPost.title}
             </h2>
-            <p className="text-base font-medium text-[#3F3C38] leading-relaxed">
+            <p className="text-sm sm:text-base font-medium text-[#3F3C38] leading-relaxed">
               {selectedPost.subtitle}
             </p>
             <div className="space-y-4 pt-2 border-t border-stone-300 text-sm text-[#3F3C38] leading-relaxed max-w-[68ch]">
@@ -1537,17 +1537,17 @@ export const ContactView: React.FC<ContactViewProps> = ({
     'https://www.google.com/maps/search/?api=1&query=F3%2C+Supermax+Galleria+Market%2C+Sector+33%2C+Sonipat%2C+Haryana%2C+India';
 
   return (
-    <div className="max-w-[1360px] mx-auto px-6 py-12 space-y-12">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-8 sm:space-y-12">
       {/* Header Banner */}
       <div className="border-b border-stone-200 pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div className="space-y-3 max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#1E3A2F]/10 text-[#1E3A2F] text-xs font-semibold tracking-wider uppercase rounded-full">
             Get in Touch · Trinetra Realty
           </div>
-          <h1 className="font-serif-display text-4xl sm:text-5xl font-semibold text-[#141413]">
+          <h1 className="font-serif-display text-3xl sm:text-5xl font-semibold text-[#141413]">
             Trinetra Realty
           </h1>
-          <p className="font-serif-display text-2xl text-[#1E3A2F] italic">
+          <p className="font-serif-display text-xl sm:text-2xl text-[#1E3A2F] italic">
             Your Future, Our Focus.
           </p>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-stone-200 text-xs font-medium text-[#141413] rounded-sm shadow-2xs">
