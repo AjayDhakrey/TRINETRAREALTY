@@ -473,17 +473,8 @@ export default function App() {
                     className="absolute inset-0 z-10 pointer-events-none bg-[radial-gradient(115%_95%_at_18%_85%,rgba(12,12,11,0.62)_0%,rgba(12,12,11,0.24)_52%,rgba(12,12,11,0)_100%)]"
                   />
 
-                  {/* Foreground Layer (z-20): Existing Hero Content (opacity: 1) */}
-                  <div className="absolute inset-0 z-20 p-4 sm:p-12 flex flex-col justify-between opacity-100">
-                    {/* Top Regional Trust Marker (Placed in Hero, never Top Bar) */}
-                    <div className="flex items-center justify-between text-xs text-white font-medium [text-shadow:0_1px_8px_rgba(0,0,0,0.6)] tr-reveal-supporting">
-                      <span className="text-[11px] sm:text-xs">
-                        New York · Beverly Hills · San Francisco · Marin Coast
-                      </span>
-                      <span className="font-mono-tabular hidden sm:inline">
-                        2026 Private Portfolio Collection
-                      </span>
-                    </div>
+                  {/* Foreground Layer (z-20): Hero Content */}
+                  <div className="absolute inset-0 z-20 p-4 sm:p-12 flex flex-col justify-end opacity-100">
 
                     {/* Hero Focal Proposition */}
                     <div className="max-w-3xl space-y-3 sm:space-y-5 opacity-100">
