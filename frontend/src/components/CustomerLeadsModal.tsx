@@ -1,6 +1,7 @@
 import { apiFetch } from '../services/api';
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, MessageSquare, Calendar, Calculator, Send, Copy, Check } from 'lucide-react';
+import { WhatsAppIcon } from './SocialIcons';
 import {
   LeadType,
   Property,
@@ -288,18 +289,18 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
                       href={`https://wa.me/919186221008?text=${encodeURIComponent(whatsappFormattedText)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors cursor-pointer rounded-xs"
                     >
-                      <Send className="w-3.5 h-3.5" />
+                      <WhatsAppIcon className="w-3.5 h-3.5" />
                       <span>WhatsApp Rahul (+91 9186221008)</span>
                     </a>
                     <a
                       href={`https://wa.me/919034969308?text=${encodeURIComponent(whatsappFormattedText)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors cursor-pointer rounded-xs"
                     >
-                      <Send className="w-3.5 h-3.5" />
+                      <WhatsAppIcon className="w-3.5 h-3.5" />
                       <span>WhatsApp Rohit (+91 9034969308)</span>
                     </a>
                     <button

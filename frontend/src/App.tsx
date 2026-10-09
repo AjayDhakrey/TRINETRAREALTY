@@ -21,6 +21,12 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import {
+  WhatsAppIcon,
+  InstagramIcon,
+  FacebookIcon,
+  GoogleMapsIcon,
+} from './components/SocialIcons';
+import {
   Property,
   CompanyProject,
   CustomerLead,
@@ -1271,7 +1277,7 @@ export default function App() {
               <div className="space-y-2 text-xs text-[#57534E]">
                 {/* Clickable Office Location to Google Maps */}
                 <div className="flex items-start gap-2">
-                  <MapPin className="w-4 h-4 text-[#1E3A2F] shrink-0 mt-0.5" />
+                  <GoogleMapsIcon className="w-4 h-4 text-[#EA4335] shrink-0 mt-0.5" />
                   <div>
                     <span className="font-semibold text-[#141413]">Office: </span>
                     <a
@@ -1316,25 +1322,37 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Social Channels */}
-              <div className="flex items-center gap-3 pt-2 text-xs">
+              {/* Social Channels with Authentic Brand Icons */}
+              <div className="flex flex-wrap items-center gap-2.5 pt-2 text-xs">
                 <a
                   href="https://www.instagram.com/trinetrarealty_?stkn=MW52OXVra2cxcXhmaw=="
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-stone-200 text-[#141413] hover:text-pink-600 hover:border-pink-300 rounded-sm transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-stone-200 text-[#141413] hover:text-[#E1306C] hover:border-[#E1306C]/40 rounded-sm shadow-2xs hover:shadow-xs transition-all"
+                  title="Follow Trinetra Realty on Instagram"
                 >
-                  <Instagram className="w-3.5 h-3.5 text-pink-600" />
-                  <span>Instagram</span>
+                  <InstagramIcon className="w-3.5 h-3.5 text-[#E1306C]" />
+                  <span className="font-medium">Instagram</span>
                 </a>
                 <a
                   href="https://www.facebook.com/share/1VBsJ1bSHk/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-stone-200 text-[#141413] hover:text-blue-600 hover:border-blue-300 rounded-sm transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-stone-200 text-[#141413] hover:text-[#1877F2] hover:border-[#1877F2]/40 rounded-sm shadow-2xs hover:shadow-xs transition-all"
+                  title="Visit Trinetra Realty on Facebook"
                 >
-                  <Facebook className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Facebook</span>
+                  <FacebookIcon className="w-3.5 h-3.5 text-[#1877F2]" />
+                  <span className="font-medium">Facebook</span>
+                </a>
+                <a
+                  href="https://wa.me/919186221008?text=Hello%2C%20I%20am%20interested%20in%20Trinetra%20Realty%20properties."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-stone-200 text-[#141413] hover:text-[#25D366] hover:border-[#25D366]/40 rounded-sm shadow-2xs hover:shadow-xs transition-all"
+                  title="Chat with Trinetra Realty on WhatsApp"
+                >
+                  <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
+                  <span className="font-medium">WhatsApp</span>
                 </a>
               </div>
             </div>
@@ -1538,6 +1556,21 @@ export default function App() {
         onClose={() => setLeadModalOpen(false)}
         onLeadSubmitted={(newLead) => setLeads((prev) => [newLead, ...prev])}
       />
+
+      {/* Floating WhatsApp Quick Action Button */}
+      <a
+        href="https://wa.me/919186221008?text=Hello%2C%20I%20am%20interested%20in%20Trinetra%20Realty%20properties."
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat on WhatsApp"
+        title="Chat with Trinetra Realty on WhatsApp (+91 9186221008)"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group"
+      >
+        <WhatsAppIcon className="w-5 h-5 text-white shrink-0 group-hover:rotate-12 transition-transform" />
+        <span className="text-xs font-semibold tracking-wide hidden sm:inline">
+          WhatsApp Desk
+        </span>
+      </a>
       </div>
     </>
   );

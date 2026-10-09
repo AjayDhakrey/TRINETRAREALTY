@@ -36,6 +36,12 @@ import {
   formatNumber,
   calculateMonthlyEMI,
 } from '../utils/formatters';
+import {
+  WhatsAppIcon,
+  InstagramIcon,
+  FacebookIcon,
+  GoogleMapsIcon,
+} from './SocialIcons';
 
 /* ============================================================================
  * 1. BUY PORTAL VIEW
@@ -1530,9 +1536,9 @@ export const ContactView: React.FC<ContactViewProps> = ({
             href="https://wa.me/919186221008?text=Hello%2C%20I%20am%20interested%20in%20Trinetra%20Realty%20properties."
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-3 text-xs font-semibold border border-stone-300 text-[#141413] hover:bg-[#141413] hover:text-white transition-colors cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-3 text-xs font-semibold bg-[#25D366] hover:bg-[#20bd5a] text-white transition-colors cursor-pointer shadow-sm rounded-sm"
           >
-            <MessageCircle className="w-4 h-4 text-emerald-600" />
+            <WhatsAppIcon className="w-4 h-4 text-white" />
             <span>WhatsApp Our Desk</span>
           </a>
         </div>
@@ -1545,17 +1551,18 @@ export const ContactView: React.FC<ContactViewProps> = ({
           <div className="p-7 bg-[#F3F2EE] border border-stone-200 rounded-sm space-y-4 relative overflow-hidden group hover:border-[#1E3A2F]/40 transition-colors">
             <div className="flex items-center justify-between">
               <div className="inline-flex items-center gap-2 text-xs font-semibold text-[#1E3A2F] uppercase tracking-wider">
-                <MapPin className="w-4 h-4 text-[#1E3A2F]" />
+                <GoogleMapsIcon className="w-4 h-4 text-red-500" />
                 <span>Visit Our Office</span>
               </div>
               <a
                 href={MAPS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-medium text-[#1E3A2F] hover:underline inline-flex items-center gap-1"
+                className="text-xs font-semibold text-emerald-800 hover:text-emerald-950 inline-flex items-center gap-1.5 bg-white px-2.5 py-1 border border-stone-200 rounded-sm shadow-2xs hover:shadow-sm transition-all"
               >
-                <span>Open in Maps</span>
-                <ExternalLink className="w-3 h-3" />
+                <GoogleMapsIcon className="w-3.5 h-3.5 text-red-500" />
+                <span>Google Maps</span>
+                <ExternalLink className="w-3 h-3 text-stone-400" />
               </a>
             </div>
 
@@ -1583,7 +1590,8 @@ export const ContactView: React.FC<ContactViewProps> = ({
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-xs font-semibold text-[#1E3A2F] hover:text-[#141413] transition-colors"
               >
-                <span>Get Directions →</span>
+                <GoogleMapsIcon className="w-3.5 h-3.5 text-red-500" />
+                <span>Get Directions on Google Maps →</span>
               </a>
             </div>
           </div>
@@ -1597,7 +1605,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Rahul Khatri */}
-              <div className="p-4 bg-white border border-stone-200 rounded-sm space-y-2">
+              <div className="p-4 bg-white border border-stone-200 rounded-sm space-y-2 hover:border-emerald-300 transition-colors shadow-2xs">
                 <div className="text-xs text-stone-500 uppercase tracking-wider">Advisory Partner</div>
                 <div className="font-serif-display text-lg font-semibold text-[#141413]">
                   Rahul Khatri
@@ -1612,7 +1620,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                     href="tel:+919186221008"
                     className="inline-flex items-center gap-1 text-[#141413] hover:text-[#1E3A2F] font-medium"
                   >
-                    <Phone className="w-3 h-3" />
+                    <Phone className="w-3 h-3 text-stone-600" />
                     <span>Call Rahul</span>
                   </a>
                   <span className="text-stone-300">·</span>
@@ -1620,16 +1628,16 @@ export const ContactView: React.FC<ContactViewProps> = ({
                     href="https://wa.me/919186221008?text=Hello%20Rahul%2C%20I%20am%20interested%20in%20Trinetra%20Realty%20properties."
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-900 font-medium"
+                    className="inline-flex items-center gap-1.5 text-[#25D366] hover:text-[#20bd5a] font-semibold"
                   >
-                    <MessageCircle className="w-3 h-3" />
+                    <WhatsAppIcon className="w-3.5 h-3.5" />
                     <span>WhatsApp Rahul</span>
                   </a>
                 </div>
               </div>
 
               {/* Rohit Joon */}
-              <div className="p-4 bg-white border border-stone-200 rounded-sm space-y-2">
+              <div className="p-4 bg-white border border-stone-200 rounded-sm space-y-2 hover:border-emerald-300 transition-colors shadow-2xs">
                 <div className="text-xs text-stone-500 uppercase tracking-wider">Managing Partner</div>
                 <div className="font-serif-display text-lg font-semibold text-[#141413]">
                   Rohit Joon
@@ -1644,7 +1652,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
                     href="tel:+919034969308"
                     className="inline-flex items-center gap-1 text-[#141413] hover:text-[#1E3A2F] font-medium"
                   >
-                    <Phone className="w-3 h-3" />
+                    <Phone className="w-3 h-3 text-stone-600" />
                     <span>Call Rohit</span>
                   </a>
                   <span className="text-stone-300">·</span>
@@ -1652,9 +1660,9 @@ export const ContactView: React.FC<ContactViewProps> = ({
                     href="https://wa.me/919034969308?text=Hello%20Rohit%2C%20I%20am%20interested%20in%20Trinetra%20Realty%20properties."
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-emerald-700 hover:text-emerald-900 font-medium"
+                    className="inline-flex items-center gap-1.5 text-[#25D366] hover:text-[#20bd5a] font-semibold"
                   >
-                    <MessageCircle className="w-3 h-3" />
+                    <WhatsAppIcon className="w-3.5 h-3.5" />
                     <span>WhatsApp Rohit</span>
                   </a>
                 </div>
@@ -1710,17 +1718,17 @@ export const ContactView: React.FC<ContactViewProps> = ({
                 href="https://www.instagram.com/trinetrarealty_?stkn=MW52OXVra2cxcXhmaw=="
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 bg-white border border-stone-200 rounded-sm hover:border-pink-500 group transition-all"
+                className="p-3.5 bg-white border border-stone-200 rounded-sm hover:border-[#E1306C] group transition-all shadow-2xs hover:shadow-sm"
               >
-                <div className="flex items-center gap-2 text-pink-600 mb-1">
-                  <Instagram className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-[#E1306C] mb-1.5">
+                  <InstagramIcon className="w-5 h-5 text-[#E1306C] group-hover:scale-110 transition-transform" />
                   <span className="text-xs font-semibold text-[#141413]">Instagram</span>
                 </div>
-                <div className="text-xs text-stone-500 group-hover:text-pink-600 font-mono-tabular">
+                <div className="text-xs text-stone-500 group-hover:text-[#E1306C] font-mono-tabular">
                   @trinetrarealty_
                 </div>
-                <div className="text-[11px] font-semibold text-[#1E3A2F] mt-2 group-hover:underline">
-                  Follow on Instagram →
+                <div className="text-[11px] font-semibold text-[#1E3A2F] mt-2 group-hover:underline inline-flex items-center gap-1">
+                  <span>Follow on Instagram →</span>
                 </div>
               </a>
 
@@ -1729,17 +1737,17 @@ export const ContactView: React.FC<ContactViewProps> = ({
                 href="https://www.facebook.com/share/1VBsJ1bSHk/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 bg-white border border-stone-200 rounded-sm hover:border-blue-600 group transition-all"
+                className="p-3.5 bg-white border border-stone-200 rounded-sm hover:border-[#1877F2] group transition-all shadow-2xs hover:shadow-sm"
               >
-                <div className="flex items-center gap-2 text-blue-600 mb-1">
-                  <Facebook className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-[#1877F2] mb-1.5">
+                  <FacebookIcon className="w-5 h-5 text-[#1877F2] group-hover:scale-110 transition-transform" />
                   <span className="text-xs font-semibold text-[#141413]">Facebook</span>
                 </div>
-                <div className="text-xs text-stone-500 group-hover:text-blue-600">
+                <div className="text-xs text-stone-500 group-hover:text-[#1877F2]">
                   Trinetra Realty
                 </div>
-                <div className="text-[11px] font-semibold text-[#1E3A2F] mt-2 group-hover:underline">
-                  Visit Facebook →
+                <div className="text-[11px] font-semibold text-[#1E3A2F] mt-2 group-hover:underline inline-flex items-center gap-1">
+                  <span>Visit Facebook →</span>
                 </div>
               </a>
 
@@ -1748,17 +1756,17 @@ export const ContactView: React.FC<ContactViewProps> = ({
                 href="https://www.facebook.com/share/1D3uLHSo58/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 bg-white border border-stone-200 rounded-sm hover:border-blue-600 group transition-all"
+                className="p-3.5 bg-white border border-stone-200 rounded-sm hover:border-[#1877F2] group transition-all shadow-2xs hover:shadow-sm"
               >
-                <div className="flex items-center gap-2 text-blue-600 mb-1">
-                  <Facebook className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-[#1877F2] mb-1.5">
+                  <FacebookIcon className="w-5 h-5 text-[#1877F2] group-hover:scale-110 transition-transform" />
                   <span className="text-xs font-semibold text-[#141413]">Facebook</span>
                 </div>
-                <div className="text-xs text-stone-500 group-hover:text-blue-600">
+                <div className="text-xs text-stone-500 group-hover:text-[#1877F2]">
                   Trinetra Realty
                 </div>
-                <div className="text-[11px] font-semibold text-[#1E3A2F] mt-2 group-hover:underline">
-                  Visit Facebook →
+                <div className="text-[11px] font-semibold text-[#1E3A2F] mt-2 group-hover:underline inline-flex items-center gap-1">
+                  <span>Visit Facebook →</span>
                 </div>
               </a>
             </div>
