@@ -1800,8 +1800,8 @@ export default function App() {
         </aside>
       )}
 
-      {/* Floating Social Quick Links */}
-      <FloatingSocialDock />
+      {/* Floating Social Quick Links (only on public portal, hidden in Admin Panel) */}
+      {activeRoute !== 'admin' && <FloatingSocialDock />}
       </div>
     </>
   );
