@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Property, LeadType } from '../types/realestate';
 import { PropertyCard } from '../components/PropertyCard';
 
@@ -24,7 +24,16 @@ export const BuyView: React.FC<BuyRentViewProps> = ({
       (selectedCategory === 'All' || p.category === selectedCategory)
   );
 
-  const categories = ['All', 'Penthouse', 'Villa', 'Townhouse', 'Waterfront', 'Estate'];
+  const categories = useMemo(() => {
+    const list = ['All', 'Penthouse', 'Villa', 'Townhouse', 'Waterfront', 'Estate'];
+    const set = new Set<string>(list);
+    properties.forEach((p) => {
+      if (p.category && typeof p.category === 'string' && p.category.trim()) {
+        set.add(p.category.trim());
+      }
+    });
+    return Array.from(set);
+  }, [properties]);
 
   return (
     <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-10 sm:space-y-14">

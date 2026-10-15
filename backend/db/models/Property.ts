@@ -19,7 +19,6 @@ const PropertySchema = new Schema<PropertyDocument>(
     },
     category: {
       type: String,
-      enum: ['Penthouse', 'Villa', 'Townhouse', 'Waterfront', 'Estate'],
       default: 'Penthouse',
       index: true,
     },

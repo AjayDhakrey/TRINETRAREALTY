@@ -106,6 +106,28 @@ export async function createProperty(req: Request, res: Response): Promise<void>
       createdAt: new Date().toISOString(),
     };
 
+    const trimmedLocality = newProperty.locality.trim();
+    if (trimmedLocality) {
+      const allLocalities = await store.getLocalities();
+      const exists = allLocalities.some((l) => l.name.toLowerCase() === trimmedLocality.toLowerCase());
+      if (!exists) {
+        const newLoc = await store.createLocality({
+          id: `loc-${Date.now()}`,
+          name: trimmedLocality,
+          city: 'Sonipat / NCR',
+          avgPricePerSqFt: pricePerSqFt || 18500,
+          yoyAppreciation: 12.5,
+          rentalYield: 4.2,
+          transitScore: 88,
+          architecturalCharacter: 'Emerging Luxury Residential Enclave',
+          description: `Prime residential and commercial district in ${trimmedLocality}.`,
+          keyHighlights: ['Direct expressway corridor', 'Prime luxury zoning', 'High investment appreciation'],
+          heroImage: newProperty.images[0] || '/hero-poster.jpg',
+        });
+        broadcastEvent('locality:created', newLoc);
+      }
+    }
+
     const created = await store.createProperty(newProperty);
     broadcastEvent('property:created', created);
     res.status(201).json(created);
@@ -149,6 +171,28 @@ export async function updateProperty(req: Request, res: Response): Promise<void>
           ? Number(updates.monthlyMaintenance)
           : existing.monthlyMaintenance,
     };
+
+    if (sanitizedUpdates.locality && sanitizedUpdates.locality.trim()) {
+      const trimmedLoc = sanitizedUpdates.locality.trim();
+      const allLocalities = await store.getLocalities();
+      const exists = allLocalities.some((l) => l.name.toLowerCase() === trimmedLoc.toLowerCase());
+      if (!exists) {
+        const newLoc = await store.createLocality({
+          id: `loc-${Date.now()}`,
+          name: trimmedLoc,
+          city: 'Sonipat / NCR',
+          avgPricePerSqFt: pricePerSqFt || 18500,
+          yoyAppreciation: 12.5,
+          rentalYield: 4.2,
+          transitScore: 88,
+          architecturalCharacter: 'Emerging Luxury Residential Enclave',
+          description: `Prime residential and commercial district in ${trimmedLoc}.`,
+          keyHighlights: ['Direct expressway corridor', 'Prime luxury zoning', 'High investment appreciation'],
+          heroImage: sanitizedUpdates.images?.[0] || existing.images[0] || '/hero-poster.jpg',
+        });
+        broadcastEvent('locality:created', newLoc);
+      }
+    }
 
     const updated = await store.updateProperty(req.params.id, sanitizedUpdates);
     if (!updated) {

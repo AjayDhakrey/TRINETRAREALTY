@@ -178,6 +178,17 @@ export default function App() {
     'featured' | 'price-desc' | 'price-asc' | 'area-desc'
   >('featured');
 
+  const availableCategories = useMemo(() => {
+    const list = ['Penthouse', 'Villa', 'Townhouse', 'Waterfront', 'Estate'];
+    const set = new Set<string>(list);
+    properties.forEach((p) => {
+      if (p.category && typeof p.category === 'string' && p.category.trim()) {
+        set.add(p.category.trim());
+      }
+    });
+    return Array.from(set);
+  }, [properties]);
+
   // --- CUSTOMER LEADS MODAL STATE ---
   const [leadModalOpen, setLeadModalOpen] = useState<boolean>(false);
   const [leadModalTab, setLeadModalTab] = useState<LeadType>('Property Inquiry');
@@ -297,6 +308,16 @@ export default function App() {
     unsubs.push(
       realtimeClient.subscribe('media:updated', (upMedia: UploadedMedia) => {
         setMedia((prev) => prev.map((m) => (m.id === upMedia.id ? upMedia : m)));
+      })
+    );
+
+    // 5. Locality updates
+    unsubs.push(
+      realtimeClient.subscribe('locality:created', (newLoc: LocalityProfile) => {
+        setLocalities((prev) => {
+          if (prev.some((l) => l.name.toLowerCase() === newLoc.name.toLowerCase())) return prev;
+          return [...prev, newLoc];
+        });
       })
     );
     unsubs.push(
@@ -646,11 +667,11 @@ export default function App() {
                               className="w-full px-3 py-2 text-xs bg-white border border-stone-300 text-[#141413] focus:border-[#141413] focus:outline-none"
                             >
                               <option value="All">All Typologies</option>
-                              <option value="Penthouse">Penthouse</option>
-                              <option value="Villa">Villa</option>
-                              <option value="Townhouse">Townhouse</option>
-                              <option value="Waterfront">Waterfront</option>
-                              <option value="Estate">Estate</option>
+                              {availableCategories.map((cat) => (
+                                <option key={cat} value={cat}>
+                                  {cat}
+                                </option>
+                              ))}
                             </select>
                           </div>
 
@@ -1048,11 +1069,11 @@ export default function App() {
                     className="w-full px-3 py-2 text-xs bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
                   >
                     <option value="All">All Typologies</option>
-                    <option value="Penthouse">Penthouse</option>
-                    <option value="Villa">Villa</option>
-                    <option value="Townhouse">Townhouse</option>
-                    <option value="Waterfront">Waterfront</option>
-                    <option value="Estate">Estate</option>
+                    {availableCategories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
                   </select>
                 </div>
 

@@ -508,6 +508,21 @@ export async function getLocalities(): Promise<LocalityProfile[]> {
   return db.localities;
 }
 
+export async function createLocality(locality: LocalityProfile): Promise<LocalityProfile> {
+  if (isMongoConnected()) {
+    const existing = await LocalityModel.findOne({ name: locality.name });
+    if (existing) return existing.toObject() as any;
+    const doc = await LocalityModel.create(locality);
+    return doc.toObject() as any;
+  }
+  const db = loadJsonDatabase();
+  const existing = db.localities.find((l) => l.name.toLowerCase() === locality.name.toLowerCase());
+  if (existing) return existing;
+  db.localities.push(locality);
+  saveJsonDatabase(db);
+  return locality;
+}
+
 export async function getMedia(): Promise<UploadedMedia[]> {
   if (isMongoConnected()) {
     return (await MediaModel.find({}).sort({ uploadedAt: -1 }).lean()) as any;

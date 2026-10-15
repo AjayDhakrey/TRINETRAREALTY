@@ -30,9 +30,11 @@ import {
   Video,
   Waves,
   Zap,
+  Maximize2,
 } from 'lucide-react';
 import { CompanyProject, CustomerLead, LeadType } from '../types/realestate';
 import { ArchitecturalImage } from './ArchitecturalImage';
+import { PhotoLightboxModal } from './PhotoLightboxModal';
 import { formatCurrency, formatNumber } from '../utils/formatters';
 
 interface CompanyProjectDetailViewProps {
@@ -94,6 +96,25 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
   const [selectedGalleryIdx, setSelectedGalleryIdx] = useState<number>(0);
   const [selectedFloorPlanIdx, setSelectedFloorPlanIdx] = useState<number>(0);
   const [copiedShareUrl, setCopiedShareUrl] = useState<boolean>(false);
+
+  // Photo Lightbox State for Touch and Fullscreen View
+  const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
+  const [lightboxPhotos, setLightboxPhotos] = useState<
+    Array<{ url: string; caption?: string; title?: string }>
+  >([]);
+  const [lightboxIndex, setLightboxIndex] = useState<number>(0);
+  const [lightboxTitle, setLightboxTitle] = useState<string>('');
+
+  const openLightbox = (
+    photos: Array<{ url: string; caption?: string; title?: string }>,
+    index: number = 0,
+    titleText?: string
+  ) => {
+    setLightboxPhotos(photos);
+    setLightboxIndex(index);
+    setLightboxTitle(titleText || project.name);
+    setLightboxOpen(true);
+  };
 
   // Inquiry form state
   const [inquiryMode, setInquiryMode] = useState<InquiryTabMode>(initialInquiryMode);
@@ -383,18 +404,27 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
                 className="w-full h-full object-cover"
               />
             ) : (
-              <>
+              <div
+                onClick={() => openLightbox(galleryList, 0, `${project.name} — Visual Showcase`)}
+                className="w-full h-full relative cursor-pointer group"
+                title="Tap to view photos in full-screen lightbox"
+              >
                 <ArchitecturalImage
                   src={project.coverImage}
                   alt={project.name}
                   fallbackLabel={project.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div
                   aria-hidden="true"
                   className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/15 pointer-events-none"
                 />
-              </>
+                {/* Floating expand hint */}
+                <div className="absolute bottom-5 right-5 z-20 hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-black/75 hover:bg-black text-white text-xs border border-white/20 rounded-xs shadow-md backdrop-blur-xs">
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>Tap to view photos ({galleryList.length})</span>
+                </div>
+              </div>
             )}
 
             {/* Media Switcher (Cover vs Walkthrough Video) */}
@@ -427,8 +457,8 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
             )}
 
             {activeHeroMedia === 'image' && (
-              <div className="absolute inset-0 p-4 sm:p-12 flex flex-col justify-between z-10">
-                <div className="flex flex-wrap items-center gap-2">
+              <div className="absolute inset-0 p-4 sm:p-12 flex flex-col justify-between z-10 pointer-events-none">
+                <div className="flex flex-wrap items-center gap-2 pointer-events-auto">
                   <span className="px-3 py-1 text-xs font-medium tracking-[0.15em] uppercase bg-[#1E3A2F] text-white border border-white/15">
                     {project.projectStatus}
                   </span>
@@ -438,9 +468,17 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
                   <span className="px-3 py-1 text-xs font-mono-tabular bg-black/70 text-[#D4AF6A] border border-white/15">
                     {project.code}
                   </span>
+                  <button
+                    type="button"
+                    onClick={() => openLightbox(galleryList, 0, `${project.name} — Visual Showcase`)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium bg-black/75 hover:bg-black text-white border border-white/20 rounded-xs transition-colors cursor-pointer shadow-md"
+                  >
+                    <Maximize2 className="w-3.5 h-3.5" />
+                    <span>View Photos ({galleryList.length})</span>
+                  </button>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end pointer-events-auto">
                   <div className="lg:col-span-8 space-y-3">
                     <div className="inline-flex items-center gap-1.5 text-xs text-stone-200 font-medium">
                       <MapPin className="w-3.5 h-3.5 text-[#D4AF6A]" />
@@ -684,7 +722,7 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
 
               {project.configurations && project.configurations.length > 0 ? (
                 <div className="border border-stone-200 bg-white overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
+                  <table className="w-full text-left border-collapse min-w-[580px]">
                     <thead>
                       <tr className="bg-[#F3F2EE] border-b border-stone-200 text-[11px] uppercase tracking-wider text-[#615E59]">
                         <th className="py-3.5 px-4">Configuration</th>
@@ -767,15 +805,33 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
                     </div>
 
                     <div className="border border-stone-200 bg-[#F3F2EE] overflow-hidden">
-                      <div className="aspect-[16/10] w-full overflow-hidden bg-stone-900">
+                      <div
+                        onClick={() =>
+                          openLightbox(
+                            allFloorPlans.map((fp) => ({
+                              url: fp.url,
+                              caption: fp.caption || `${project.name} Floor Plan`,
+                              title: `${project.name} — Floor Plan Layout`,
+                            })),
+                            selectedFloorPlanIdx,
+                            `${project.name} — Floor Plans`
+                          )
+                        }
+                        className="aspect-[16/10] w-full overflow-hidden bg-stone-900 relative cursor-pointer group"
+                        title="Tap to enlarge floor plan in full screen"
+                      >
                         <ArchitecturalImage
                           src={allFloorPlans[selectedFloorPlanIdx]?.url || project.coverImage}
                           alt={
                             allFloorPlans[selectedFloorPlanIdx]?.caption ||
                             `${project.name} Floor Plan`
                           }
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
                         />
+                        <div className="absolute bottom-3 right-3 z-10 flex items-center gap-1.5 px-3 py-1.5 bg-black/80 hover:bg-black text-white text-xs border border-white/20 rounded-xs shadow-md backdrop-blur-xs">
+                          <Maximize2 className="w-3.5 h-3.5" />
+                          <span>Tap to view &amp; zoom</span>
+                        </div>
                       </div>
                       <div className="p-4 flex items-center justify-between text-xs bg-white border-t border-stone-200">
                         <span className="font-medium text-[#141413]">
@@ -799,12 +855,32 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
                       Site Master Plan ({project.projectArea})
                     </h3>
                     <div className="border border-stone-200 bg-white overflow-hidden">
-                      <div className="aspect-[16/9] w-full overflow-hidden">
+                      <div
+                        onClick={() =>
+                          openLightbox(
+                            [
+                              {
+                                url: project.masterPlanImage!,
+                                caption: `Master Site Plan (${project.projectArea}) — ${project.name}`,
+                                title: `${project.name} Master Plan`,
+                              },
+                            ],
+                            0,
+                            `${project.name} — Master Layout Plan`
+                          )
+                        }
+                        className="aspect-[16/9] w-full overflow-hidden relative cursor-pointer group bg-stone-900"
+                        title="Tap to enlarge master plan"
+                      >
                         <ArchitecturalImage
                           src={project.masterPlanImage}
                           alt={`${project.name} Master Plan`}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
                         />
+                        <div className="absolute bottom-3 right-3 z-10 flex items-center gap-1.5 px-3 py-1.5 bg-black/80 hover:bg-black text-white text-xs border border-white/20 rounded-xs shadow-md backdrop-blur-xs">
+                          <Maximize2 className="w-3.5 h-3.5" />
+                          <span>Tap to view full screen</span>
+                        </div>
                       </div>
                       <div className="p-3.5 text-xs text-[#57534E] bg-[#F3F2EE]/60 border-t border-stone-200">
                         Master Site Plan illustrating tower orientation, botanical greens, internal pedestrian boulevards, and clubhouse zoning.
@@ -858,12 +934,20 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
               </div>
 
               <div className="space-y-3">
-                <div className="aspect-[16/10] w-full bg-[#141413] border border-stone-200 overflow-hidden">
+                <div
+                  onClick={() => openLightbox(galleryList, selectedGalleryIdx, `${project.name} — Visual Gallery`)}
+                  className="aspect-[16/10] w-full bg-[#141413] border border-stone-200 overflow-hidden relative cursor-pointer group"
+                  title="Tap to view full screen photo gallery"
+                >
                   <ArchitecturalImage
                     src={galleryList[selectedGalleryIdx]?.url || project.coverImage}
                     alt={galleryList[selectedGalleryIdx]?.caption || project.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
+                  <div className="absolute bottom-3 right-3 z-10 flex items-center gap-1.5 px-3 py-1.5 bg-black/80 hover:bg-black text-white text-xs border border-white/20 rounded-xs shadow-md backdrop-blur-xs">
+                    <Maximize2 className="w-3.5 h-3.5" />
+                    <span>Tap to view full screen ({galleryList.length} photos)</span>
+                  </div>
                 </div>
                 {galleryList[selectedGalleryIdx]?.caption && (
                   <div className="text-xs text-[#57534E] italic">
@@ -963,12 +1047,32 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
               </div>
 
               {project.locationMapImage && (
-                <div className="aspect-[16/9] w-full border border-stone-200 overflow-hidden bg-stone-100">
+                <div
+                  onClick={() =>
+                    openLightbox(
+                      [
+                        {
+                          url: project.locationMapImage!,
+                          caption: `${project.name} Location & Regional Connectivity Map — ${project.locality}, ${project.city}`,
+                          title: `${project.name} — Location Map`,
+                        },
+                      ],
+                      0,
+                      `${project.name} — Location Map`
+                    )
+                  }
+                  className="aspect-[16/9] w-full border border-stone-200 overflow-hidden bg-stone-100 relative cursor-pointer group"
+                  title="Tap to enlarge location map"
+                >
                   <ArchitecturalImage
                     src={project.locationMapImage}
                     alt={`${project.name} Location Map`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
+                  <div className="absolute bottom-3 right-3 z-10 flex items-center gap-1.5 px-3 py-1.5 bg-black/80 hover:bg-black text-white text-xs border border-white/20 rounded-xs shadow-md backdrop-blur-xs">
+                    <Maximize2 className="w-3.5 h-3.5" />
+                    <span>Tap to view full screen</span>
+                  </div>
                 </div>
               )}
             </section>
@@ -1263,6 +1367,15 @@ export const CompanyProjectDetailView: React.FC<CompanyProjectDetailViewProps> =
           </aside>
         </div>
       </div>
+
+      {/* FULLSCREEN TOUCH-OPTIMIZED PHOTO LIGHTBOX */}
+      <PhotoLightboxModal
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        photos={lightboxPhotos}
+        initialIndex={lightboxIndex}
+        title={lightboxTitle}
+      />
     </div>
   );
 };

@@ -9,9 +9,11 @@ import {
   MessageSquare,
   Scale,
   Send,
+  Maximize2,
 } from 'lucide-react';
 import { Property, LeadType, CustomerLead, ActiveRoute } from '../types/realestate';
 import { ArchitecturalImage } from './ArchitecturalImage';
+import { PhotoLightboxModal } from './PhotoLightboxModal';
 import {
   formatPropertyPrice,
   formatCurrency,
@@ -39,6 +41,7 @@ export const PropertyDetailsView: React.FC<PropertyDetailsViewProps> = ({
   onLeadSubmitted,
 }) => {
   const [activeImageIdx, setActiveImageIdx] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   // Embedded quick-inquiry form state
   const [quickMode, setQuickMode] = useState<'Property Inquiry' | 'Schedule Visit'>('Property Inquiry');
@@ -131,15 +134,20 @@ export const PropertyDetailsView: React.FC<PropertyDetailsViewProps> = ({
         <div className="lg:col-span-7 space-y-10">
           {/* Primary 16:9 Gallery Stage */}
           <div className="space-y-3">
-            <div className="aspect-[16/9] w-full bg-[#F3F2EE] border border-stone-200 overflow-hidden relative">
+            <div
+              onClick={() => setLightboxOpen(true)}
+              className="aspect-[16/9] w-full bg-[#F3F2EE] border border-stone-200 overflow-hidden relative cursor-pointer group"
+              title="Tap to view full screen photos"
+            >
               <ArchitecturalImage
                 src={property.images[activeImageIdx] || property.images[0]}
                 alt={`${property.title} — View ${activeImageIdx + 1}`}
                 fallbackLabel={property.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute bottom-4 right-4 bg-black/75 text-white px-3 py-1 text-xs font-mono-tabular">
-                Plate {activeImageIdx + 1} of {property.images.length}
+              <div className="absolute bottom-4 right-4 bg-black/80 hover:bg-black text-white px-3 py-1.5 text-xs font-mono-tabular flex items-center gap-1.5 border border-white/20 rounded-xs shadow-md backdrop-blur-xs">
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span>Plate {activeImageIdx + 1} of {property.images.length} • Tap to view</span>
               </div>
             </div>
 
@@ -558,6 +566,19 @@ export const PropertyDetailsView: React.FC<PropertyDetailsViewProps> = ({
           </div>
         </aside>
       </div>
+
+      {/* FULLSCREEN TOUCH-OPTIMIZED PHOTO LIGHTBOX */}
+      <PhotoLightboxModal
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        photos={property.images.map((imgUrl, idx) => ({
+          url: imgUrl,
+          caption: `${property.title} — Plate ${idx + 1} of ${property.images.length}`,
+          title: property.title,
+        }))}
+        initialIndex={activeImageIdx}
+        title={property.title}
+      />
     </div>
   );
 };

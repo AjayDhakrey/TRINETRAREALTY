@@ -5,7 +5,7 @@ import {
   isApiBaseConfigured,
   readApiJson,
 } from '../services/api';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Lock,
   Plus,
@@ -21,6 +21,7 @@ import {
   Image as ImageIcon,
   Users,
   Building2,
+  X,
 } from 'lucide-react';
 import {
   Property,
@@ -147,6 +148,19 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   const [formSubtitle, setFormSubtitle] = useState('');
   const [formTransactionType, setFormTransactionType] = useState<TransactionType>('Buy');
   const [formCategory, setFormCategory] = useState<PropertyCategory>('Penthouse');
+  const [isCustomCategory, setIsCustomCategory] = useState<boolean>(false);
+  const [customCategoryInput, setCustomCategoryInput] = useState<string>('');
+
+  const standardCategories: string[] = ['Penthouse', 'Villa', 'Townhouse', 'Waterfront', 'Estate'];
+  const availableCategories = useMemo(() => {
+    const set = new Set<string>(standardCategories);
+    properties.forEach((p) => {
+      if (p.category && typeof p.category === 'string' && p.category.trim()) {
+        set.add(p.category.trim());
+      }
+    });
+    return Array.from(set);
+  }, [properties]);
   const [formStatus, setFormStatus] = useState<PropertyStatus>('Available');
   const [formPrice, setFormPrice] = useState<number>(75000000);
   const [formArea, setFormArea] = useState<number>(4000);
@@ -154,8 +168,10 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   const [formBathrooms, setFormBathrooms] = useState<number>(4.5);
   const [formParking, setFormParking] = useState<number>(2);
   const [formLocality, setFormLocality] = useState<string>(
-    localities[0]?.name || 'Tribeca & SoHo'
+    localities[0]?.name || 'Sector 33 · Sonipat'
   );
+  const [isCustomLocality, setIsCustomLocality] = useState<boolean>(false);
+  const [customLocalityInput, setCustomLocalityInput] = useState<string>('');
   const [formAddress, setFormAddress] = useState('');
   const [formStyle, setFormStyle] = useState('Contemporary Minimalist');
   const [formArchitect, setFormArchitect] = useState('Trinetra Realty Design Group');
@@ -208,14 +224,32 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
         setFormTitle(target.title);
         setFormSubtitle(target.subtitle);
         setFormTransactionType(target.transactionType);
-        setFormCategory(target.category);
+        if (target.category) {
+          if (standardCategories.includes(target.category)) {
+            setFormCategory(target.category);
+            setIsCustomCategory(false);
+            setCustomCategoryInput('');
+          } else {
+            setFormCategory(target.category);
+            setIsCustomCategory(true);
+            setCustomCategoryInput(target.category);
+          }
+        }
         setFormStatus(target.status);
         setFormPrice(target.price);
         setFormArea(target.areaSqFt);
         setFormBedrooms(target.bedrooms);
         setFormBathrooms(target.bathrooms);
-        setFormParking(target.parkingSpaces);
-        setFormLocality(target.locality);
+        const isKnown = localities.some((l) => l.name === target.locality);
+        if (isKnown) {
+          setFormLocality(target.locality);
+          setIsCustomLocality(false);
+          setCustomLocalityInput('');
+        } else {
+          setFormLocality('__custom__');
+          setIsCustomLocality(true);
+          setCustomLocalityInput(target.locality);
+        }
         setFormAddress(target.address);
         setFormStyle(target.architecturalStyle);
         setFormArchitect(target.architect);
@@ -232,13 +266,17 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
       setFormSubtitle('');
       setFormTransactionType('Buy');
       setFormCategory('Penthouse');
+      setIsCustomCategory(false);
+      setCustomCategoryInput('');
       setFormStatus('Available');
       setFormPrice(78000000);
       setFormArea(4000);
       setFormBedrooms(4);
       setFormBathrooms(4);
       setFormParking(2);
-      setFormLocality(localities[0]?.name || 'Tribeca & SoHo');
+      setFormLocality(localities[0]?.name || 'Sector 33 · Sonipat');
+      setIsCustomLocality(false);
+      setCustomLocalityInput('');
       setFormAddress('');
       setFormStyle('Contemporary Minimalist');
       setFormArchitect('Trinetra Realty Design Group');
@@ -295,17 +333,22 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     e.preventDefault();
     if (!formTitle.trim()) return;
     setSavingProperty(true);
-    setFormFeedback('');
-    setFormError('');
+    const selectedImages = formImages.filter((img) => typeof img === 'string' && img.trim().length > 0);
+    const imagesPayload = selectedImages.length > 0
+      ? selectedImages
+      : media[0]?.url
+      ? [media[0].url]
+      : [];
+
+    const effectiveLocality = (
+      isCustomLocality ? customLocalityInput.trim() : formLocality.trim()
+    ) || 'Sonipat Expressway';
+
+    const effectiveCategory = (
+      isCustomCategory ? customCategoryInput.trim() : formCategory.trim()
+    ) || 'Penthouse';
 
     try {
-      const selectedImages = formImages.filter((img) => typeof img === 'string' && img.trim().length > 0);
-      const imagesPayload = selectedImages.length > 0
-        ? selectedImages
-        : media[0]?.url
-        ? [media[0].url]
-        : [];
-
       const res = await apiFetch('/api/properties', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -313,15 +356,15 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
           title: formTitle.trim(),
           subtitle: formSubtitle.trim(),
           transactionType: formTransactionType,
-          category: formCategory,
+          category: effectiveCategory as PropertyCategory,
           status: formStatus,
           price: Number(formPrice),
           areaSqFt: Number(formArea),
           bedrooms: Number(formBedrooms),
           bathrooms: Number(formBathrooms),
           parkingSpaces: Number(formParking),
-          locality: formLocality,
-          address: formAddress.trim() || `${formLocality} Private Address`,
+          locality: effectiveLocality,
+          address: formAddress.trim() || `${effectiveLocality} Private Address`,
           architecturalStyle: formStyle.trim(),
           architect: formArchitect.trim(),
           yearBuilt: Number(formYearBuilt),
@@ -350,6 +393,10 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
       setFormFeedback(`Published "${created.title}" (${created.code}) to live portfolio.`);
       setFormTitle('');
       setFormSubtitle('');
+      setIsCustomLocality(false);
+      setCustomLocalityInput('');
+      setIsCustomCategory(false);
+      setCustomCategoryInput('');
     } catch (err: any) {
       setFormError(err.message || 'Error creating property.');
     } finally {
@@ -363,6 +410,16 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     setSavingProperty(true);
     setFormFeedback('');
 
+    const effectiveLocality = (
+      isCustomLocality ? customLocalityInput.trim() : formLocality.trim()
+    ) || 'Sonipat Expressway';
+
+    const effectiveCategory = (
+      isCustomCategory ? customCategoryInput.trim() : formCategory.trim()
+    ) || 'Penthouse';
+
+    const selectedImages = formImages.filter((img) => typeof img === 'string' && img.trim().length > 0);
+
     try {
       const res = await apiFetch(`/api/properties/${editingPropertyId}`, {
         method: 'PUT',
@@ -371,14 +428,14 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
           title: formTitle.trim(),
           subtitle: formSubtitle.trim(),
           transactionType: formTransactionType,
-          category: formCategory,
+          category: effectiveCategory as PropertyCategory,
           status: formStatus,
           price: Number(formPrice),
           areaSqFt: Number(formArea),
           bedrooms: Number(formBedrooms),
           bathrooms: Number(formBathrooms),
           parkingSpaces: Number(formParking),
-          locality: formLocality,
+          locality: effectiveLocality,
           address: formAddress.trim(),
           architecturalStyle: formStyle.trim(),
           architect: formArchitect.trim(),
@@ -391,7 +448,7 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
             .split(',')
             .map((a) => a.trim())
             .filter(Boolean),
-          images: formImages,
+          images: selectedImages,
         }),
       });
 
@@ -542,6 +599,26 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     setOptimizingUpload(false);
     setFormFeedback('Photo(s) attached successfully to property gallery.');
     setTimeout(() => setFormFeedback(''), 4000);
+    if (e.target) {
+      e.target.value = '';
+    }
+  };
+
+  const handleRemovePropertyImage = (indexToRemove: number) => {
+    setFormImages((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
+  const handleSetCoverImage = (indexToPromote: number) => {
+    setFormImages((prev) => {
+      const target = prev[indexToPromote];
+      if (!target) return prev;
+      const rest = prev.filter((_, idx) => idx !== indexToPromote);
+      return [target, ...rest];
+    });
+  };
+
+  const handleClearAllImages = () => {
+    setFormImages([]);
   };
 
   const handleOpenEditMedia = (item: UploadedMedia) => {
@@ -903,7 +980,122 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
             </button>
           </div>
 
-          <div className="border border-stone-200 bg-[#FBFBF9] overflow-x-auto">
+          {/* MOBILE VIEW (block md:hidden): Responsive Card List for Smartphone Screens */}
+          <div className="block md:hidden space-y-3.5">
+            {filteredListings.length === 0 ? (
+              <div className="p-8 text-center text-xs text-[#615E59] bg-[#FBFBF9] border border-stone-200">
+                No matching residences found.
+              </div>
+            ) : (
+              filteredListings.map((prop) => (
+                <div
+                  key={prop.id}
+                  className="bg-[#FBFBF9] border border-stone-300 p-3.5 rounded-xs space-y-3 shadow-xs"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-16 h-12 bg-stone-200 shrink-0 overflow-hidden rounded-xs">
+                      <ArchitecturalImage
+                        src={prop.images[0]}
+                        alt={prop.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="font-mono-tabular text-[10px] text-[#615E59]">
+                          {prop.code}
+                        </span>
+                        <span className="text-[10px] px-1.5 py-0.5 font-semibold bg-[#F3F2EE] text-[#1E3A2F] border border-stone-200">
+                          {prop.category}
+                        </span>
+                      </div>
+                      <h4 className="font-semibold text-sm text-[#141413] leading-snug line-clamp-1 mt-0.5">
+                        {prop.title}
+                      </h4>
+                      <div className="text-[11px] text-[#57534E] truncate">
+                        {prop.locality}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-baseline justify-between border-t border-b border-stone-200/80 py-2 text-xs">
+                    <div>
+                      <span className="text-[10px] uppercase text-[#615E59] block">Price</span>
+                      <span className="font-mono-tabular font-bold text-sm text-[#141413]">
+                        {formatPropertyPrice(prop.price, prop.transactionType)}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-[10px] uppercase text-[#615E59] block">Specs</span>
+                      <span className="font-mono-tabular text-[#57534E]">
+                        {prop.bedrooms} BD · {formatNumber(prop.areaSqFt)} sq.ft.
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 flex-1">
+                      <span className="text-[11px] text-[#615E59]">Status:</span>
+                      <select
+                        aria-label={`Status for ${prop.title}`}
+                        value={prop.status}
+                        onChange={(e) =>
+                          handleQuickStatusChange(prop, e.target.value as PropertyStatus)
+                        }
+                        className="px-2 py-1 text-xs bg-white border border-stone-300 focus:border-[#141413] focus:outline-none flex-1"
+                      >
+                        <option value="Available">Available</option>
+                        <option value="Under Offer">Under Offer</option>
+                        <option value="Sold">Sold</option>
+                        <option value="Leased">Leased</option>
+                      </select>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleQuickFeaturedToggle(prop)}
+                      title="Toggle Featured Status"
+                      className={`p-2 border border-stone-200 rounded-xs cursor-pointer ${
+                        prop.featured
+                          ? 'bg-[#1E3A2F]/10 border-[#1E3A2F] text-[#1E3A2F]'
+                          : 'bg-white text-stone-400'
+                      }`}
+                    >
+                      <Star
+                        className={`w-4 h-4 ${prop.featured ? 'fill-[#1E3A2F]' : ''}`}
+                      />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingPropertyId(prop.id);
+                        setActiveTab('edit-property');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors rounded-xs cursor-pointer"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                      <span>Edit Listing</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteListing(prop.id)}
+                      title="Delete Property"
+                      className="p-2 text-rose-600 hover:text-rose-800 border border-stone-300 hover:border-rose-300 rounded-xs bg-white cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* DESKTOP TABLE VIEW (hidden md:block) */}
+          <div className="hidden md:block border border-stone-200 bg-[#FBFBF9] overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[900px] text-xs">
               <thead className="bg-[#F3F2EE] border-b border-stone-200 text-[#615E59]">
                 <tr>
@@ -1141,20 +1333,60 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#141413] mb-1">
-                  Locality / District *
-                </label>
-                <select
-                  value={formLocality}
-                  onChange={(e) => setFormLocality(e.target.value)}
-                  className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
-                >
-                  {localities.map((loc) => (
-                    <option key={loc.id} value={loc.name}>
-                      {loc.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-medium text-[#141413]">
+                    Locality / District *
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsCustomLocality(!isCustomLocality);
+                      if (!isCustomLocality) {
+                        setFormLocality('__custom__');
+                      } else {
+                        setFormLocality(localities[0]?.name || 'Sector 33 · Sonipat');
+                      }
+                    }}
+                    className="text-[11px] font-medium text-[#1E3A2F] hover:underline cursor-pointer"
+                  >
+                    {isCustomLocality ? '← Choose Existing' : '+ Add New Locality'}
+                  </button>
+                </div>
+
+                {isCustomLocality ? (
+                  <div className="space-y-1">
+                    <input
+                      type="text"
+                      required
+                      value={customLocalityInput}
+                      onChange={(e) => setCustomLocalityInput(e.target.value)}
+                      placeholder="e.g., Sector 14, Sonipat / Civil Lines..."
+                      className="w-full px-3.5 py-2 text-sm bg-white border border-[#1E3A2F] focus:outline-none"
+                    />
+                    <span className="text-[10px] text-[#615E59] block">
+                      Type any new locality or district name. It will be saved and added to the platform directory.
+                    </span>
+                  </div>
+                ) : (
+                  <select
+                    value={formLocality}
+                    onChange={(e) => {
+                      if (e.target.value === '__custom__') {
+                        setIsCustomLocality(true);
+                      } else {
+                        setFormLocality(e.target.value);
+                      }
+                    }}
+                    className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
+                  >
+                    {localities.map((loc) => (
+                      <option key={loc.id} value={loc.name}>
+                        {loc.name}
+                      </option>
+                    ))}
+                    <option value="__custom__">+ Enter Custom Locality / District...</option>
+                  </select>
+                )}
               </div>
             </div>
 
@@ -1187,20 +1419,58 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#141413] mb-1">
-                  Category
-                </label>
-                <select
-                  value={formCategory}
-                  onChange={(e) => setFormCategory(e.target.value as PropertyCategory)}
-                  className="w-full px-3 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
-                >
-                  <option value="Penthouse">Penthouse</option>
-                  <option value="Villa">Villa</option>
-                  <option value="Townhouse">Townhouse</option>
-                  <option value="Waterfront">Waterfront</option>
-                  <option value="Estate">Estate</option>
-                </select>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-medium text-[#141413]">
+                    Category *
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsCustomCategory(!isCustomCategory);
+                      if (!isCustomCategory && !customCategoryInput) {
+                        setCustomCategoryInput('');
+                      }
+                    }}
+                    className="text-[11px] text-[#1E3A2F] hover:underline font-medium cursor-pointer"
+                  >
+                    {isCustomCategory ? '← Presets' : '+ Custom'}
+                  </button>
+                </div>
+
+                {isCustomCategory ? (
+                  <div className="space-y-1">
+                    <input
+                      type="text"
+                      required
+                      value={customCategoryInput}
+                      onChange={(e) => setCustomCategoryInput(e.target.value)}
+                      placeholder="e.g. Commercial, Farmhouse, Duplex..."
+                      className="w-full px-3 py-2 text-sm bg-white border border-[#1E3A2F] focus:outline-none"
+                    />
+                    <span className="text-[10px] text-[#615E59] block truncate">
+                      Custom category name
+                    </span>
+                  </div>
+                ) : (
+                  <select
+                    value={formCategory}
+                    onChange={(e) => {
+                      if (e.target.value === '__custom__') {
+                        setIsCustomCategory(true);
+                      } else {
+                        setFormCategory(e.target.value as PropertyCategory);
+                      }
+                    }}
+                    className="w-full px-3 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
+                  >
+                    {availableCategories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                    <option value="__custom__">+ Enter Custom Category...</option>
+                  </select>
+                )}
               </div>
 
               <div>
@@ -1381,12 +1651,17 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
               />
             </div>
 
-            {/* Select Images from Studio Media Library */}
-            <div className="space-y-2">
+            {/* Property Gallery Images Section */}
+            <div className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <label className="block text-xs font-medium text-[#141413]">
-                  Select Property Gallery Plates ({formImages.length} selected)
-                </label>
+                <div>
+                  <label className="block text-xs font-semibold text-[#141413]">
+                    Property Gallery Plates ({formImages.length} attached)
+                  </label>
+                  <span className="text-[11px] text-[#615E59]">
+                    Upload photos from your phone, attach from Studio Library, or remove any photo instantly.
+                  </span>
+                </div>
                 <div className="flex items-center gap-3">
                   <label className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors rounded-sm cursor-pointer shadow-xs">
                     <Upload className="w-3.5 h-3.5" />
@@ -1409,33 +1684,137 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
                   </button>
                 </div>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                {media.map((item) => {
-                  const selected = formImages.includes(item.url);
-                  return (
+
+              {/* ATTACHED / STAGED IMAGES PREVIEW TRAY */}
+              <div className="p-3.5 bg-stone-50 border border-stone-200 space-y-2.5 rounded-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-[#141413]">
+                      Attached Gallery Images ({formImages.length})
+                    </span>
+                    <span className="text-[11px] text-[#615E59]">
+                      • Plate #1 is the Cover Photo
+                    </span>
+                  </div>
+                  {formImages.length > 0 && (
                     <button
-                      key={item.id}
                       type="button"
-                      onClick={() => toggleImageSelection(item.url)}
-                      className={`text-left border-2 p-1.5 transition-all cursor-pointer ${
-                        selected
-                          ? 'border-[#1E3A2F] bg-[#F3F2EE]'
-                          : 'border-stone-200 opacity-70 hover:opacity-100'
-                      }`}
+                      onClick={handleClearAllImages}
+                      className="text-xs text-rose-700 hover:text-rose-900 underline font-medium cursor-pointer"
                     >
-                      <div className="aspect-[4/3] w-full bg-stone-200 overflow-hidden mb-1">
-                        <ArchitecturalImage
-                          src={item.url}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="text-[11px] font-medium text-[#141413] truncate">
-                        {item.name}
-                      </div>
+                      Clear All Attached Images
                     </button>
-                  );
-                })}
+                  )}
+                </div>
+
+                {formImages.length === 0 ? (
+                  <div className="py-6 px-4 text-center border border-dashed border-stone-300 bg-white text-xs text-[#615E59] rounded-xs">
+                    No photos currently attached to this listing. Upload directly from your phone/device above or select images from the Studio Media Library below.
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                    {formImages.map((imgUrl, idx) => (
+                      <div
+                        key={`${imgUrl}-${idx}`}
+                        className="relative group border border-stone-300 bg-white p-1 rounded-xs shadow-xs"
+                      >
+                        <div className="aspect-[4/3] w-full bg-stone-200 overflow-hidden relative rounded-xs">
+                          <ArchitecturalImage
+                            src={imgUrl}
+                            alt={`Plate ${idx + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+
+                          {/* Cover Photo Badge or Action */}
+                          {idx === 0 ? (
+                            <span className="absolute top-1 left-1 bg-[#1E3A2F] text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-xs shadow-sm">
+                              ★ Cover
+                            </span>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleSetCoverImage(idx)}
+                              title="Set as cover image"
+                              className="absolute bottom-1 left-1 bg-black/80 hover:bg-black text-white text-[9px] font-medium px-1.5 py-0.5 rounded-xs opacity-90 sm:opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer shadow-sm"
+                            >
+                              Make Cover
+                            </button>
+                          )}
+
+                          {/* Prominent Instant REMOVE Button (✕) */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemovePropertyImage(idx);
+                            }}
+                            title="Remove this photo from property"
+                            aria-label={`Remove photo ${idx + 1}`}
+                            className="absolute top-1 right-1 w-6 h-6 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white rounded-full flex items-center justify-center shadow-md cursor-pointer transition-transform hover:scale-110"
+                          >
+                            <X className="w-3.5 h-3.5 stroke-[2.5]" />
+                          </button>
+                        </div>
+
+                        <div className="mt-1.5 flex items-center justify-between text-[11px] text-[#615E59] px-0.5">
+                          <span className="font-mono-tabular">Plate #{idx + 1}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemovePropertyImage(idx)}
+                            className="text-rose-700 hover:text-rose-900 font-semibold text-[11px] hover:underline cursor-pointer"
+                          >
+                            Remove ✕
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Studio Media Library Selector */}
+              <div className="space-y-1.5 pt-2">
+                <span className="text-[11px] text-[#615E59] block">
+                  Studio Media Library (Click any photo to attach or detach):
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 max-h-72 overflow-y-auto pr-1 border border-stone-200 p-2 bg-white">
+                  {media.map((item) => {
+                    const selected = formImages.includes(item.url);
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => toggleImageSelection(item.url)}
+                        className={`relative text-left border-2 p-1.5 transition-all cursor-pointer rounded-xs ${
+                          selected
+                            ? 'border-[#1E3A2F] bg-[#F3F2EE] ring-1 ring-[#1E3A2F]'
+                            : 'border-stone-200 opacity-75 hover:opacity-100 hover:border-stone-400'
+                        }`}
+                      >
+                        <div className="aspect-[4/3] w-full bg-stone-200 overflow-hidden mb-1 relative">
+                          <ArchitecturalImage
+                            src={item.url}
+                            alt={item.name}
+                            className="w-full h-full object-cover"
+                          />
+                          {selected && (
+                            <span className="absolute top-1 right-1 bg-[#1E3A2F] text-white text-[9px] font-semibold px-1 py-0.5 rounded-xs shadow-xs">
+                              ✓ Attached
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="font-medium text-[#141413] truncate">{item.name}</span>
+                          {selected && (
+                            <span className="text-rose-600 font-semibold text-[10px] ml-1 shrink-0">
+                              ✕ Detach
+                            </span>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 

@@ -5,7 +5,8 @@ export type PropertyCategory =
   | 'Villa'
   | 'Townhouse'
   | 'Waterfront'
-  | 'Estate';
+  | 'Estate'
+  | (string & {});
 
 export type PropertyStatus = 'Available' | 'Under Offer' | 'Sold' | 'Leased';
 

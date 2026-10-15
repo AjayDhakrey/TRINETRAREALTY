@@ -1345,7 +1345,7 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
             {/* Existing Configurations Table */}
             {configurations.length > 0 && (
               <div className="border border-stone-200 overflow-x-auto">
-                <table className="w-full text-left border-collapse text-xs">
+                <table className="w-full text-left border-collapse text-xs min-w-[620px]">
                   <thead>
                     <tr className="bg-[#F3F2EE] border-b border-stone-200 text-[#615E59] uppercase text-[10px]">
                       <th className="py-2.5 px-3">Config Name</th>
