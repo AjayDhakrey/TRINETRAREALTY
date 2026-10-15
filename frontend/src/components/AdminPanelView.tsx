@@ -751,7 +751,7 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
           />
           <div>
             <div className="text-xs text-[#615E59]">
-              Trinetra Realty · Executive Inventory, Proprietary Projects &amp; Lead Management Suite
+              Trinetra Realty · Executive Inventory, property Projects &amp; Lead Management Suite
             </div>
             <h1 className="font-serif-display text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#141413] mt-0.5">
               Admin Panel &amp; Portfolio Operations
@@ -849,7 +849,7 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
       )}
 
       {/* =====================================================================
-       * MODULE 0: OUR PROJECTS (COMPANY PROPRIETARY PROJECTS MANAGEMENT)
+       * MODULE 0: OUR PROJECTS (COMPANY property PROJECTS MANAGEMENT)
        * =================================================================== */}
       {activeTab === 'our-projects' && (
         <AdminOurProjectsManager

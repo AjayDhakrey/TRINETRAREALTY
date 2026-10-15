@@ -727,7 +727,7 @@ export default function App() {
                   <div>
                     <div className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.14em] uppercase text-[#1E3A2F]">
                       <Building2 className="w-3.5 h-3.5" />
-                      <span>{homepageContent.ourProjectsSectionEyebrow || 'Trinetra Realty · Proprietary Developments & Official Projects'}</span>
+                      <span>{homepageContent.ourProjectsSectionEyebrow || 'Trinetra Realty · property Developments & Official Projects'}</span>
                     </div>
                     <h2 className="font-serif-display text-2xl sm:text-4xl font-semibold text-[#141413] mt-1">
                       {homepageContent.ourProjectsSectionTitle || 'Our Signature Projects'}

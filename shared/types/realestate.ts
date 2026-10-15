@@ -256,7 +256,7 @@ export const DEFAULT_HOMEPAGE_CONTENT: HomepageContent = {
     'Trinetra Realty represents collector-grade penthouses, modernist courtyard villas, and historic townhouses across North America’s premier residential enclaves.',
   featuredSectionEyebrow: 'Curated Architectural Mandates · Available for Private Showing',
   featuredSectionTitle: 'Featured Residences & Estates',
-  ourProjectsSectionEyebrow: 'Trinetra Realty · Proprietary Developments & Official Projects',
+  ourProjectsSectionEyebrow: 'Trinetra Realty · property Developments & Official Projects',
   ourProjectsSectionTitle: 'Our Signature Projects',
   ourProjectsSectionSubtitle:
     'Explore landmark residential and commercial developments conceived, built, and officially represented by Trinetra Realty.',

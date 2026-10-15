@@ -367,7 +367,7 @@ export const AdminHomepageManager: React.FC<AdminHomepageManagerProps> = ({
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-serif-display text-xl font-semibold text-[#141413]">
-                  Proprietary Projects on Homepage ({featuredProjects.length} Featured)
+                  property Projects on Homepage ({featuredProjects.length} Featured)
                 </h3>
                 <p className="text-xs text-[#57534E]">
                   These official developments appear under &ldquo;Our Signature Projects&rdquo; on the homepage.

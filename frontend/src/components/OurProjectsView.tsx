@@ -91,7 +91,7 @@ export const OurProjectsView: React.FC<OurProjectsViewProps> = ({
           <div className="max-w-3xl space-y-2.5 sm:space-y-3">
             <div className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.14em] uppercase text-[#1E3A2F]">
               <Building2 className="w-3.5 h-3.5" />
-              <span>Trinetra Realty · Proprietary Developments &amp; Mandates</span>
+              <span>Trinetra Realty · property Developments &amp; Mandates</span>
             </div>
             <h1 className="font-serif-display text-3xl sm:text-5xl font-semibold text-[#141413] tracking-tight">
               Our Signature Projects
