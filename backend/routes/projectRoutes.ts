@@ -8,6 +8,7 @@ import {
   updateProjectStatus,
   duplicateProject,
   deleteProject,
+  deleteProjectImage,
 } from '../controllers/projectController';
 import { requireAdminAuth } from '../middleware/auth';
 
@@ -24,4 +25,6 @@ projectRouter.put('/admin/projects/:id', requireAdminAuth, updateProject);
 projectRouter.patch('/admin/projects/:id/status', requireAdminAuth, updateProjectStatus);
 projectRouter.post('/admin/projects/:id/duplicate', requireAdminAuth, duplicateProject);
 projectRouter.delete('/admin/projects/:id', requireAdminAuth, deleteProject);
+projectRouter.delete('/admin/projects/:id/images', requireAdminAuth, deleteProjectImage);
+
 

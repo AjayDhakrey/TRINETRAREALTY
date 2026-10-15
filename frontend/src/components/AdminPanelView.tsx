@@ -587,8 +587,12 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     try {
       const res = await apiFetch(`/api/media/${mediaId}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete media plate');
+      const data = await res.json().catch(() => ({}));
       if (onMediaDeleted) onMediaDeleted(mediaId);
       realtimeClient.broadcastLocally('media:deleted', { id: mediaId });
+      if (data.affectedProjects && onProjectsUpdated) {
+        onProjectsUpdated(data.affectedProjects);
+      }
       setMediaActionFeedback(`Deleted plate "${mediaName}".`);
       setTimeout(() => setMediaActionFeedback(''), 4000);
     } catch (err: any) {

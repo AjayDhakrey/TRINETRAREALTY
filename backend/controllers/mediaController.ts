@@ -68,14 +68,26 @@ export async function updateMedia(req: Request, res: Response): Promise<void> {
 export async function deleteMedia(req: Request, res: Response): Promise<void> {
   try {
     const { id } = req.params;
-    const deleted = await store.deleteMedia(id);
-    if (!deleted) {
+    const result = await store.deleteMedia(id);
+    if (!result.deleted) {
       res.status(404).json({ error: 'Media not found' });
       return;
     }
 
     broadcastEvent('media:deleted', { id });
-    res.json({ deleted: true, id });
+    if (result.affectedProjects) {
+      result.affectedProjects.forEach((proj) => broadcastEvent('project:updated', proj));
+    }
+    if (result.affectedProperties) {
+      result.affectedProperties.forEach((prop) => broadcastEvent('property:updated', prop));
+    }
+
+    res.json({
+      deleted: true,
+      id,
+      affectedProjects: result.affectedProjects,
+      affectedProperties: result.affectedProperties,
+    });
   } catch (err: any) {
     res.status(500).json({ error: 'Failed to delete media', details: err.message });
   }

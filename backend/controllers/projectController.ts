@@ -278,6 +278,60 @@ export async function duplicateProject(req: Request, res: Response): Promise<voi
   }
 }
 
+export async function deleteProjectImage(req: Request, res: Response): Promise<void> {
+  try {
+    const { id } = req.params;
+    const { imageUrl, imageType } = req.body;
+    if (!imageUrl) {
+      res.status(400).json({ error: 'imageUrl is required' });
+      return;
+    }
+
+    const existing = await store.getProjectBySlugOrId(id, true);
+    if (!existing || existing === 'UNAUTHORIZED') {
+      res.status(404).json({ error: 'Project not found' });
+      return;
+    }
+
+    const updates: Partial<CompanyProject> = {};
+    const normalizedUrl = imageUrl.trim();
+
+    if (imageType === 'cover' || existing.coverImage === normalizedUrl) {
+      updates.coverImage = '/hero-poster.jpg';
+    }
+
+    if (imageType === 'gallery' || !imageType || Array.isArray(existing.galleryImages)) {
+      updates.galleryImages = (existing.galleryImages || []).filter(
+        (img) => img.url !== normalizedUrl
+      );
+    }
+
+    if (imageType === 'floorPlan' || Array.isArray(existing.floorPlanImages)) {
+      updates.floorPlanImages = (existing.floorPlanImages || []).filter(
+        (img) => img.url !== normalizedUrl
+      );
+    }
+
+    if (existing.masterPlanImage === normalizedUrl) {
+      updates.masterPlanImage = '';
+    }
+    if (existing.locationMapImage === normalizedUrl) {
+      updates.locationMapImage = '';
+    }
+
+    const updated = await store.updateProject(id, updates);
+    if (!updated) {
+      res.status(404).json({ error: 'Project not found' });
+      return;
+    }
+
+    broadcastEvent('project:updated', updated);
+    res.json({ success: true, project: updated });
+  } catch (err: any) {
+    res.status(500).json({ error: 'Failed to delete project image', details: err.message });
+  }
+}
+
 export async function deleteProject(req: Request, res: Response): Promise<void> {
   try {
     const deleted = await store.deleteProject(req.params.id);
@@ -291,4 +345,5 @@ export async function deleteProject(req: Request, res: Response): Promise<void> 
     res.status(500).json({ error: 'Failed to delete project', details: err.message });
   }
 }
+
 

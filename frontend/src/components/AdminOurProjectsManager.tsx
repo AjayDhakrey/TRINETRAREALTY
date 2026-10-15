@@ -465,10 +465,7 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
       numberOfFloors: Number(numberOfFloors) || 0,
       constructionStatus: constructionStatus.trim(),
       coverImage: coverImage.trim() || '/hero-poster.jpg',
-      galleryImages:
-        galleryImages.length > 0
-          ? galleryImages
-          : [{ url: coverImage.trim() || '/hero-poster.jpg', caption: name.trim() }],
+      galleryImages,
       floorPlanImages,
       masterPlanImage: masterPlanImage.trim(),
       locationMapImage: locationMapImage.trim(),
@@ -589,6 +586,9 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
     }
   };
 
+  const [managingImagesProject, setManagingImagesProject] = useState<CompanyProject | null>(null);
+  const [deletingImage, setDeletingImage] = useState<boolean>(false);
+
   const handleDeleteProject = async (proj: CompanyProject) => {
     setErrorBanner('');
     try {
@@ -601,6 +601,44 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
       setFeedbackBanner(`Deleted project "${proj.name}".`);
     } catch (err: any) {
       setErrorBanner(err.message || 'Unable to delete project.');
+    }
+  };
+
+  const handleDeleteProjectImageDirectly = async (
+    proj: CompanyProject,
+    imageUrl: string,
+    imageType: 'cover' | 'gallery' | 'floorPlan'
+  ) => {
+    if (!window.confirm('Are you sure you want to delete this image from the project?')) {
+      return;
+    }
+    setDeletingImage(true);
+    setErrorBanner('');
+    try {
+      const res = await apiFetch(`/api/admin/projects/${proj.id}/images`, {
+        method: 'DELETE',
+        headers: authHeaders,
+        body: JSON.stringify({ imageUrl, imageType }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to delete project image.');
+      }
+      const data = await res.json();
+      const updatedProject: CompanyProject = data.project;
+      const updatedList = projects.map((p) => (p.id === updatedProject.id ? updatedProject : p));
+      onProjectsUpdated(updatedList);
+      if (managingImagesProject?.id === updatedProject.id) {
+        setManagingImagesProject(updatedProject);
+      }
+      if (editingProjectId === updatedProject.id) {
+        loadProjectIntoForm(updatedProject);
+      }
+      setFeedbackBanner(`Deleted image successfully from "${updatedProject.name}".`);
+    } catch (err: any) {
+      setErrorBanner(err.message || 'Failed to delete image.');
+    } finally {
+      setDeletingImage(false);
     }
   };
 
@@ -801,6 +839,16 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                       <span>Edit</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setManagingImagesProject(proj)}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-[#141413] hover:bg-[#1E3A2F] text-white border border-[#141413] transition-colors cursor-pointer"
+                      title="Quick Image Deletion & Management for this project"
+                    >
+                      <ImageIcon className="w-3.5 h-3.5" />
+                      <span>Manage Images ({((proj.galleryImages?.length || 0) + (proj.coverImage ? 1 : 0))})</span>
                     </button>
 
                     {proj.publicationState === 'PUBLISHED' ? (
@@ -1468,6 +1516,16 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
                       }}
                     />
                   </label>
+                  {coverImage && coverImage !== '/hero-poster.jpg' && (
+                    <button
+                      type="button"
+                      onClick={() => setCoverImage('/hero-poster.jpg')}
+                      className="inline-flex items-center gap-1 px-3 py-2 text-xs font-medium bg-white border border-red-200 text-red-700 hover:bg-red-50 cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Remove / Reset Cover</span>
+                    </button>
+                  )}
                 </div>
 
                 {/* Quick Select from Studio Media Library */}
@@ -1596,9 +1654,11 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
                         onClick={() =>
                           setGalleryImages(galleryImages.filter((_, i) => i !== idx))
                         }
-                        className="text-xs text-red-700 hover:underline cursor-pointer"
+                        className="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 transition-colors cursor-pointer"
+                        title="Delete image from this project"
                       >
-                        Remove
+                        <Trash2 className="w-3 h-3 text-red-600" />
+                        <span>Remove</span>
                       </button>
                     </div>
                   </div>
@@ -1869,6 +1929,181 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
           </div>
         </div>
       )}
+
+      {/* =====================================================================
+       * MODAL: MANAGE & DELETE PROJECT IMAGES INSTANTLY
+       * =================================================================== */}
+      {managingImagesProject && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-[#FBFBF9] border border-stone-300 max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-stone-200 pb-3">
+              <div>
+                <h4 className="font-serif-display text-2xl font-semibold text-[#141413]">
+                  Manage &amp; Delete Images: {managingImagesProject.name}
+                </h4>
+                <p className="text-xs text-[#615E59] mt-0.5">
+                  Delete unwanted photos, cover images, or gallery plates. Changes take effect immediately and synchronize live across the website.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setManagingImagesProject(null)}
+                className="p-1 text-stone-400 hover:text-stone-800 text-xl font-bold cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Cover Image Section */}
+            <div className="space-y-2 border border-stone-200 p-4 bg-white">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-semibold text-[#141413] block">Cover Image</span>
+                  <span className="text-[11px] text-[#615E59]">Featured banner photo of the project</span>
+                </div>
+                {managingImagesProject.coverImage && managingImagesProject.coverImage !== '/hero-poster.jpg' && (
+                  <button
+                    type="button"
+                    disabled={deletingImage}
+                    onClick={() =>
+                      handleDeleteProjectImageDirectly(
+                        managingImagesProject,
+                        managingImagesProject.coverImage,
+                        'cover'
+                      )
+                    }
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 cursor-pointer disabled:opacity-50"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 text-red-600" />
+                    <span>Delete Cover Image</span>
+                  </button>
+                )}
+              </div>
+              <div className="aspect-[21/9] w-full max-h-52 bg-[#F3F2EE] border border-stone-200 overflow-hidden mt-2">
+                <ArchitecturalImage
+                  src={managingImagesProject.coverImage || '/hero-poster.jpg'}
+                  alt={managingImagesProject.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            {/* Gallery Images Section */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h5 className="text-xs font-semibold uppercase tracking-wider text-[#141413]">
+                    Gallery Images ({managingImagesProject.galleryImages?.length || 0})
+                  </h5>
+                  <span className="text-[11px] text-[#615E59]">
+                    Click Delete on any image plate to remove it permanently from this project.
+                  </span>
+                </div>
+              </div>
+
+              {!managingImagesProject.galleryImages || managingImagesProject.galleryImages.length === 0 ? (
+                <div className="p-8 text-center bg-white border border-dashed border-stone-300 text-xs text-[#615E59]">
+                  No gallery images currently attached to this project.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {managingImagesProject.galleryImages.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="border border-stone-200 bg-white p-2.5 flex flex-col justify-between space-y-2"
+                    >
+                      <div className="aspect-[16/10] w-full bg-[#F3F2EE] overflow-hidden">
+                        <ArchitecturalImage
+                          src={img.url}
+                          alt={img.caption || `Gallery ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="text-[11px] text-[#57534E] truncate">
+                        {img.caption || `Gallery Image ${idx + 1}`}
+                      </div>
+                      <div className="pt-1 border-t border-stone-100 flex items-center justify-between">
+                        <span className="text-[10px] font-mono-tabular text-stone-400">#{idx + 1}</span>
+                        <button
+                          type="button"
+                          disabled={deletingImage}
+                          onClick={() =>
+                            handleDeleteProjectImageDirectly(
+                              managingImagesProject,
+                              img.url,
+                              'gallery'
+                            )
+                          }
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 cursor-pointer disabled:opacity-50"
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-red-600" />
+                          <span>Delete</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Floor Plan Images Section if any */}
+            {managingImagesProject.floorPlanImages && managingImagesProject.floorPlanImages.length > 0 && (
+              <div className="space-y-3 pt-3 border-t border-stone-200">
+                <h5 className="text-xs font-semibold uppercase tracking-wider text-[#141413]">
+                  Floor Plan Images ({managingImagesProject.floorPlanImages.length})
+                </h5>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {managingImagesProject.floorPlanImages.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="border border-stone-200 bg-white p-2.5 flex flex-col justify-between space-y-2"
+                    >
+                      <div className="aspect-[16/10] w-full bg-[#F3F2EE] overflow-hidden">
+                        <ArchitecturalImage
+                          src={img.url}
+                          alt={img.caption || `Floor Plan ${idx + 1}`}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <div className="text-[11px] text-[#57534E] truncate">
+                        {img.caption || `Floor Plan ${idx + 1}`}
+                      </div>
+                      <div className="pt-1 border-t border-stone-100 flex items-center justify-end">
+                        <button
+                          type="button"
+                          disabled={deletingImage}
+                          onClick={() =>
+                            handleDeleteProjectImageDirectly(
+                              managingImagesProject,
+                              img.url,
+                              'floorPlan'
+                            )
+                          }
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 cursor-pointer disabled:opacity-50"
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-red-600" />
+                          <span>Delete</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="pt-4 border-t border-stone-200 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setManagingImagesProject(null)}
+                className="px-5 py-2 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer"
+              >
+                Close Image Manager
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+

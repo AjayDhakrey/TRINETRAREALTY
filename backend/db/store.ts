@@ -573,21 +573,38 @@ export async function updateMedia(
   return db.media[index];
 }
 
-export async function deleteMedia(id: string): Promise<boolean> {
+export async function deleteMedia(id: string): Promise<{
+  deleted: boolean;
+  affectedProperties?: Property[];
+  affectedProjects?: CompanyProject[];
+}> {
   if (isMongoConnected()) {
     const found = await MediaModel.findOne({ id });
-    if (!found) return false;
+    if (!found) return { deleted: false };
     const url = found.url;
     await MediaModel.deleteOne({ id });
+    let affectedProperties: Property[] = [];
+    let affectedProjects: CompanyProject[] = [];
+
     if (url) {
       await PropertyModel.updateMany({ images: url }, { $pull: { images: url } });
+      await ProjectModel.updateMany(
+        { 'galleryImages.url': url },
+        { $pull: { galleryImages: { url } } }
+      );
+      await ProjectModel.updateMany(
+        { coverImage: url },
+        { $set: { coverImage: '/hero-poster.jpg' } }
+      );
+      affectedProperties = (await PropertyModel.find({}).lean()) as any;
+      affectedProjects = (await ProjectModel.find({}).lean()) as any;
     }
-    return true;
+    return { deleted: true, affectedProperties, affectedProjects };
   }
 
   const db = loadJsonDatabase();
   const index = db.media.findIndex((m) => m.id === id);
-  if (index === -1) return false;
+  if (index === -1) return { deleted: false };
 
   const url = db.media[index].url;
   db.media.splice(index, 1);
@@ -595,9 +612,15 @@ export async function deleteMedia(id: string): Promise<boolean> {
     db.properties.forEach((prop) => {
       prop.images = prop.images.filter((img) => img !== url);
     });
+    db.projects.forEach((proj) => {
+      if (proj.coverImage === url) proj.coverImage = '/hero-poster.jpg';
+      if (Array.isArray(proj.galleryImages)) {
+        proj.galleryImages = proj.galleryImages.filter((g) => g.url !== url);
+      }
+    });
   }
   saveJsonDatabase(db);
-  return true;
+  return { deleted: true, affectedProperties: db.properties, affectedProjects: db.projects };
 }
 
 export async function getHomepageContent(): Promise<HomepageContent> {
