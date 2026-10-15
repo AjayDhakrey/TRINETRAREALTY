@@ -655,40 +655,40 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
   return (
     <div className="space-y-8">
       {/* Sub-Navigation Bar for Our Projects */}
-      <div className="bg-[#F3F2EE] border border-stone-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="bg-[#F3F2EE] border border-stone-200 p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           <button
             type="button"
             onClick={() => setSubView('all')}
-            className={`px-3.5 py-2 text-xs font-medium border transition-colors cursor-pointer ${
+            className={`flex-1 sm:flex-initial px-3 sm:px-3.5 py-2 text-xs font-medium border transition-colors cursor-pointer text-center ${
               subView === 'all'
                 ? 'bg-[#141413] text-white border-[#141413]'
                 : 'bg-white text-[#57534E] border-stone-200 hover:text-[#141413]'
             }`}
           >
-            All Projects ({projects.length})
+            All ({projects.length})
           </button>
           <button
             type="button"
             onClick={() => setSubView('published')}
-            className={`px-3.5 py-2 text-xs font-medium border transition-colors cursor-pointer ${
+            className={`flex-1 sm:flex-initial px-3 sm:px-3.5 py-2 text-xs font-medium border transition-colors cursor-pointer text-center ${
               subView === 'published'
                 ? 'bg-[#1E3A2F] text-white border-[#1E3A2F]'
                 : 'bg-white text-[#57534E] border-stone-200 hover:text-[#141413]'
             }`}
           >
-            Published Projects ({publishedCount})
+            Published ({publishedCount})
           </button>
           <button
             type="button"
             onClick={() => setSubView('drafts')}
-            className={`px-3.5 py-2 text-xs font-medium border transition-colors cursor-pointer ${
+            className={`flex-1 sm:flex-initial px-3 sm:px-3.5 py-2 text-xs font-medium border transition-colors cursor-pointer text-center ${
               subView === 'drafts'
                 ? 'bg-[#141413] text-white border-[#141413]'
                 : 'bg-white text-[#57534E] border-stone-200 hover:text-[#141413]'
             }`}
           >
-            Draft Projects ({draftCount})
+            Drafts ({draftCount})
           </button>
         </div>
 
@@ -698,7 +698,7 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
             resetFormForNewProject();
             setSubView('add');
           }}
-          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold bg-[#1E3A2F] hover:bg-[#162B22] text-white transition-colors cursor-pointer"
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold bg-[#1E3A2F] hover:bg-[#162B22] text-white transition-colors cursor-pointer w-full sm:w-auto"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Add New Project</span>
@@ -1391,7 +1391,7 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
             )}
 
             {/* Add Configuration Row */}
-            <div className="p-4 bg-[#F3F2EE] border border-stone-200 grid grid-cols-1 sm:grid-cols-6 gap-3 items-end">
+            <div className="p-4 bg-[#F3F2EE] border border-stone-200 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 items-end">
               <div className="sm:col-span-2">
                 <label className="block text-[11px] font-medium text-[#141413] mb-1">
                   Configuration Name
@@ -1458,7 +1458,7 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
                     ]);
                     setCfgName('');
                   }}
-                  className="w-full py-1.5 px-3 bg-[#141413] text-white text-xs font-medium hover:bg-[#1E3A2F] transition-colors cursor-pointer"
+                  className="w-full py-2 sm:py-1.5 px-3 bg-[#141413] text-white text-xs font-medium hover:bg-[#1E3A2F] transition-colors cursor-pointer"
                 >
                   + Add Config
                 </button>
@@ -1533,7 +1533,7 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
                   <span className="text-[11px] text-[#615E59] block mb-1.5">
                     Or select from Trinetra Studio Library:
                   </span>
-                  <div className="grid grid-cols-5 gap-2">
+                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                     {mediaLibrary.slice(0, 5).map((m) => (
                       <button
                         key={m.id}
@@ -1609,8 +1609,8 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
                       placeholder="Image caption..."
                       className="w-full px-2 py-1 text-xs bg-white border border-stone-300"
                     />
-                    <div className="flex items-center justify-between gap-1 pt-1">
-                      <div className="flex items-center gap-1">
+                    <div className="flex flex-wrap items-center justify-between gap-1.5 pt-1">
+                      <div className="flex flex-wrap items-center gap-1">
                         <button
                           type="button"
                           disabled={idx === 0}
@@ -1654,7 +1654,7 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
                         onClick={() =>
                           setGalleryImages(galleryImages.filter((_, i) => i !== idx))
                         }
-                        className="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1 px-2 py-1 text-xs text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 transition-colors cursor-pointer ml-auto"
                         title="Delete image from this project"
                       >
                         <Trash2 className="w-3 h-3 text-red-600" />
@@ -1896,12 +1896,12 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
               <span className="font-mono-tabular">/projects</span>.
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
               <button
                 type="button"
                 disabled={saving}
                 onClick={() => handleSaveProject('DRAFT', false)}
-                className="px-4 py-2.5 text-xs font-semibold bg-[#F3F2EE] hover:bg-stone-200 text-[#141413] border border-stone-300 transition-colors cursor-pointer"
+                className="w-full sm:w-auto px-4 py-2.5 text-xs font-semibold bg-[#F3F2EE] hover:bg-stone-200 text-[#141413] border border-stone-300 transition-colors cursor-pointer text-center"
               >
                 Save as Draft
               </button>
@@ -1910,7 +1910,7 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
                 type="button"
                 disabled={saving}
                 onClick={() => handleSaveProject(publicationState, true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold bg-white hover:bg-[#F3F2EE] text-[#141413] border border-stone-400 transition-colors cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-semibold bg-white hover:bg-[#F3F2EE] text-[#141413] border border-stone-400 transition-colors cursor-pointer"
               >
                 <Eye className="w-3.5 h-3.5" />
                 <span>Save &amp; Preview</span>
@@ -1920,7 +1920,7 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
                 type="button"
                 disabled={saving}
                 onClick={() => handleSaveProject('PUBLISHED', false)}
-                className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-semibold bg-[#1E3A2F] hover:bg-[#162B22] text-white transition-colors cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 text-xs font-semibold bg-[#1E3A2F] hover:bg-[#162B22] text-white transition-colors cursor-pointer"
               >
                 <Globe className="w-3.5 h-3.5" />
                 <span>{saving ? 'Saving...' : 'Publish Project'}</span>
@@ -1955,8 +1955,8 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
             </div>
 
             {/* Cover Image Section */}
-            <div className="space-y-2 border border-stone-200 p-4 bg-white">
-              <div className="flex items-center justify-between">
+            <div className="space-y-2 border border-stone-200 p-3 sm:p-4 bg-white">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                 <div>
                   <span className="text-xs font-semibold text-[#141413] block">Cover Image</span>
                   <span className="text-[11px] text-[#615E59]">Featured banner photo of the project</span>
@@ -1972,7 +1972,7 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
                         'cover'
                       )
                     }
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 cursor-pointer disabled:opacity-50"
+                    className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 cursor-pointer disabled:opacity-50 self-start sm:self-auto"
                   >
                     <Trash2 className="w-3.5 h-3.5 text-red-600" />
                     <span>Delete Cover Image</span>
@@ -2095,7 +2095,7 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
               <button
                 type="button"
                 onClick={() => setManagingImagesProject(null)}
-                className="px-5 py-2 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer"
+                className="w-full sm:w-auto px-5 py-2.5 sm:py-2 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer text-center"
               >
                 Close Image Manager
               </button>

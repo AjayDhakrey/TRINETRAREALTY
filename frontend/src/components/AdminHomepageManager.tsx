@@ -107,11 +107,11 @@ export const AdminHomepageManager: React.FC<AdminHomepageManagerProps> = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
           <button
             type="button"
             onClick={handleResetToDefault}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium border border-stone-300 text-[#57534E] hover:text-[#141413] hover:border-[#141413] transition-colors cursor-pointer"
+            className="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium border border-stone-300 text-[#57534E] hover:text-[#141413] hover:border-[#141413] transition-colors cursor-pointer w-full sm:w-auto"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset Defaults</span>
@@ -120,7 +120,7 @@ export const AdminHomepageManager: React.FC<AdminHomepageManagerProps> = ({
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 px-5 py-2 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors cursor-pointer shadow-sm"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors cursor-pointer shadow-sm w-full sm:w-auto"
           >
             <Save className="w-3.5 h-3.5" />
             <span>{saving ? 'Publishing Live...' : 'Publish to Live Homepage'}</span>
@@ -146,11 +146,11 @@ export const AdminHomepageManager: React.FC<AdminHomepageManagerProps> = ({
       )}
 
       {/* Sub-navigation pills */}
-      <div className="flex items-center gap-2 border-b border-stone-200 pb-2">
+      <div className="flex items-center gap-2 border-b border-stone-200 pb-2 overflow-x-auto scrollbar-none -mx-3.5 px-3.5 sm:mx-0 sm:px-0 flex-nowrap sm:flex-wrap">
         <button
           type="button"
           onClick={() => setActiveSubSection('text')}
-          className={`px-3.5 py-1.5 text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer ${
+          className={`px-3.5 py-1.5 text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap ${
             activeSubSection === 'text'
               ? 'bg-[#141413] text-white font-semibold'
               : 'bg-[#F3F2EE] text-[#57534E] hover:text-[#141413]'
@@ -162,7 +162,7 @@ export const AdminHomepageManager: React.FC<AdminHomepageManagerProps> = ({
         <button
           type="button"
           onClick={() => setActiveSubSection('projects')}
-          className={`px-3.5 py-1.5 text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer ${
+          className={`px-3.5 py-1.5 text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap ${
             activeSubSection === 'projects'
               ? 'bg-[#141413] text-white font-semibold'
               : 'bg-[#F3F2EE] text-[#57534E] hover:text-[#141413]'
@@ -174,7 +174,7 @@ export const AdminHomepageManager: React.FC<AdminHomepageManagerProps> = ({
         <button
           type="button"
           onClick={() => setActiveSubSection('metrics')}
-          className={`px-3.5 py-1.5 text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer ${
+          className={`px-3.5 py-1.5 text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap ${
             activeSubSection === 'metrics'
               ? 'bg-[#141413] text-white font-semibold'
               : 'bg-[#F3F2EE] text-[#57534E] hover:text-[#141413]'
