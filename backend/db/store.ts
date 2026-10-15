@@ -61,7 +61,6 @@ export function loadJsonDatabase(): DatabaseSchema {
       if (
         parsed &&
         Array.isArray(parsed.properties) &&
-        parsed.properties.length > 0 &&
         !isLegacyUsdScale
       ) {
         if (!Array.isArray(parsed.projects) || parsed.projects.length === 0) {

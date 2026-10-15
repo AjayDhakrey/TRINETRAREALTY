@@ -160,9 +160,9 @@ export default function App() {
     if (typeof window !== 'undefined') {
       try {
         const stored = localStorage.getItem('trinetra_compare_ids');
-        if (stored) {
+        if (stored !== null) {
           const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
+          if (Array.isArray(parsed)) {
             return parsed.slice(0, 3);
           }
         }
@@ -264,12 +264,7 @@ export default function App() {
     if (properties.length > 0) {
       setCompareIds((prev) => {
         const propSet = new Set(properties.map((p) => p.id));
-        const valid = prev.filter((id) => propSet.has(id));
-        // If stored IDs were all invalid or deleted, select the first 2 available properties
-        if (valid.length === 0 && properties.length >= 2) {
-          return [properties[0].id, properties[1].id];
-        }
-        return valid;
+        return prev.filter((id) => propSet.has(id));
       });
     }
   }, [properties]);

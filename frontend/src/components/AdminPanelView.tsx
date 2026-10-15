@@ -500,10 +500,17 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     if (!window.confirm(`Are you sure you want to permanently delete property listing "${title}"?`)) {
       return;
     }
-    const res = await apiFetch(`/api/properties/${id}`, { method: 'DELETE' });
-    if (res.ok) {
-      onPropertyDeleted(id);
-      realtimeClient.broadcastLocally('property:deleted', { id });
+    try {
+      const res = await apiFetch(`/api/properties/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        onPropertyDeleted(id);
+        realtimeClient.broadcastLocally('property:deleted', { id });
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || 'Failed to delete property listing.');
+      }
+    } catch (err: any) {
+      alert(err.message || 'Error deleting property listing.');
     }
   };
 

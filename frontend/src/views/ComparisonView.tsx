@@ -390,7 +390,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
             )}
 
             {/* A. MOBILE HEAD-TO-HEAD 2-COLUMN VIEW */}
-            {((comparedProperties.length === 2 || mobileViewMode === 'head-to-head') && propA && propB) ? (
+            {(comparedProperties.length >= 2 && (comparedProperties.length === 2 || mobileViewMode === 'head-to-head') && propA && propB) ? (
               <div className="border border-stone-200 bg-[#FBFBF9] shadow-xs divide-y divide-stone-200">
                 {/* 2 Property Top Cards Side-by-Side */}
                 <div className="grid grid-cols-2 divide-x divide-stone-200 bg-[#F3F2EE]/50">
@@ -506,33 +506,130 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                 )}
               </div>
             ) : comparedProperties.length === 1 ? (
-              /* Single Property Mobile Card */
-              <div className="bg-[#FBFBF9] border border-stone-200 p-4 space-y-3">
-                <div className="aspect-[16/10] w-full bg-stone-200 overflow-hidden relative">
-                  <ArchitecturalImage
-                    src={comparedProperties[0].images[0]}
-                    alt={comparedProperties[0].title}
-                    className="w-full h-full object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => onToggleCompare(comparedProperties[0].id)}
-                    title="Remove from Comparison"
-                    className="absolute top-2 right-2 p-1.5 bg-black/75 text-white hover:bg-red-700 transition-colors cursor-pointer"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+              /* Single Property Mobile View with Specs & Add Option */
+              <div className="space-y-4">
+                <div className="bg-[#FBFBF9] border border-stone-200 p-4 space-y-3 shadow-xs">
+                  <div className="aspect-[16/10] w-full bg-stone-200 overflow-hidden relative">
+                    <ArchitecturalImage
+                      src={comparedProperties[0].images[0]}
+                      alt={comparedProperties[0].title}
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => onToggleCompare(comparedProperties[0].id)}
+                      title="Remove from Comparison"
+                      className="absolute top-2 right-2 p-1.5 bg-black/75 text-white hover:bg-red-700 transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <div>
+                    <div className="text-[10px] text-[#615E59] font-mono-tabular">
+                      {comparedProperties[0].code} · {comparedProperties[0].locality}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onSelectProperty(comparedProperties[0])}
+                      className="font-serif-display text-lg font-semibold text-[#141413] hover:text-[#1E3A2F] text-left cursor-pointer mt-0.5 line-clamp-2"
+                    >
+                      {comparedProperties[0].title}
+                    </button>
+                    <div className="font-mono-tabular font-bold text-sm text-[#141413] mt-1">
+                      {formatPropertyPrice(comparedProperties[0].price, comparedProperties[0].transactionType)}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-stone-200/80">
+                    <button
+                      type="button"
+                      onClick={() => onSelectProperty(comparedProperties[0])}
+                      className="w-full py-2 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer text-center"
+                    >
+                      View Dossier
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onOpenLeadModal('Property Inquiry', comparedProperties[0].id)}
+                      className="w-full py-2 text-xs font-semibold border border-stone-300 text-[#141413] hover:bg-stone-50 cursor-pointer text-center"
+                    >
+                      Inquire
+                    </button>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-[10px] text-[#615E59] font-mono-tabular">
-                    {comparedProperties[0].code} · {comparedProperties[0].locality}
+
+                {/* Add a Second Property Prompt */}
+                {availableToAdd.length > 0 && (
+                  <div className="bg-[#F3F2EE] border border-stone-300 p-4 space-y-2.5">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center shrink-0 border border-stone-300">
+                        <Plus className="w-4 h-4 text-[#1E3A2F]" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-semibold text-[#141413]">
+                          Select a Second Residence to Compare
+                        </div>
+                        <div className="text-[11px] text-[#615E59]">
+                          Compare valuation, spatial layout, and carrying costs side-by-side.
+                        </div>
+                      </div>
+                    </div>
+                    <select
+                      aria-label="Add second residence to comparison"
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          onToggleCompare(e.target.value);
+                          e.target.value = '';
+                        }
+                      }}
+                      defaultValue=""
+                      className="w-full px-3 py-2 text-xs bg-white border border-stone-300 focus:border-[#141413] focus:outline-none cursor-pointer"
+                    >
+                      <option value="" disabled>
+                        + Select Residence to Compare...
+                      </option>
+                      {availableToAdd.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.code} — {p.title} ({formatPropertyPrice(p.price, p.transactionType)})
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                  <div className="font-serif-display text-lg font-semibold text-[#141413]">
-                    {comparedProperties[0].title}
+                )}
+
+                {/* Specifications Checklist for Single Residence */}
+                <div className="border border-stone-200 bg-white divide-y divide-stone-200 shadow-xs">
+                  <div className="bg-[#F3F2EE] px-3 py-2 text-[10px] uppercase tracking-wider font-semibold text-[#615E59]">
+                    Architectural &amp; Financial Specifications
                   </div>
-                  <div className="font-mono-tabular font-semibold text-sm text-[#141413] mt-1">
-                    {formatPropertyPrice(comparedProperties[0].price, comparedProperties[0].transactionType)}
-                  </div>
+                  {SPEC_ITEMS.map((item) => (
+                    <div
+                      key={item.key}
+                      className={`p-3 text-xs flex justify-between items-start gap-3 ${
+                        item.highlight ? 'bg-[#FAF8F5]' : ''
+                      }`}
+                    >
+                      <span className="font-semibold text-[#57534E] shrink-0">{item.label}</span>
+                      <div className="text-right text-[#141413]">{item.renderValue(comparedProperties[0])}</div>
+                    </div>
+                  ))}
+
+                  {/* Amenities for Single Property */}
+                  {comparedProperties[0].amenities && comparedProperties[0].amenities.length > 0 && (
+                    <div className="bg-white">
+                      <div className="bg-[#F3F2EE] px-3 py-2 text-[10px] uppercase tracking-wider font-semibold text-[#615E59] border-t border-stone-200">
+                        Amenities &amp; Features ({comparedProperties[0].amenities.length})
+                      </div>
+                      <div className="p-3 grid grid-cols-1 gap-2">
+                        {comparedProperties[0].amenities.map((amenity) => (
+                          <div key={amenity} className="flex items-center gap-2 text-xs text-[#141413]">
+                            <Check className="w-3.5 h-3.5 text-[#1E3A2F] shrink-0" />
+                            <span>{amenity}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : null}
