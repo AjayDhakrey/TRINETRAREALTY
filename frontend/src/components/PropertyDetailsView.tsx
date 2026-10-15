@@ -14,6 +14,7 @@ import {
 import { Property, LeadType, CustomerLead, ActiveRoute } from '../types/realestate';
 import { ArchitecturalImage } from './ArchitecturalImage';
 import { PhotoLightboxModal } from './PhotoLightboxModal';
+import { WhatsAppIcon } from './SocialIcons';
 import {
   formatPropertyPrice,
   formatCurrency,
@@ -107,7 +108,7 @@ export const PropertyDetailsView: React.FC<PropertyDetailsViewProps> = ({
   };
 
   return (
-    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-10">
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-10 pb-24 lg:pb-10">
       {/* Top Breadcrumb & Back Navigation */}
       <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-stone-200">
         <button
@@ -565,6 +566,36 @@ export const PropertyDetailsView: React.FC<PropertyDetailsViewProps> = ({
             )}
           </div>
         </aside>
+      </div>
+
+      {/* STICKY MOBILE BOTTOM ACTION BAR */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#FBFBF9]/95 backdrop-blur-md border-t border-stone-300 px-4 py-2.5 shadow-2xl flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-[10px] text-[#615E59] uppercase tracking-wider truncate">
+            {property.title}
+          </div>
+          <div className="font-mono-tabular font-semibold text-xs text-[#141413] truncate">
+            {formatPropertyPrice(property.price, property.transactionType)}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => onOpenLeadModal('WhatsApp Contact', property.id)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-[#25D366] text-white hover:bg-[#20bd5a] transition-colors rounded-sm cursor-pointer"
+          >
+            <WhatsAppIcon className="w-3.5 h-3.5 text-white" />
+            <span>WhatsApp</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onOpenLeadModal('Schedule Visit', property.id)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors rounded-sm cursor-pointer"
+          >
+            <Calendar className="w-3.5 h-3.5" />
+            <span>Visit</span>
+          </button>
+        </div>
       </div>
 
       {/* FULLSCREEN TOUCH-OPTIMIZED PHOTO LIGHTBOX */}
