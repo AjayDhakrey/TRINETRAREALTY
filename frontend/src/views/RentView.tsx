@@ -11,6 +11,19 @@ export const RentView: React.FC<BuyRentViewProps> = ({
   onOpenLeadModal,
 }) => {
   const [furnishedFilter, setFurnishedFilter] = useState<string>('All');
+
+  const furnishedOptions = React.useMemo(() => {
+    const set = new Set<string>(['All']);
+    properties
+      .filter((p) => p.transactionType === 'Rent')
+      .forEach((p) => {
+        if (p.furnishedStatus && p.furnishedStatus.trim()) {
+          set.add(p.furnishedStatus.trim());
+        }
+      });
+    return Array.from(set);
+  }, [properties]);
+
   const rentProperties = properties.filter(
     (p) =>
       p.transactionType === 'Rent' &&
@@ -33,7 +46,7 @@ export const RentView: React.FC<BuyRentViewProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-1 p-1 bg-[#F3F2EE] border border-stone-200">
-          {['All', 'Fully Furnished', 'Bespoke Millwork'].map((mode) => (
+          {furnishedOptions.map((mode) => (
             <button
               key={mode}
               type="button"

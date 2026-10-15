@@ -17,6 +17,34 @@ export const LocalitiesView: React.FC<LocalitiesViewProps> = ({
   onExploreLocality,
   onOpenLeadModal,
 }) => {
+  const allLocalities = React.useMemo(() => {
+    const list = [...localities];
+    const knownNames = new Set(localities.map((l) => l.name.toLowerCase()));
+    properties.forEach((p) => {
+      if (p.locality && !knownNames.has(p.locality.toLowerCase())) {
+        knownNames.add(p.locality.toLowerCase());
+        list.push({
+          id: `dyn-${p.locality.toLowerCase().replace(/\s+/g, '-')}`,
+          name: p.locality,
+          city: p.address?.split(',').pop()?.trim() || 'NCR Region',
+          heroImage: p.images[0] || '/src/assets/images/hero_architectural_estate_1790442951828.jpg',
+          description: `Premier residential micro-market featuring exclusive architectural mandates represented by Trinetra Realty.`,
+          avgPricePerSqFt: p.pricePerSqFt || Math.round(p.price / (p.areaSqFt || 1)),
+          yoyAppreciation: 8.5,
+          rentalYield: 3.8,
+          transitScore: 85,
+          architecturalCharacter: `${p.architecturalStyle || 'Modern Luxury'} Enclave`,
+          keyHighlights: [
+            `Prime connectivity and residential infrastructure in ${p.locality}`,
+            `Verified title deeds and freehold ownership guarantees`,
+            `Direct developer representation by Trinetra Realty`,
+          ],
+        });
+      }
+    });
+    return list;
+  }, [localities, properties]);
+
   return (
     <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-8 sm:space-y-12">
       <div className="border-b border-stone-200 pb-6 sm:pb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
@@ -42,7 +70,7 @@ export const LocalitiesView: React.FC<LocalitiesViewProps> = ({
       </div>
 
       <div className="space-y-8 sm:space-y-10">
-        {localities.map((loc, index) => {
+        {allLocalities.map((loc, index) => {
           const matchingCount = properties.filter((p) => p.locality === loc.name).length;
           return (
             <article

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Building2, Plus, Trash2 } from 'lucide-react';
+import { Building2, Plus, Trash2, Check, ArrowRight, ArrowLeftRight, CheckCircle2, Minus } from 'lucide-react';
 import type { Property, LeadType } from '../types/realestate';
 import { ArchitecturalImage } from '../components/ArchitecturalImage';
 import {
@@ -13,6 +13,7 @@ export interface ComparisonViewProps {
   properties: Property[];
   compareIds: string[];
   onToggleCompare: (id: string) => void;
+  onClearCompare?: () => void;
   onSelectProperty: (property: Property) => void;
   onOpenLeadModal: (type: LeadType, propertyId?: string) => void;
 }
@@ -28,9 +29,11 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   properties,
   compareIds,
   onToggleCompare,
+  onClearCompare,
   onSelectProperty,
   onOpenLeadModal,
 }) => {
+  // Only compare properties that genuinely exist in the active catalog
   const comparedProperties = properties.filter((p) => compareIds.includes(p.id));
   const availableToAdd = properties.filter((p) => !compareIds.includes(p.id));
 
@@ -47,14 +50,24 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   const propA = comparedProperties[indexA];
   const propB = comparedProperties[indexB];
 
+  // Compute union of all amenities across compared properties
+  const allComparedAmenities = Array.from(
+    new Set(comparedProperties.flatMap((p) => p.amenities || []))
+  );
+
   const SPEC_ITEMS: SpecItem[] = [
     {
       key: 'price',
       label: 'Offering Price',
       renderValue: (p) => (
-        <span className="font-mono-tabular font-semibold text-[#141413]">
-          {formatPropertyPrice(p.price, p.transactionType)}
-        </span>
+        <div>
+          <span className="font-mono-tabular font-bold text-[#141413] text-base sm:text-lg">
+            {formatPropertyPrice(p.price, p.transactionType)}
+          </span>
+          <span className="block text-[11px] text-[#615E59]">
+            {p.transactionType === 'Rent' ? 'Monthly Lease' : 'Freehold Acquisition'}
+          </span>
+        </div>
       ),
       highlight: true,
     },
@@ -62,17 +75,29 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
       key: 'pricePerSqFt',
       label: 'Price / Sq.Ft.',
       renderValue: (p) => (
-        <span className="font-mono-tabular text-[#141413]">
-          ₹{formatNumber(p.pricePerSqFt)} / sq.ft.
+        <span className="font-mono-tabular font-semibold text-[#1E3A2F]">
+          ₹{formatNumber(p.pricePerSqFt || Math.round(p.price / (p.areaSqFt || 1)))} / sq.ft.
         </span>
       ),
     },
     {
-      key: 'transaction',
-      label: 'Transaction & Status',
+      key: 'locality',
+      label: 'Locality & Enclave',
       renderValue: (p) => (
-        <span className="text-[#141413]">
-          {p.transactionType === 'Rent' ? 'Luxury Lease' : 'Freehold Acquisition'} · {p.status}
+        <div>
+          <span className="font-semibold text-[#141413]">{p.locality}</span>
+          <span className="block text-[11px] text-[#615E59] truncate max-w-[200px]" title={p.address}>
+            {p.address}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: 'category',
+      label: 'Typology',
+      renderValue: (p) => (
+        <span className="inline-flex px-2 py-0.5 text-xs font-semibold bg-[#F3F2EE] text-[#141413] border border-stone-200">
+          {p.category}
         </span>
       ),
     },
@@ -80,7 +105,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
       key: 'area',
       label: 'Interior Area',
       renderValue: (p) => (
-        <span className="font-mono-tabular text-[#141413]">
+        <span className="font-mono-tabular font-medium text-[#141413]">
           {formatNumber(p.areaSqFt)} sq.ft.
         </span>
       ),
@@ -95,6 +120,20 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
       ),
     },
     {
+      key: 'parking',
+      label: 'Parking Provision',
+      renderValue: (p) => (
+        <span className="font-mono-tabular text-[#141413]">
+          {p.parkingSpaces} Reserved Spaces
+        </span>
+      ),
+    },
+    {
+      key: 'condition',
+      label: 'Condition / Delivery',
+      renderValue: (p) => <span className="text-[#141413]">{p.furnishedStatus}</span>,
+    },
+    {
       key: 'style',
       label: 'Architectural Style',
       renderValue: (p) => <span className="text-[#141413]">{p.architecturalStyle}</span>,
@@ -105,20 +144,6 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
       renderValue: (p) => (
         <span className="text-[#57534E]">
           {p.architect} ({p.yearBuilt})
-        </span>
-      ),
-    },
-    {
-      key: 'condition',
-      label: 'Condition / Furnishing',
-      renderValue: (p) => <span className="text-[#141413]">{p.furnishedStatus}</span>,
-    },
-    {
-      key: 'parking',
-      label: 'Parking Provision',
-      renderValue: (p) => (
-        <span className="font-mono-tabular text-[#141413]">
-          {p.parkingSpaces} Private Spaces
         </span>
       ),
     },
@@ -140,9 +165,9 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
         if (p.transactionType === 'Rent') {
           return <span className="font-mono-tabular text-[#615E59]">N/A (Monthly Lease)</span>;
         }
-        const emi = calculateMonthlyEMI(p.price * 0.7, 6.25, 20).monthlyEMI;
+        const emi = calculateMonthlyEMI(p.price * 0.7, 8.5, 20).monthlyEMI;
         return (
-          <span className="font-mono-tabular font-medium text-[#1E3A2F]">
+          <span className="font-mono-tabular font-semibold text-[#1E3A2F]">
             {formatCurrency(emi)} / mo
           </span>
         );
@@ -151,17 +176,28 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
     },
   ];
 
+  const handleClearAll = () => {
+    if (onClearCompare) {
+      onClearCompare();
+    } else {
+      comparedProperties.forEach((p) => onToggleCompare(p.id));
+    }
+  };
+
   return (
-    <div className="max-w-[1360px] mx-auto px-3 sm:px-6 py-5 sm:py-12 space-y-5 sm:space-y-10">
+    <div className="max-w-[1360px] mx-auto px-3 sm:px-6 py-5 sm:py-12 space-y-6 sm:space-y-10">
       {/* Top Header */}
-      <div className="border-b border-stone-200 pb-4 sm:pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4">
+      <div className="border-b border-stone-200 pb-4 sm:pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <div className="text-[11px] sm:text-xs text-[#615E59]">
+          <div className="text-[11px] sm:text-xs text-[#615E59] tracking-wide uppercase font-semibold">
             Side-by-Side Architectural &amp; Financial Matrix
           </div>
           <h1 className="font-serif-display text-2xl sm:text-4xl font-semibold text-[#141413] mt-1">
             Property Comparison ({comparedProperties.length} of 3 Selected)
           </h1>
+          <p className="text-xs sm:text-sm text-[#57534E] mt-1 max-w-xl">
+            Evaluate price per square foot, carrying costs, spatial layout, and bespoke specifications side-by-side with live catalog synchronization.
+          </p>
         </div>
 
         {/* Header Controls: Add & Clear */}
@@ -176,7 +212,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                 }
               }}
               defaultValue=""
-              className="w-full sm:w-auto px-3 py-2 text-xs bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
+              className="w-full sm:w-auto px-3 py-2 text-xs bg-white border border-stone-300 focus:border-[#141413] focus:outline-none cursor-pointer"
             >
               <option value="" disabled>
                 + Add Residence to Compare...
@@ -192,12 +228,10 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
           {comparedProperties.length > 0 && (
             <button
               type="button"
-              onClick={() => {
-                comparedProperties.forEach((p) => onToggleCompare(p.id));
-              }}
-              className="text-xs text-[#57534E] hover:text-[#141413] px-2 py-1.5 border border-stone-200 hover:border-stone-400 cursor-pointer"
+              onClick={handleClearAll}
+              className="text-xs text-[#57534E] hover:text-red-700 hover:border-red-300 px-3 py-2 border border-stone-200 transition-colors cursor-pointer bg-white"
             >
-              Clear All
+              Clear Comparison
             </button>
           )}
         </div>
@@ -205,92 +239,67 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
 
       {/* STATE 0: No Properties Selected */}
       {comparedProperties.length === 0 && (
-        <div className="bg-[#F3F2EE] border border-stone-200 p-6 sm:p-12 text-center space-y-4">
-          <Building2 className="w-10 h-10 text-[#615E59] mx-auto stroke-[1.25]" />
-          <h2 className="font-serif-display text-xl sm:text-2xl font-semibold text-[#141413]">
-            No Residences Currently Selected for Comparison
-          </h2>
-          <p className="text-xs sm:text-sm text-[#57534E] max-w-md mx-auto">
-            Select up to three residences below to evaluate per-square-foot valuation, carrying costs, and architectural specifications side by side.
-          </p>
-          <div className="pt-2 flex flex-wrap justify-center gap-2">
-            {properties.slice(0, 3).map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => onToggleCompare(p.id)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Add {p.title}</span>
-              </button>
-            ))}
+        <div className="bg-[#F3F2EE] border border-stone-200 p-8 sm:p-14 text-center space-y-6">
+          <div className="w-16 h-16 mx-auto rounded-full bg-[#1E3A2F]/10 flex items-center justify-center">
+            <Building2 className="w-8 h-8 text-[#1E3A2F] stroke-[1.5]" />
           </div>
-        </div>
-      )}
+          <div className="space-y-1.5 max-w-lg mx-auto">
+            <h2 className="font-serif-display text-2xl sm:text-3xl font-semibold text-[#141413]">
+              No Residences Currently in Comparison
+            </h2>
+            <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed">
+              Select up to three residences from our current portfolio below to inspect valuation benchmarks, carrying costs, and architectural layouts side by side.
+            </p>
+          </div>
 
-      {/* STATE 1: Only 1 Property Selected */}
-      {comparedProperties.length === 1 && (
-        <div className="space-y-6">
-          <div className="bg-[#F3F2EE] border border-stone-200 p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <div className="text-xs font-semibold text-[#1E3A2F]">
-                1 Residence Selected · Add Another to Compare
-              </div>
-              <p className="text-xs text-[#57534E]">
-                Select at least one additional residence to generate a side-by-side comparative architectural and financial dossier.
-              </p>
+          <div className="pt-2 max-w-4xl mx-auto">
+            <div className="text-xs font-semibold text-[#141413] mb-3 text-left">
+              Quick Select Available Residences:
             </div>
-            <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-              {availableToAdd.slice(0, 3).map((p) => (
-                <button
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {properties.slice(0, 3).map((p) => (
+                <div
                   key={p.id}
-                  type="button"
-                  onClick={() => onToggleCompare(p.id)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer"
+                  className="bg-[#FBFBF9] border border-stone-300 p-3.5 text-left flex flex-col justify-between space-y-3 hover:border-[#141413] transition-colors"
                 >
-                  <Plus className="w-3 h-3" />
-                  <span>Add {p.code}</span>
-                </button>
+                  <div className="space-y-2">
+                    <div className="aspect-[16/10] w-full bg-stone-200 overflow-hidden">
+                      <ArchitecturalImage
+                        src={p.images[0]}
+                        alt={p.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <div className="text-[10px] text-[#615E59] font-mono-tabular">
+                        {p.code} · {p.locality}
+                      </div>
+                      <div className="font-serif-display text-sm font-semibold text-[#141413] line-clamp-1">
+                        {p.title}
+                      </div>
+                      <div className="font-mono-tabular text-xs font-bold text-[#1E3A2F] mt-0.5">
+                        {formatPropertyPrice(p.price, p.transactionType)}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => onToggleCompare(p.id)}
+                    className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Add to Compare</span>
+                  </button>
+                </div>
               ))}
             </div>
           </div>
-
-          {/* Single Property Summary Card */}
-          <div className="bg-[#FBFBF9] border border-stone-200 p-4 sm:p-6 max-w-md mx-auto sm:mx-0 space-y-3">
-            <div className="aspect-[16/10] w-full bg-stone-200 overflow-hidden relative">
-              <ArchitecturalImage
-                src={comparedProperties[0].images[0]}
-                alt={comparedProperties[0].title}
-                className="w-full h-full object-cover"
-              />
-              <button
-                type="button"
-                onClick={() => onToggleCompare(comparedProperties[0].id)}
-                title="Remove from Comparison"
-                className="absolute top-2 right-2 p-1.5 bg-black/75 text-white hover:bg-red-700 transition-colors cursor-pointer"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            </div>
-            <div>
-              <div className="text-[10px] text-[#615E59] font-mono-tabular">
-                {comparedProperties[0].code} · {comparedProperties[0].locality}
-              </div>
-              <div className="font-serif-display text-lg font-semibold text-[#141413]">
-                {comparedProperties[0].title}
-              </div>
-              <div className="font-mono-tabular font-semibold text-sm text-[#141413] mt-1">
-                {formatPropertyPrice(comparedProperties[0].price, comparedProperties[0].transactionType)}
-              </div>
-            </div>
-          </div>
         </div>
       )}
 
-      {/* STATE 2: 2 or 3 Properties Selected */}
-      {comparedProperties.length >= 2 && (
-        <div className="space-y-4">
+      {/* STATE 1: 1, 2, or 3 Properties Selected */}
+      {comparedProperties.length >= 1 && (
+        <div className="space-y-6">
           {/* ===============================================================
            * MOBILE VIEW (< 768px): Dedicated Head-to-Head & Responsive Matrix
            * ============================================================= */}
@@ -359,8 +368,29 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
               </div>
             )}
 
-            {/* A. MOBILE HEAD-TO-HEAD 2-COLUMN VIEW (100% viewport width, zero horizontal overflow) */}
-            {(comparedProperties.length === 2 || mobileViewMode === 'head-to-head') && propA && propB && (
+            {/* Prompt to add another property when only 1 is selected on mobile */}
+            {comparedProperties.length === 1 && availableToAdd.length > 0 && (
+              <div className="p-3 bg-[#F3F2EE] border border-stone-300 space-y-2">
+                <div className="text-xs font-semibold text-[#1E3A2F]">
+                  1 Residence Selected · Choose a 2nd to compare
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {availableToAdd.slice(0, 3).map((p) => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => onToggleCompare(p.id)}
+                      className="px-2.5 py-1 text-[11px] font-medium bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer"
+                    >
+                      + {p.code}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* A. MOBILE HEAD-TO-HEAD 2-COLUMN VIEW */}
+            {((comparedProperties.length === 2 || mobileViewMode === 'head-to-head') && propA && propB) ? (
               <div className="border border-stone-200 bg-[#FBFBF9] shadow-xs divide-y divide-stone-200">
                 {/* 2 Property Top Cards Side-by-Side */}
                 <div className="grid grid-cols-2 divide-x divide-stone-200 bg-[#F3F2EE]/50">
@@ -403,7 +433,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                         <button
                           type="button"
                           onClick={() => onSelectProperty(prop)}
-                          className="w-full py-1 text-[11px] font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer text-center"
+                          className="w-full py-1.5 text-[11px] font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer text-center"
                         >
                           Dossier
                         </button>
@@ -422,11 +452,9 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                 {/* Synchronized Metric Rows for propA and propB */}
                 {SPEC_ITEMS.map((item) => (
                   <div key={item.key} className="bg-white">
-                    {/* Full-width Specification Category Banner */}
                     <div className="bg-[#F3F2EE] px-3 py-1 text-[10px] uppercase tracking-wider font-semibold text-[#615E59] border-t border-b border-stone-200/80">
                       {item.label}
                     </div>
-                    {/* 2-Column Values Underneath */}
                     <div className="grid grid-cols-2 divide-x divide-stone-200 p-2.5 text-xs">
                       <div className="pr-1.5 break-words">
                         {item.renderValue(propA)}
@@ -437,19 +465,88 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                     </div>
                   </div>
                 ))}
-              </div>
-            )}
 
-            {/* B. MOBILE ALL 3 (SWIPE) VIEW: Horizontal Scroll Track Without Broken Sticky Column */}
+                {/* Amenities Comparison */}
+                {allComparedAmenities.length > 0 && (
+                  <div className="bg-white">
+                    <div className="bg-[#F3F2EE] px-3 py-1.5 text-[10px] uppercase tracking-wider font-semibold text-[#615E59] border-t border-b border-stone-200">
+                      Amenities Checklist
+                    </div>
+                    <div className="divide-y divide-stone-100">
+                      {allComparedAmenities.map((amenity) => {
+                        const hasA = (propA.amenities || []).includes(amenity);
+                        const hasB = (propB.amenities || []).includes(amenity);
+                        return (
+                          <div key={amenity} className="grid grid-cols-2 divide-x divide-stone-200 p-2 text-xs">
+                            <div className="pr-1.5 flex items-center gap-1.5 text-[11px]">
+                              {hasA ? (
+                                <Check className="w-3.5 h-3.5 text-[#1E3A2F] shrink-0" />
+                              ) : (
+                                <Minus className="w-3.5 h-3.5 text-stone-300 shrink-0" />
+                              )}
+                              <span className={hasA ? 'font-medium text-[#141413]' : 'text-stone-400'}>
+                                {amenity}
+                              </span>
+                            </div>
+                            <div className="pl-2 flex items-center gap-1.5 text-[11px]">
+                              {hasB ? (
+                                <Check className="w-3.5 h-3.5 text-[#1E3A2F] shrink-0" />
+                              ) : (
+                                <Minus className="w-3.5 h-3.5 text-stone-300 shrink-0" />
+                              )}
+                              <span className={hasB ? 'font-medium text-[#141413]' : 'text-stone-400'}>
+                                {amenity}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : comparedProperties.length === 1 ? (
+              /* Single Property Mobile Card */
+              <div className="bg-[#FBFBF9] border border-stone-200 p-4 space-y-3">
+                <div className="aspect-[16/10] w-full bg-stone-200 overflow-hidden relative">
+                  <ArchitecturalImage
+                    src={comparedProperties[0].images[0]}
+                    alt={comparedProperties[0].title}
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => onToggleCompare(comparedProperties[0].id)}
+                    title="Remove from Comparison"
+                    className="absolute top-2 right-2 p-1.5 bg-black/75 text-white hover:bg-red-700 transition-colors cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div>
+                  <div className="text-[10px] text-[#615E59] font-mono-tabular">
+                    {comparedProperties[0].code} · {comparedProperties[0].locality}
+                  </div>
+                  <div className="font-serif-display text-lg font-semibold text-[#141413]">
+                    {comparedProperties[0].title}
+                  </div>
+                  <div className="font-mono-tabular font-semibold text-sm text-[#141413] mt-1">
+                    {formatPropertyPrice(comparedProperties[0].price, comparedProperties[0].transactionType)}
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            {/* B. MOBILE ALL 3 (SWIPE) VIEW */}
             {comparedProperties.length === 3 && mobileViewMode === 'swipe' && (
               <div className="border border-stone-200 bg-[#FBFBF9] shadow-xs">
                 <div className="px-3 py-1.5 bg-[#F3F2EE] text-[11px] text-[#615E59] flex items-center justify-between border-b border-stone-200">
-                  <span>← Swipe horizontally across 3 residences →</span>
-                  <span className="font-mono-tabular font-semibold text-[#1E3A2F]">3/3</span>
+                  <span>← Swipe horizontally across all 3 residences →</span>
+                  <span className="font-mono-tabular font-semibold text-[#1E3A2F]">3 of 3</span>
                 </div>
 
                 <div className="overflow-x-auto pb-2">
-                  <div className="min-w-[460px] divide-y divide-stone-200">
+                  <div className="min-w-[480px] divide-y divide-stone-200">
                     {/* Top Property Cards Track */}
                     <div className="grid grid-cols-3 divide-x divide-stone-200 bg-[#F3F2EE]/40">
                       {comparedProperties.map((prop) => (
@@ -459,162 +556,264 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                               <ArchitecturalImage
                                 src={prop.images[0]}
                                 alt={prop.title}
-                              className="w-full h-full object-cover"
-                            />
+                                className="w-full h-full object-cover"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => onToggleCompare(prop.id)}
+                                title="Remove from comparison"
+                                className="absolute top-1 right-1 p-1 bg-black/75 text-white hover:bg-red-700 transition-colors cursor-pointer"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                            <div className="text-[10px] text-[#615E59] font-mono-tabular truncate">
+                              {prop.code} · {prop.locality}
+                            </div>
                             <button
                               type="button"
-                              onClick={() => onToggleCompare(prop.id)}
-                              title="Remove from comparison"
-                              className="absolute top-1 right-1 p-1 bg-black/75 text-white hover:bg-red-700 transition-colors cursor-pointer"
+                              onClick={() => onSelectProperty(prop)}
+                              className="font-serif-display text-xs font-semibold text-[#141413] hover:text-[#1E3A2F] text-left line-clamp-2 cursor-pointer mt-0.5"
                             >
-                              <Trash2 className="w-3 h-3" />
+                              {prop.title}
+                            </button>
+                            <div className="font-mono-tabular text-xs font-bold text-[#141413]">
+                              {formatPropertyPrice(prop.price, prop.transactionType)}
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-1 pt-1 border-t border-stone-200/60">
+                            <button
+                              type="button"
+                              onClick={() => onSelectProperty(prop)}
+                              className="w-full py-1 text-[10px] font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer text-center"
+                            >
+                              Dossier
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => onOpenLeadModal('Schedule Visit', prop.id)}
+                              className="w-full py-1 text-[10px] font-medium border border-stone-300 text-[#141413] hover:border-[#141413] cursor-pointer text-center"
+                            >
+                              Visit
                             </button>
                           </div>
-                          <div className="text-[10px] text-[#615E59] font-mono-tabular truncate">
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Spec Rows for All 3 */}
+                    {SPEC_ITEMS.map((item) => (
+                      <div key={item.key} className="bg-white">
+                        <div className="bg-[#F3F2EE] px-3 py-1 text-[10px] uppercase tracking-wider font-semibold text-[#615E59] border-t border-b border-stone-200/80">
+                          {item.label}
+                        </div>
+                        <div className="grid grid-cols-3 divide-x divide-stone-200 p-2 text-xs">
+                          {comparedProperties.map((p) => (
+                            <div key={p.id} className="px-1.5 break-words">
+                              {item.renderValue(p)}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* ===============================================================
+           * DESKTOP TABLE VIEW (>= 768px): Spacious 3-Column Comparison Matrix
+           * ============================================================= */}
+          <div className="hidden md:block overflow-x-auto border border-stone-200 bg-[#FBFBF9] shadow-xs">
+            <table className="w-full text-left border-collapse min-w-[840px]">
+              <thead>
+                <tr className="border-b border-stone-200 bg-[#F3F2EE]/90">
+                  <th className="p-4 sm:p-5 w-44 sm:w-56 text-xs font-semibold text-[#615E59] align-top sticky left-0 z-20 bg-[#F3F2EE] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Specification
+                  </th>
+                  {/* Render Compared Property Columns */}
+                  {comparedProperties.map((prop) => (
+                    <th key={prop.id} className="p-4 sm:p-5 border-l border-stone-200 align-top w-72 sm:w-80 min-w-[240px]">
+                      <div className="space-y-3">
+                        <div className="aspect-[16/10] w-full bg-stone-200 overflow-hidden relative">
+                          <ArchitecturalImage
+                            src={prop.images[0]}
+                            alt={prop.title}
+                            className="w-full h-full object-cover"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => onToggleCompare(prop.id)}
+                            title="Remove from Comparison"
+                            className="absolute top-2 right-2 p-1.5 bg-black/75 text-white hover:bg-red-700 transition-colors cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                        <div>
+                          <div className="text-xs text-[#615E59] font-mono-tabular">
                             {prop.code} · {prop.locality}
                           </div>
                           <button
                             type="button"
                             onClick={() => onSelectProperty(prop)}
-                            className="font-serif-display text-xs font-semibold text-[#141413] hover:text-[#1E3A2F] text-left line-clamp-2 cursor-pointer mt-0.5"
+                            className="font-serif-display text-lg sm:text-xl font-semibold text-[#141413] hover:text-[#1E3A2F] text-left cursor-pointer mt-0.5 line-clamp-2"
                           >
                             {prop.title}
                           </button>
-                          <div className="font-mono-tabular text-xs font-bold text-[#141413]">
-                            {formatPropertyPrice(prop.price, prop.transactionType)}
-                          </div>
-                        </div>
-
-                        <div className="flex flex-col gap-1 pt-1 border-t border-stone-200/60">
-                          <button
-                            type="button"
-                            onClick={() => onSelectProperty(prop)}
-                            className="w-full py-1 text-[10px] font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer text-center"
-                          >
-                            Dossier
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => onOpenLeadModal('Schedule Visit', prop.id)}
-                            className="w-full py-1 text-[10px] font-medium border border-stone-300 text-[#141413] hover:border-[#141413] cursor-pointer text-center"
-                          >
-                            Visit
-                          </button>
                         </div>
                       </div>
-                    ))}
-                  </div>
-
-                  {/* Spec Rows for All 3 */}
-                  {SPEC_ITEMS.map((item) => (
-                    <div key={item.key} className="bg-white">
-                      <div className="bg-[#F3F2EE] px-3 py-1 text-[10px] uppercase tracking-wider font-semibold text-[#615E59] border-t border-b border-stone-200/80">
-                        {item.label}
-                      </div>
-                      <div className="grid grid-cols-3 divide-x divide-stone-200 p-2.5 text-xs">
-                        {comparedProperties.map((p) => (
-                          <div key={p.id} className="px-1.5 break-words">
-                            {item.renderValue(p)}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                    </th>
                   ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
 
-        {/* ===============================================================
-         * DESKTOP TABLE VIEW (>= 768px): Spacious Side-by-Side Matrix
-         * ============================================================= */}
-        <div className="hidden md:block overflow-x-auto border border-stone-200 bg-[#FBFBF9] shadow-xs">
-          <table className="w-full text-left border-collapse min-w-[760px]">
-            <thead>
-              <tr className="border-b border-stone-200 bg-[#F3F2EE]/90">
-                <th className="p-4 sm:p-5 w-44 sm:w-56 text-xs font-semibold text-[#615E59] align-top sticky left-0 z-20 bg-[#F3F2EE] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
-                  Specification
-                </th>
-                {comparedProperties.map((prop) => (
-                  <th key={prop.id} className="p-4 sm:p-5 border-l border-stone-200 align-top w-64 sm:w-80 min-w-[220px]">
-                    <div className="space-y-3">
-                      <div className="aspect-[16/10] w-full bg-stone-200 overflow-hidden relative">
-                        <ArchitecturalImage
-                          src={prop.images[0]}
-                          alt={prop.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => onToggleCompare(prop.id)}
-                          title="Remove from Comparison"
-                          className="absolute top-2 right-2 p-1.5 bg-black/75 text-white hover:bg-red-700 transition-colors cursor-pointer"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                      <div>
-                        <div className="text-xs text-[#615E59] font-mono-tabular">
-                          {prop.code} · {prop.locality}
+                  {/* Empty Slot Columns for Remaining Slots (up to 3 total) */}
+                  {Array.from({ length: Math.max(0, 3 - comparedProperties.length) }).map((_, slotIdx) => (
+                    <th
+                      key={`empty-slot-${slotIdx}`}
+                      className="p-4 sm:p-5 border-l border-stone-200 align-top w-72 sm:w-80 min-w-[240px] bg-[#FBFBF9]"
+                    >
+                      <div className="border-2 border-dashed border-stone-300 p-6 flex flex-col items-center justify-center text-center space-y-3 min-h-[220px] bg-white">
+                        <div className="w-10 h-10 rounded-full bg-[#F3F2EE] flex items-center justify-center">
+                          <Plus className="w-5 h-5 text-[#57534E]" />
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => onSelectProperty(prop)}
-                          className="font-serif-display text-lg sm:text-xl font-semibold text-[#141413] hover:text-[#1E3A2F] text-left cursor-pointer mt-0.5 line-clamp-2"
-                        >
-                          {prop.title}
-                        </button>
+                        <div>
+                          <div className="text-xs font-semibold text-[#141413]">
+                            Add Residence #{comparedProperties.length + slotIdx + 1}
+                          </div>
+                          <div className="text-[11px] text-[#615E59] mt-0.5">
+                            {availableToAdd.length} more in portfolio
+                          </div>
+                        </div>
+
+                        {availableToAdd.length > 0 && (
+                          <select
+                            aria-label={`Select residence for slot ${comparedProperties.length + slotIdx + 1}`}
+                            onChange={(e) => {
+                              if (e.target.value) {
+                                onToggleCompare(e.target.value);
+                                e.target.value = '';
+                              }
+                            }}
+                            defaultValue=""
+                            className="w-full px-2.5 py-1.5 text-xs bg-[#FBFBF9] border border-stone-300 focus:border-[#141413] cursor-pointer"
+                          >
+                            <option value="" disabled>
+                              Select Residence...
+                            </option>
+                            {availableToAdd.map((p) => (
+                              <option key={p.id} value={p.id}>
+                                {p.code} — {p.title}
+                              </option>
+                            ))}
+                          </select>
+                        )}
                       </div>
-                    </div>
-                  </th>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-stone-200 text-xs sm:text-sm">
+                {SPEC_ITEMS.map((item) => (
+                  <tr key={item.key}>
+                    <td className="p-3 sm:p-4 text-xs font-semibold text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                      {item.label}
+                    </td>
+                    {comparedProperties.map((p) => (
+                      <td key={p.id} className="p-3 sm:p-4 border-l border-stone-200 align-top">
+                        {item.renderValue(p)}
+                      </td>
+                    ))}
+                    {/* Empty placeholder cells for open slots */}
+                    {Array.from({ length: Math.max(0, 3 - comparedProperties.length) }).map((_, slotIdx) => (
+                      <td key={`empty-cell-${slotIdx}`} className="p-3 sm:p-4 border-l border-stone-200 text-stone-300">
+                        —
+                      </td>
+                    ))}
+                  </tr>
                 ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-stone-200 text-xs sm:text-sm">
-              {SPEC_ITEMS.map((item) => (
-                <tr key={item.key}>
-                  <td className="p-3 sm:p-4 text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
-                    {item.label}
+
+                {/* Amenities Comparison Section */}
+                {allComparedAmenities.length > 0 && (
+                  <>
+                    <tr className="bg-[#F3F2EE]/80">
+                      <td
+                        colSpan={4}
+                        className="p-2.5 sm:px-4 text-xs font-bold uppercase tracking-wider text-[#141413] border-t border-b border-stone-300"
+                      >
+                        Architectural Amenities Comparison
+                      </td>
+                    </tr>
+                    {allComparedAmenities.map((amenity) => (
+                      <tr key={amenity} className="hover:bg-stone-50/50">
+                        <td className="p-3 sm:p-4 text-xs font-medium text-[#57534E] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200">
+                          {amenity}
+                        </td>
+                        {comparedProperties.map((p) => {
+                          const has = (p.amenities || []).includes(amenity);
+                          return (
+                            <td key={p.id} className="p-3 sm:p-4 border-l border-stone-200">
+                              {has ? (
+                                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1E3A2F]">
+                                  <Check className="w-4 h-4 text-[#1E3A2F]" />
+                                  <span>Included</span>
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 text-xs text-stone-400">
+                                  <Minus className="w-3.5 h-3.5" />
+                                  <span>Not Listed</span>
+                                </span>
+                              )}
+                            </td>
+                          );
+                        })}
+                        {Array.from({ length: Math.max(0, 3 - comparedProperties.length) }).map((_, slotIdx) => (
+                          <td key={`empty-amenity-${slotIdx}`} className="p-3 sm:p-4 border-l border-stone-200 text-stone-300">
+                            —
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </>
+                )}
+
+                {/* Action Row */}
+                <tr>
+                  <td className="p-3 sm:p-4 text-xs font-semibold text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
+                    Actions &amp; Viewing
                   </td>
                   {comparedProperties.map((p) => (
                     <td key={p.id} className="p-3 sm:p-4 border-l border-stone-200">
-                      {item.renderValue(p)}
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => onSelectProperty(p)}
+                          className="px-3.5 py-2 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] transition-colors cursor-pointer"
+                        >
+                          Examine Dossier
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onOpenLeadModal('Schedule Visit', p.id)}
+                          className="px-3.5 py-2 text-xs font-medium border border-stone-300 text-[#141413] hover:border-[#141413] transition-colors cursor-pointer"
+                        >
+                          Schedule Visit
+                        </button>
+                      </div>
+                    </td>
+                  ))}
+                  {Array.from({ length: Math.max(0, 3 - comparedProperties.length) }).map((_, slotIdx) => (
+                    <td key={`empty-action-${slotIdx}`} className="p-3 sm:p-4 border-l border-stone-200 text-stone-300">
+                      —
                     </td>
                   ))}
                 </tr>
-              ))}
-              <tr>
-                <td className="p-3 sm:p-4 text-xs font-medium text-[#615E59] sticky left-0 z-10 bg-[#FBFBF9] border-r border-stone-200 shadow-[2px_0_4px_rgba(0,0,0,0.03)]">
-                  Actions
-                </td>
-                {comparedProperties.map((p) => (
-                  <td key={p.id} className="p-3 sm:p-4 border-l border-stone-200">
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        onClick={() => onSelectProperty(p)}
-                        className="px-3 py-1.5 text-xs font-semibold bg-[#141413] text-white hover:bg-[#1E3A2F] cursor-pointer"
-                      >
-                        Examine Dossier
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => onOpenLeadModal('Schedule Visit', p.id)}
-                        className="px-3 py-1.5 text-xs font-medium border border-stone-300 text-[#141413] hover:border-[#141413] cursor-pointer"
-                      >
-                        Schedule Visit
-                      </button>
-                    </div>
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-    )}
-  </div>
+      )}
+    </div>
   );
 };
-

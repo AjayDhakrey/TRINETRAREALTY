@@ -8,7 +8,13 @@ export interface BlogViewProps {
 }
 
 export const BlogView: React.FC<BlogViewProps> = ({ posts, onOpenLeadModal }) => {
-  const [selectedPost, setSelectedPost] = useState<BlogPost>(posts[0]);
+  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(() => posts[0] || null);
+
+  React.useEffect(() => {
+    if (!selectedPost && posts.length > 0) {
+      setSelectedPost(posts[0]);
+    }
+  }, [posts, selectedPost]);
 
   return (
     <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-8 sm:space-y-12">

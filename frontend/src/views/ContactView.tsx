@@ -37,6 +37,12 @@ export const ContactView: React.FC<ContactViewProps> = ({
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  React.useEffect(() => {
+    if (!propertyId && properties.length > 0) {
+      setPropertyId(properties[0].id);
+    }
+  }, [properties, propertyId]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !phone.trim()) return;

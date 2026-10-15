@@ -495,9 +495,15 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   };
 
   const handleDeleteListing = async (id: string) => {
+    const target = properties.find((p) => p.id === id);
+    const title = target?.title || id;
+    if (!window.confirm(`Are you sure you want to permanently delete property listing "${title}"?`)) {
+      return;
+    }
     const res = await apiFetch(`/api/properties/${id}`, { method: 'DELETE' });
     if (res.ok) {
       onPropertyDeleted(id);
+      realtimeClient.broadcastLocally('property:deleted', { id });
     }
   };
 
@@ -691,6 +697,11 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   };
 
   const handleDeleteLead = async (leadId: string) => {
+    const lead = leads.find((l) => l.id === leadId);
+    const clientName = lead?.name || 'this customer lead';
+    if (!window.confirm(`Are you sure you want to permanently delete lead inquiry from ${clientName}?`)) {
+      return;
+    }
     const res = await apiFetch(`/api/leads/${leadId}`, { method: 'DELETE' });
     if (res.ok) {
       onLeadDeleted(leadId);

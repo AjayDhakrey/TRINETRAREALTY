@@ -43,6 +43,15 @@ export const AdminHomepageManager: React.FC<AdminHomepageManagerProps> = ({
     ...(homepageContent || {}),
   });
 
+  React.useEffect(() => {
+    if (homepageContent && !saving) {
+      setFormData({
+        ...DEFAULT_HOMEPAGE_CONTENT,
+        ...homepageContent,
+      });
+    }
+  }, [homepageContent]);
+
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(
     null

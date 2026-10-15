@@ -156,10 +156,20 @@ export default function App() {
   const [projectDetailInquiryMode, setProjectDetailInquiryMode] = useState<
     'Enquire Now' | 'Schedule Site Visit' | 'Request Price' | 'Download Brochure' | 'WhatsApp'
   >('Enquire Now');
-  const [compareIds, setCompareIds] = useState<string[]>([
-    INITIAL_PROPERTIES[0].id,
-    INITIAL_PROPERTIES[1].id,
-  ]);
+  const [compareIds, setCompareIds] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('trinetra_compare_ids');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.slice(0, 3);
+          }
+        }
+      } catch {}
+    }
+    return [INITIAL_PROPERTIES[0]?.id, INITIAL_PROPERTIES[1]?.id].filter(Boolean) as string[];
+  });
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() =>
     Boolean(getAdminSession())
   );
@@ -240,6 +250,30 @@ export default function App() {
     };
   }, []);
 
+  // Save compareIds to localStorage whenever changed
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('trinetra_compare_ids', JSON.stringify(compareIds));
+      } catch {}
+    }
+  }, [compareIds]);
+
+  // Ensure compareIds always points to currently existing properties in the catalog
+  useEffect(() => {
+    if (properties.length > 0) {
+      setCompareIds((prev) => {
+        const propSet = new Set(properties.map((p) => p.id));
+        const valid = prev.filter((id) => propSet.has(id));
+        // If stored IDs were all invalid or deleted, select the first 2 available properties
+        if (valid.length === 0 && properties.length >= 2) {
+          return [properties[0].id, properties[1].id];
+        }
+        return valid;
+      });
+    }
+  }, [properties]);
+
   // Real-Time Event Synchronization (SSE & BroadcastChannel)
   useEffect(() => {
     // 1. Homepage content updates
@@ -293,6 +327,7 @@ export default function App() {
     unsubs.push(
       realtimeClient.subscribe('property:deleted', ({ id }: { id: string }) => {
         setProperties((prev) => prev.filter((p) => p.id !== id));
+        setCompareIds((prev) => prev.filter((pid) => pid !== id));
       })
     );
 
@@ -463,6 +498,10 @@ export default function App() {
       }
       return [...prev, propertyId];
     });
+  };
+
+  const handleClearCompare = () => {
+    setCompareIds([]);
   };
 
   const handleExploreLocality = (localityName: string) => {
@@ -1236,6 +1275,7 @@ export default function App() {
             properties={properties}
             compareIds={compareIds}
             onToggleCompare={handleToggleCompare}
+            onClearCompare={handleClearCompare}
             onSelectProperty={handleSelectProperty}
             onOpenLeadModal={handleOpenLeadModal}
           />
@@ -1247,6 +1287,7 @@ export default function App() {
         {activeRoute === 'emi' && (
           <EmiCalculatorView
             properties={properties}
+            initialPropertyId={selectedPropertyId}
             onOpenLeadModal={handleOpenLeadModal}
           />
         )}
@@ -1322,9 +1363,10 @@ export default function App() {
                 prev.map((p) => (p.id === updated.id ? updated : p))
               )
             }
-            onPropertyDeleted={(id) =>
-              setProperties((prev) => prev.filter((p) => p.id !== id))
-            }
+            onPropertyDeleted={(id) => {
+              setProperties((prev) => prev.filter((p) => p.id !== id));
+              setCompareIds((prev) => prev.filter((pid) => pid !== id));
+            }}
             onLeadUpdated={(updated) =>
               setLeads((prev) =>
                 prev.map((l) => (l.id === updated.id ? updated : l))

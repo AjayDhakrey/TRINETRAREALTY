@@ -30,6 +30,7 @@ import {
 } from '../types/realestate';
 import { ArchitecturalImage } from './ArchitecturalImage';
 import { formatCurrency, formatNumber } from '../utils/formatters';
+import { realtimeClient } from '../services/realtime';
 
 interface AdminOurProjectsManagerProps {
   projects: CompanyProject[];
@@ -590,6 +591,9 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
   const [deletingImage, setDeletingImage] = useState<boolean>(false);
 
   const handleDeleteProject = async (proj: CompanyProject) => {
+    if (!window.confirm(`Are you sure you want to permanently delete project "${proj.name}"? This action cannot be undone.`)) {
+      return;
+    }
     setErrorBanner('');
     try {
       const res = await apiFetch(`/api/admin/projects/${proj.id}`, {
@@ -598,6 +602,7 @@ export const AdminOurProjectsManager: React.FC<AdminOurProjectsManagerProps> = (
       });
       if (!res.ok) throw new Error('Failed to delete project.');
       onProjectsUpdated(projects.filter((p) => p.id !== proj.id));
+      realtimeClient.broadcastLocally('project:deleted', { id: proj.id });
       setFeedbackBanner(`Deleted project "${proj.name}".`);
     } catch (err: any) {
       setErrorBanner(err.message || 'Unable to delete project.');

@@ -8,19 +8,42 @@ import {
 
 export interface EmiCalculatorViewProps {
   properties: Property[];
+  initialPropertyId?: string;
   onOpenLeadModal: (type: LeadType, propertyId?: string) => void;
 }
 
 export const EmiCalculatorView: React.FC<EmiCalculatorViewProps> = ({
   properties,
+  initialPropertyId,
   onOpenLeadModal,
 }) => {
   const buyProperties = properties.filter((p) => p.transactionType === 'Buy');
-  const [selectedPropId, setSelectedPropId] = useState<string>('custom');
-  const [propertyValue, setPropertyValue] = useState<number>(84500000);
+  const [selectedPropId, setSelectedPropId] = useState<string>(() => {
+    if (initialPropertyId && buyProperties.some((p) => p.id === initialPropertyId)) {
+      return initialPropertyId;
+    }
+    return buyProperties[0]?.id || 'custom';
+  });
+  const [propertyValue, setPropertyValue] = useState<number>(() => {
+    if (initialPropertyId) {
+      const match = buyProperties.find((p) => p.id === initialPropertyId);
+      if (match) return match.price;
+    }
+    return buyProperties[0]?.price || 84500000;
+  });
   const [downPaymentPercent, setDownPaymentPercent] = useState<number>(30);
-  const [interestRate, setInterestRate] = useState<number>(6.25);
+  const [interestRate, setInterestRate] = useState<number>(8.5);
   const [tenureYears, setTenureYears] = useState<number>(20);
+
+  React.useEffect(() => {
+    if (initialPropertyId) {
+      const match = buyProperties.find((p) => p.id === initialPropertyId);
+      if (match) {
+        setSelectedPropId(match.id);
+        setPropertyValue(match.price);
+      }
+    }
+  }, [initialPropertyId, properties]);
 
   const handleSelectPreset = (id: string) => {
     setSelectedPropId(id);

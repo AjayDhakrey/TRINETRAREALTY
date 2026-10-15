@@ -39,7 +39,11 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
   const [message, setMessage] = useState('');
 
   // Schedule Visit fields
-  const [preferredDate, setPreferredDate] = useState('2026-10-03');
+  const [preferredDate, setPreferredDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T')[0];
+  });
   const [preferredTimeSlot, setPreferredTimeSlot] = useState('16:30 (Golden Hour Viewing)');
   const [visitMode, setVisitMode] = useState<'In-Person Private Tour' | 'Live Video Walkthrough'>(
     'In-Person Private Tour'
@@ -477,6 +481,7 @@ export const CustomerLeadsModal: React.FC<CustomerLeadsModalProps> = ({
                       </label>
                       <input
                         type="date"
+                        min={new Date().toISOString().split('T')[0]}
                         value={preferredDate}
                         onChange={(e) => setPreferredDate(e.target.value)}
                         className="w-full px-3.5 py-2 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none font-mono-tabular"

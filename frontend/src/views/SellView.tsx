@@ -21,6 +21,8 @@ export const SellView: React.FC<SellViewProps> = ({
   onNavigate,
 }) => {
   const [locality, setLocality] = useState(localities[0]?.name || 'Tribeca & SoHo');
+  const [isCustomLocality, setIsCustomLocality] = useState(false);
+  const [customLocalityInput, setCustomLocalityInput] = useState('');
   const [category, setCategory] = useState<PropertyCategory>('Penthouse');
   const [areaSqFt, setAreaSqFt] = useState(4200);
   const [bedrooms, setBedrooms] = useState(4);
@@ -37,7 +39,10 @@ export const SellView: React.FC<SellViewProps> = ({
   const [submittedLead, setSubmittedLead] = useState<CustomerLead | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
 
-  const locProfile = localities.find((l) => l.name === locality);
+  const effectiveLocality = isCustomLocality
+    ? (customLocalityInput.trim() || 'NCR Region')
+    : locality;
+  const locProfile = localities.find((l) => l.name === effectiveLocality);
   const baseSqFt = locProfile ? locProfile.avgPricePerSqFt : 19000;
   const catMult =
     category === 'Estate'
@@ -83,7 +88,7 @@ export const SellView: React.FC<SellViewProps> = ({
           phone: phone.trim(),
           message: notes.trim() || 'Seller mandate valuation inquiry.',
           valuationDetails: {
-            locality,
+            locality: effectiveLocality,
             category,
             areaSqFt,
             bedrooms,
@@ -146,20 +151,47 @@ export const SellView: React.FC<SellViewProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label className="block text-xs font-medium text-[#141413] mb-1.5">
-                Locality / Enclave
-              </label>
-              <select
-                value={locality}
-                onChange={(e) => setLocality(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none"
-              >
-                {localities.map((loc) => (
-                  <option key={loc.id} value={loc.name}>
-                    {loc.name} (₹{formatNumber(loc.avgPricePerSqFt)}/sq.ft. base)
-                  </option>
-                ))}
-              </select>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-medium text-[#141413]">
+                  Locality / Enclave
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setIsCustomLocality(!isCustomLocality)}
+                  className="text-[11px] font-medium text-[#1E3A2F] hover:underline cursor-pointer"
+                >
+                  {isCustomLocality ? '← Choose from List' : '+ Enter Other Locality'}
+                </button>
+              </div>
+              {isCustomLocality ? (
+                <input
+                  type="text"
+                  required
+                  value={customLocalityInput}
+                  onChange={(e) => setCustomLocalityInput(e.target.value)}
+                  placeholder="e.g., Sonipat, Sector 14, Kundli, Gurgaon..."
+                  className="w-full px-3.5 py-2.5 text-sm bg-white border border-[#1E3A2F] focus:outline-none"
+                />
+              ) : (
+                <select
+                  value={locality}
+                  onChange={(e) => {
+                    if (e.target.value === '__custom__') {
+                      setIsCustomLocality(true);
+                    } else {
+                      setLocality(e.target.value);
+                    }
+                  }}
+                  className="w-full px-3.5 py-2.5 text-sm bg-white border border-stone-300 focus:border-[#141413] focus:outline-none cursor-pointer"
+                >
+                  {localities.map((loc) => (
+                    <option key={loc.id} value={loc.name}>
+                      {loc.name} (₹{formatNumber(loc.avgPricePerSqFt)}/sq.ft. base)
+                    </option>
+                  ))}
+                  <option value="__custom__">+ Enter Other Locality...</option>
+                </select>
+              )}
             </div>
 
             <div>
