@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { UploadedMedia } from '../../frontend/src/types/realestate';
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import { UploadedMedia } from '../../../shared/types/realestate';
 
 export interface MediaDocument extends Omit<UploadedMedia, 'id'>, Document {
   id: string;
@@ -25,6 +25,6 @@ const MediaSchema = new Schema<MediaDocument>(
   }
 );
 
-export const MediaModel =
-  mongoose.models.Media || mongoose.model<MediaDocument>('Media', MediaSchema);
-
+export const MediaModel: Model<MediaDocument> =
+  (mongoose.models.Media as Model<MediaDocument>) ||
+  mongoose.model<MediaDocument>('Media', MediaSchema);

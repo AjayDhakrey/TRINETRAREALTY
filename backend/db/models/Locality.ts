@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { LocalityProfile } from '../../frontend/src/types/realestate';
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import { LocalityProfile } from '../../../shared/types/realestate';
 
 export interface LocalityDocument extends Omit<LocalityProfile, 'id'>, Document {
   id: string;
@@ -31,6 +31,6 @@ const LocalitySchema = new Schema<LocalityDocument>(
   }
 );
 
-export const LocalityModel =
-  mongoose.models.Locality || mongoose.model<LocalityDocument>('Locality', LocalitySchema);
-
+export const LocalityModel: Model<LocalityDocument> =
+  (mongoose.models.Locality as Model<LocalityDocument>) ||
+  mongoose.model<LocalityDocument>('Locality', LocalitySchema);

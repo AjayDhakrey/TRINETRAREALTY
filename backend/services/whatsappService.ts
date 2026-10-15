@@ -10,7 +10,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'node:url';
 import { CustomerLead } from '../../frontend/src/types/realestate';
-import { WhatsAppSessionModel } from '../models/WhatsAppSession';
+import { WhatsAppSessionModel } from '../db/models/WhatsAppSession';
 
 const BACKEND_DIR = path.dirname(fileURLToPath(import.meta.url));
 const SESSION_DIR = path.resolve(BACKEND_DIR, '../data/whatsapp-auth');
@@ -66,7 +66,7 @@ async function restoreSessionFromMongo(): Promise<boolean> {
       return false;
     }
 
-    const files = doc.files as Record<string, string>;
+    const files = (doc.files as unknown) as Record<string, string>;
     let restoredCount = 0;
     for (const [filename, content] of Object.entries(files)) {
       if (typeof content === 'string') {

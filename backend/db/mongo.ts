@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
-import { PropertyModel } from '../models/Property';
-import { ProjectModel } from '../models/Project';
-import { LeadModel } from '../models/Lead';
-import { LocalityModel } from '../models/Locality';
-import { BlogPostModel } from '../models/BlogPost';
-import { MediaModel } from '../models/Media';
+import { PropertyModel } from './models/Property';
+import { ProjectModel } from './models/Project';
+import { LeadModel } from './models/Lead';
+import { LocalityModel } from './models/Locality';
+import { BlogPostModel } from './models/BlogPost';
+import { MediaModel } from './models/Media';
+import { HomepageModel } from './models/Homepage';
+import { DEFAULT_HOMEPAGE_CONTENT } from '../../shared/types/realestate';
 import {
   INITIAL_PROPERTIES,
   INITIAL_PROJECTS,
@@ -124,6 +126,13 @@ export async function seedMongoIfEmpty(): Promise<void> {
           : INITIAL_MEDIA;
       await MediaModel.insertMany(mediaToSeed);
       console.log(`🌱 [MongoDB] Seeded ${mediaToSeed.length} media assets.`);
+    }
+
+    const homepageCount = await HomepageModel.countDocuments();
+    if (homepageCount === 0) {
+      const homepageToSeed = existingJsonData?.homepage || DEFAULT_HOMEPAGE_CONTENT;
+      await HomepageModel.create(homepageToSeed);
+      console.log('🌱 [MongoDB] Seeded homepage content.');
     }
   } catch (error) {
     console.error('❌ [MongoDB] Error during initial seeding:', error);

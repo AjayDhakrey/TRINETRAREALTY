@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface AdminSessionDocument extends Document {
   token: string;
@@ -16,7 +16,6 @@ const AdminSessionSchema = new Schema<AdminSessionDocument>(
   { timestamps: true }
 );
 
-export const AdminSessionModel =
-  mongoose.models.AdminSession ||
+export const AdminSessionModel: Model<AdminSessionDocument> =
+  (mongoose.models.AdminSession as Model<AdminSessionDocument>) ||
   mongoose.model<AdminSessionDocument>('AdminSession', AdminSessionSchema);
-

@@ -1,75 +1,139 @@
-# Trinetra Realty platform
+# Trinetra Realty — Enterprise Real Estate Platform
 
-React 19, TypeScript, Vite 8 and Tailwind CSS 4 frontend with an Express 4 API and JSON file storage.
+A decoupled, full-stack real estate platform engineered with **React 19**, **TypeScript**, **Vite 8**, and **Tailwind CSS 4** on the frontend, alongside an **Express 4** REST API featuring an adaptive **dual-persistence engine** (MongoDB Mongoose v9 + local JSON file fallback) and multi-channel notification dispatchers.
 
-## Structure
+---
 
-- `frontend/` - Vite app, source, public media and generated `dist/`
-- `backend/` - Express API and local JSON database
-- `netlify.toml` - Netlify build, publish and SPA route fallback
+## Technical Stack & Architecture
 
-## Temporary client demo (no backend required)
+### Frontend
+- **Framework**: React 19 Single Page Application (SPA)
+- **Tooling & Bundler**: Vite 8 with Rolldown compiler support
+- **Styling**: Tailwind CSS 4 with custom serif typography tokens and luxury color palette
+- **Icons**: Lucide React + Bespoke brand SVG icons
+- **State & Routing**: Client-side view orchestrator supporting Buy, Rent, Sell, Compare, EMI, Localities, Blog, and Admin portals.
 
-Set `VITE_DEMO_MODE=true` at build time. Admin sign-in, sample data and admin changes then run entirely in the browser. This is a temporary demonstration, not production authentication.
+### Backend
+- **Runtime**: Node.js (v20+) with TypeScript (ESNext / NodeNext)
+- **Framework**: Express 4 with modular routers, controllers, and middleware
+- **Data Persistence**:
+  - **Primary**: MongoDB Atlas / local MongoDB with Mongoose v9 ODM
+  - **Zero-Dependency Fallback**: High-performance local JSON storage (`backend/data/realestate-db.json`)
+- **Notifications**: Nodemailer (SMTP) and WhatsApp webhook integration
+- **Authentication**: Bearer token administrative auth with sliding-window sessions
 
-- Email: `demo@trinetrarealty.com`
-- Password: `Demo@2026`
+### Shared Domain
+- **Contract Boundary**: Canonical TypeScript interfaces located in `shared/types/realestate.ts` ensure type safety across frontend and backend boundaries.
 
-**These credentials are public and embedded in the demo frontend. Never reuse them for production admin credentials.**
+---
 
-The demo session survives refresh in the same browser tab. Sign Out clears authentication. Sample projects, properties, leads, media attachments, valuations and mutations are simulated. Changes stay in sessionStorage in that tab; they do not update a server, send inquiries to staff, or change live records. Large image uploads may exceed browser storage and then persist only until refresh. A new browser session starts with sample data.
+## Directory Layout
 
-### Enable the Netlify demo
+```
+atelier/
+├── backend/            # Express REST API, Mongoose models, controllers, services
+│   ├── config/         # Environment configuration and runtime constants
+│   ├── controllers/    # Decoupled request handlers and status orchestrators
+│   ├── data/           # Local file database fallback & seed files
+│   ├── middleware/     # Bearer authentication, CORS policies
+│   ├── models/         # Mongoose schemas strictly typed against shared interfaces
+│   ├── routes/         # Modular endpoint routers
+│   ├── services/       # Database adapters, SMTP, WhatsApp notifications
+│   └── server.ts       # Clean server bootstrap entrypoint (< 55 lines)
+├── frontend/           # React 19 Client Application
+│   ├── src/
+│   │   ├── components/ # Reusable UI widgets and architectural displays
+│   │   ├── services/   # Centralized API fetcher and demo mocks
+│   │   ├── utils/      # Financial formatters, EMI calculator
+│   │   ├── views/      # Individual domain views (Buy, Rent, Sell, Compare, etc.)
+│   │   └── App.tsx     # View router & state orchestrator
+├── shared/             # Single-source-of-truth domain interfaces
+│   └── types/          # Property, Project, Lead, Locality, BlogPost models
+├── scripts/            # Integration testing and database seeding utilities
+│   ├── test-backend.mjs
+│   └── seed-mongodb.mjs
+└── docs/               # Architecture, API, database, and structure documentation
+```
 
-After publishing the updated source to your connected repository:
+---
 
-1. Open the Netlify project for `trinetrarealtyy.netlify.app`.
-2. Under **Project configuration > Environment variables**, add `VITE_DEMO_MODE=true` for the Production deploy context, with Builds scope (or all scopes).
-3. Trigger a new production deploy from the updated branch in **Deploys**. Vite reads this variable during the build, so saving it alone does not change an existing deploy.
-4. Open `https://trinetrarealtyy.netlify.app/admin` and use the public demo credentials above. Confirm sign-in, page refresh, admin tabs and Sign Out.
+## Getting Started
 
-No `VITE_API_BASE_URL` or Express hosting is required in demo mode. Existing API settings are ignored by demo requests. Netlify uses `npm run build`, publishes `frontend/dist`, and rewrites page routes to `index.html`.
+### Prerequisites
+- **Node.js**: v20 or v22 LTS recommended
+- **npm**: v10+
+- **MongoDB** (optional): Local MongoDB instance or MongoDB Atlas URI (if omitted, platform operates seamlessly via local JSON database).
 
-## Local setup
-
-Requires Node.js 24 or newer. Run commands from the project root:
-
-```powershell
+### 1. Installation
+Clone the repository and install all dependencies:
+```bash
 npm install
-Copy-Item .env.example .env
 ```
 
-For a local demo, set `VITE_DEMO_MODE=true` in `.env`, then run `npm run dev`. No backend process is needed. Restart Vite after changing environment variables.
+### 2. Environment Configuration
+Copy the sample environment file:
+```bash
+cp .env.example .env
+```
+Update your credentials in `.env`:
+- `ADMIN_EMAIL`: Email for administrative panel access.
+- `ADMIN_PASSWORD`: Secure password for admin authentication.
+- `MONGODB_URI`: (Optional) MongoDB connection string (e.g. `mongodb://127.0.0.1:27017/trinetra_realty`). If omitted or unreachable, local JSON fallback is activated automatically.
+- `OWNER_NOTIFICATION_EMAIL` & `OWNER_WHATSAPP_NUMBER`: Destination coordinates for customer lead notifications.
 
-For real API development, set `VITE_DEMO_MODE=false`, choose a unique `ADMIN_EMAIL` and strong `ADMIN_PASSWORD` in `.env`, and start these in separate terminals:
+---
 
-```powershell
-npm run dev:api
-npm run dev
+## Development & Execution Scripts
+
+| Command | Purpose |
+| :--- | :--- |
+| `npm run dev` | Starts Vite frontend development server (`http://localhost:5173`) |
+| `npm run dev:api` | Starts Express backend in live-reload mode (`http://localhost:3000`) |
+| `npm run build` | Compiles production-ready frontend bundle into `frontend/dist/` |
+| `npm run lint` | Typechecks frontend TypeScript code (`frontend/tsconfig.json`) |
+| `npm run typecheck:backend` | Typechecks backend TypeScript code (`backend/tsconfig.json`) |
+| `npm run test:backend` | Runs comprehensive 21-endpoint backend integration test suite |
+| `npm run preview` | Previews production frontend build locally |
+
+---
+
+## Dual-Persistence Mechanism
+
+The platform automatically determines the storage layer:
+1. When `MONGODB_URI` is provided, Mongoose connects using IPv4-first DNS (`family: 4`) for maximum Atlas compatibility.
+2. If MongoDB is unavailable or unconfigured, the server seamlessly switches to `backend/data/realestate-db.json`. No manual configuration is required.
+
+To seed a MongoDB instance with starter data:
+```bash
+node scripts/seed-mongodb.mjs
 ```
 
-Open the Vite URL (normally `http://localhost:5173`). Vite proxies `/api` to `http://localhost:3000` in development. A separate `VITE_API_BASE_URL` is optional locally.
+---
 
-`npm run build` builds the frontend; `npm run preview` previews it. `npm run lint` typechecks the frontend; `npm run typecheck:backend` typechecks the API.
+## Verification & Testing
 
-## Real production API mode
+Run all quality and regression gates:
 
-Set `VITE_DEMO_MODE=false` (or remove it) and rebuild. Demo authentication and demo records are disabled. The Netlify frontend needs a separately deployed Express API and `VITE_API_BASE_URL` set to its actual HTTPS origin. No backend URL is provided by this repository.
+```bash
+# 1. Typecheck Frontend
+npm run lint
 
-The frontend sends `POST /api/admin/login` to that API. The backend verifies environment credentials and issues an expiring bearer session. Sessions are stored in the browser tab; logout revokes the backend token. A demo session cannot be used as a real API session. Unavailable admin services show a friendly message to visitors.
+# 2. Typecheck Backend
+npm run typecheck:backend
 
-### Environment variables
+# 3. Backend Integration Tests (Runs all 21 endpoints against live storage)
+npm run test:backend
 
-| Variable | Location | Purpose |
-| --- | --- | --- |
-| `VITE_DEMO_MODE` | Frontend build | Exactly `true` enables public browser-only demo; false/missing uses real API |
-| `VITE_API_BASE_URL` | Frontend build | Actual deployed API origin, required for real production login |
-| `VITE_API_PROXY` | Local frontend dev | Optional API proxy target; default `http://localhost:3000` |
-| `ADMIN_EMAIL` | Backend only | Unique production admin email |
-| `ADMIN_PASSWORD` | Backend only | Strong private production password |
-| `FRONTEND_ORIGIN` | Backend only | `https://trinetrarealtyy.netlify.app` |
-| `PORT` | Backend only | API listening port; default `3000`, or the host-assigned port |
+# 4. Production Build Test
+npm run build
+```
 
-Never put server credentials in `VITE_` variables. Netlify static hosting does not run `backend/server.ts`. Previously published hardcoded production credentials should be rotated before enabling the real API.
+---
 
-The JSON database is written to `backend/data/realestate-db.json` and ignored by Git. Real hosting requires persistent writable storage. Admin sessions expire after eight hours or when the API restarts. The API has no login rate limiting; production deployment still needs rate limiting and persistent database/session controls appropriate to its use.
+## Documentation Suite
+
+For comprehensive deep dives, refer to the documentation directory:
+- [PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md): Directory taxonomy and contribution guide.
+- [ARCHITECTURE.md](docs/ARCHITECTURE.md): System architecture, data flow, and Mermaid diagrams.
+- [API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md): Complete specifications for all 21 REST API endpoints.
+- [DATABASE_DOCUMENTATION.md](docs/DATABASE_DOCUMENTATION.md): Mongoose schemas, indexing, and dual-engine fallback rules.

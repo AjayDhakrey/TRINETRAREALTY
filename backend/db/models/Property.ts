@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { Property } from '../../frontend/src/types/realestate';
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import { Property } from '../../../shared/types/realestate';
 
 export interface PropertyDocument extends Omit<Property, 'id'>, Document {
   id: string;
@@ -65,6 +65,6 @@ const PropertySchema = new Schema<PropertyDocument>(
   }
 );
 
-export const PropertyModel =
-  mongoose.models.Property || mongoose.model<PropertyDocument>('Property', PropertySchema);
-
+export const PropertyModel: Model<PropertyDocument> =
+  (mongoose.models.Property as Model<PropertyDocument>) ||
+  mongoose.model<PropertyDocument>('Property', PropertySchema);

@@ -8,7 +8,9 @@ import {
   LocalityProfile,
   BlogPost,
   UploadedMedia,
-} from '../../frontend/src/types/realestate';
+  HomepageContent,
+  DEFAULT_HOMEPAGE_CONTENT,
+} from '../../shared/types/realestate';
 import {
   INITIAL_PROPERTIES,
   INITIAL_PROJECTS,
@@ -18,12 +20,13 @@ import {
   INITIAL_MEDIA,
 } from '../../frontend/src/data/seedData';
 import { isMongoConnected } from './mongo';
-import { PropertyModel } from '../models/Property';
-import { ProjectModel } from '../models/Project';
-import { LeadModel } from '../models/Lead';
-import { LocalityModel } from '../models/Locality';
-import { BlogPostModel } from '../models/BlogPost';
-import { MediaModel } from '../models/Media';
+import { PropertyModel } from './models/Property';
+import { ProjectModel } from './models/Project';
+import { LeadModel } from './models/Lead';
+import { LocalityModel } from './models/Locality';
+import { BlogPostModel } from './models/BlogPost';
+import { MediaModel } from './models/Media';
+import { HomepageModel } from './models/Homepage';
 
 const BACKEND_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.resolve(BACKEND_DIR, '../data');
@@ -36,6 +39,7 @@ export interface DatabaseSchema {
   localities: LocalityProfile[];
   blogPosts: BlogPost[];
   media: UploadedMedia[];
+  homepage?: HomepageContent;
 }
 
 let jsonDbCache: DatabaseSchema | null = null;
@@ -64,6 +68,10 @@ export function loadJsonDatabase(): DatabaseSchema {
           parsed.projects = [...INITIAL_PROJECTS];
           saveJsonDatabase(parsed);
         }
+        if (!parsed.homepage) {
+          parsed.homepage = { ...DEFAULT_HOMEPAGE_CONTENT };
+          saveJsonDatabase(parsed);
+        }
         jsonDbCache = parsed;
         return parsed;
       }
@@ -79,6 +87,7 @@ export function loadJsonDatabase(): DatabaseSchema {
     localities: [...INITIAL_LOCALITIES],
     blogPosts: [...INITIAL_BLOG_POSTS],
     media: [...INITIAL_MEDIA],
+    homepage: { ...DEFAULT_HOMEPAGE_CONTENT },
   };
 
   saveJsonDatabase(initialDb);
@@ -541,3 +550,95 @@ export async function createMedia(media: UploadedMedia, propertyId?: string): Pr
   saveJsonDatabase(db);
   return { media, updatedProperty };
 }
+
+export async function updateMedia(
+  id: string,
+  updates: Partial<UploadedMedia>
+): Promise<UploadedMedia | null> {
+  if (isMongoConnected()) {
+    const updated = await MediaModel.findOneAndUpdate({ id }, { ...updates }, { new: true }).lean();
+    return updated as any;
+  }
+
+  const db = loadJsonDatabase();
+  const index = db.media.findIndex((m) => m.id === id);
+  if (index === -1) return null;
+
+  db.media[index] = {
+    ...db.media[index],
+    ...updates,
+    id: db.media[index].id,
+  };
+  saveJsonDatabase(db);
+  return db.media[index];
+}
+
+export async function deleteMedia(id: string): Promise<boolean> {
+  if (isMongoConnected()) {
+    const found = await MediaModel.findOne({ id });
+    if (!found) return false;
+    const url = found.url;
+    await MediaModel.deleteOne({ id });
+    if (url) {
+      await PropertyModel.updateMany({ images: url }, { $pull: { images: url } });
+    }
+    return true;
+  }
+
+  const db = loadJsonDatabase();
+  const index = db.media.findIndex((m) => m.id === id);
+  if (index === -1) return false;
+
+  const url = db.media[index].url;
+  db.media.splice(index, 1);
+  if (url) {
+    db.properties.forEach((prop) => {
+      prop.images = prop.images.filter((img) => img !== url);
+    });
+  }
+  saveJsonDatabase(db);
+  return true;
+}
+
+export async function getHomepageContent(): Promise<HomepageContent> {
+  if (isMongoConnected()) {
+    const doc = await HomepageModel.findOne({}).lean();
+    if (doc) return doc as any;
+    const created = await HomepageModel.create(DEFAULT_HOMEPAGE_CONTENT);
+    return created.toObject() as any;
+  }
+
+  const db = loadJsonDatabase();
+  if (!db.homepage) {
+    db.homepage = { ...DEFAULT_HOMEPAGE_CONTENT };
+    saveJsonDatabase(db);
+  }
+  return db.homepage;
+}
+
+export async function updateHomepageContent(
+  updates: Partial<HomepageContent>
+): Promise<HomepageContent> {
+  const sanitized: Partial<HomepageContent> = {
+    ...updates,
+    updatedAt: new Date().toISOString(),
+  };
+
+  if (isMongoConnected()) {
+    const updated = await HomepageModel.findOneAndUpdate(
+      {},
+      { ...sanitized },
+      { new: true, upsert: true }
+    ).lean();
+    return updated as any;
+  }
+
+  const db = loadJsonDatabase();
+  db.homepage = {
+    ...(db.homepage || DEFAULT_HOMEPAGE_CONTENT),
+    ...sanitized,
+  };
+  saveJsonDatabase(db);
+  return db.homepage;
+}
+

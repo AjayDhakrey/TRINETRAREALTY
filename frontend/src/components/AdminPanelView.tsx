@@ -36,12 +36,47 @@ import {
   LeadStatus,
   LeadType,
   ActiveRoute,
+  HomepageContent,
 } from '../types/realestate';
 import { ArchitecturalImage } from './ArchitecturalImage';
 import { AdminOurProjectsManager } from './AdminOurProjectsManager';
+import { AdminHomepageManager } from './AdminHomepageManager';
 import { AdminWhatsAppManager } from './AdminWhatsAppManager';
 import { WhatsAppIcon } from './SocialIcons';
 import { formatPropertyPrice, formatNumber } from '../utils/formatters';
+import { realtimeClient } from '../services/realtime';
+
+function optimizeImageFile(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      if (!file.type.startsWith('image/')) {
+        resolve(dataUrl);
+        return;
+      }
+      const img = new Image();
+      img.onload = () => {
+        const maxWidth = 1600;
+        const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(dataUrl);
+          return;
+        }
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.85));
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    };
+    reader.onerror = () => reject(new Error('Failed to read image file'));
+    reader.readAsDataURL(file);
+  });
+}
 
 interface AdminPanelViewProps {
   isAuthenticated: boolean;
@@ -63,6 +98,10 @@ interface AdminPanelViewProps {
   onLeadUpdated: (lead: CustomerLead) => void;
   onLeadDeleted: (id: string) => void;
   onMediaUploaded: (media: UploadedMedia, updatedProperty?: Property | null) => void;
+  onMediaUpdated?: (media: UploadedMedia) => void;
+  onMediaDeleted?: (id: string) => void;
+  homepageContent?: HomepageContent;
+  onHomepageUpdated?: (content: HomepageContent) => void;
 }
 
 export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
@@ -85,6 +124,10 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   onLeadUpdated,
   onLeadDeleted,
   onMediaUploaded,
+  onMediaUpdated,
+  onMediaDeleted,
+  homepageContent,
+  onHomepageUpdated,
 }) => {
   const [activeTab, setActiveTab] = useState<AdminSubTab>('our-projects');
 
@@ -132,13 +175,22 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   const [lastCreatedProperty, setLastCreatedProperty] = useState<Property | null>(null);
   const [savingProperty, setSavingProperty] = useState(false);
 
-  // --- UPLOAD IMAGES STATE ---
+  // --- UPLOAD & MANAGE IMAGES STATE ---
   const [uploadName, setUploadName] = useState('');
   const [uploadCategory, setUploadCategory] = useState('Interior Living');
   const [uploadAttachPropId, setUploadAttachPropId] = useState('none');
   const [uploadUrl, setUploadUrl] = useState('');
   const [uploadFeedback, setUploadFeedback] = useState('');
   const [uploadingMedia, setUploadingMedia] = useState(false);
+  const [optimizingUpload, setOptimizingUpload] = useState(false);
+
+  // Edit Media Modal State
+  const [editingMediaItem, setEditingMediaItem] = useState<UploadedMedia | null>(null);
+  const [editMediaName, setEditMediaName] = useState('');
+  const [editMediaCategory, setEditMediaCategory] = useState('Interior Living');
+  const [editMediaUrl, setEditMediaUrl] = useState('');
+  const [savingMediaEdit, setSavingMediaEdit] = useState(false);
+  const [mediaActionFeedback, setMediaActionFeedback] = useState('');
 
   // --- MANAGE LEADS STATE ---
   const [leadTypeFilter, setLeadTypeFilter] = useState<'All' | LeadType>('All');
@@ -392,19 +444,27 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!uploadName) {
       setUploadName(file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '));
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        setUploadUrl(reader.result);
-      }
-    };
-    reader.readAsDataURL(file);
+    setOptimizingUpload(true);
+    try {
+      const optimizedDataUrl = await optimizeImageFile(file);
+      setUploadUrl(optimizedDataUrl);
+    } catch {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          setUploadUrl(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setOptimizingUpload(false);
+    }
   };
 
   const handleUploadSubmit = async (e: React.FormEvent) => {
@@ -428,6 +488,10 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
       if (!res.ok) throw new Error('Failed to upload image');
       const data = await res.json();
       onMediaUploaded(data.media, data.updatedProperty);
+      realtimeClient.broadcastLocally('media:created', data.media);
+      if (data.updatedProperty) {
+        realtimeClient.broadcastLocally('property:updated', data.updatedProperty);
+      }
       setUploadFeedback(
         data.updatedProperty
           ? `Uploaded "${data.media.name}" and attached to ${data.updatedProperty.title}.`
@@ -439,6 +503,96 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
       setUploadFeedback(err.message || 'Upload failed.');
     } finally {
       setUploadingMedia(false);
+    }
+  };
+
+  const handleDirectPropertyImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setOptimizingUpload(true);
+    setFormFeedback('Optimizing and attaching images from your device...');
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      try {
+        const optimizedUrl = await optimizeImageFile(file);
+        // Upload immediately to library
+        const res = await apiFetch('/api/media', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '),
+            url: optimizedUrl,
+            category: 'Interior Living',
+            propertyId: 'none',
+          }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          onMediaUploaded(data.media);
+          setFormImages((prev) => [...prev, data.media.url]);
+        } else {
+          // If media API fails, still attach local data URL to form images
+          setFormImages((prev) => [...prev, optimizedUrl]);
+        }
+      } catch (err) {
+        console.error('Failed to upload phone photo:', err);
+      }
+    }
+    setOptimizingUpload(false);
+    setFormFeedback('Photo(s) attached successfully to property gallery.');
+    setTimeout(() => setFormFeedback(''), 4000);
+  };
+
+  const handleOpenEditMedia = (item: UploadedMedia) => {
+    setEditingMediaItem(item);
+    setEditMediaName(item.name);
+    setEditMediaCategory(item.category || 'Interior Living');
+    setEditMediaUrl(item.url);
+    setMediaActionFeedback('');
+  };
+
+  const handleSaveMediaEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingMediaItem) return;
+    setSavingMediaEdit(true);
+    try {
+      const res = await apiFetch(`/api/media/${editingMediaItem.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: editMediaName.trim(),
+          category: editMediaCategory,
+          url: editMediaUrl.trim(),
+        }),
+      });
+
+      if (!res.ok) throw new Error('Failed to update media plate');
+      const updatedMedia: UploadedMedia = await res.json();
+      if (onMediaUpdated) onMediaUpdated(updatedMedia);
+      realtimeClient.broadcastLocally('media:updated', updatedMedia);
+      setMediaActionFeedback(`Updated "${updatedMedia.name}" successfully.`);
+      setEditingMediaItem(null);
+    } catch (err: any) {
+      setMediaActionFeedback(err.message || 'Failed to update image plate.');
+    } finally {
+      setSavingMediaEdit(false);
+    }
+  };
+
+  const handleDeleteMedia = async (mediaId: string, mediaName: string) => {
+    if (!window.confirm(`Permanently delete media plate "${mediaName}" from repository?`)) {
+      return;
+    }
+    try {
+      const res = await apiFetch(`/api/media/${mediaId}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete media plate');
+      if (onMediaDeleted) onMediaDeleted(mediaId);
+      realtimeClient.broadcastLocally('media:deleted', { id: mediaId });
+      setMediaActionFeedback(`Deleted plate "${mediaName}".`);
+      setTimeout(() => setMediaActionFeedback(''), 4000);
+    } catch (err: any) {
+      setMediaActionFeedback(err.message || 'Failed to delete image plate.');
     }
   };
 
@@ -571,6 +725,7 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   });
 
   const adminTabs: Array<{ id: AdminSubTab; label: string; count?: number }> = [
+    { id: 'homepage', label: 'Homepage Content' },
     { id: 'our-projects', label: 'Our Projects', count: projects.length },
     { id: 'listings', label: 'Manage Listings', count: properties.length },
     { id: 'add-property', label: 'Add Property' },
@@ -674,6 +829,20 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
           </button>
         ))}
       </div>
+
+      {/* =====================================================================
+       * MODULE -1: HOMEPAGE CONTENT & REAL-TIME SHOWCASE MANAGEMENT
+       * =================================================================== */}
+      {activeTab === 'homepage' && (
+        <AdminHomepageManager
+          homepageContent={homepageContent || ({} as any)}
+          projects={projects}
+          properties={properties}
+          onHomepageUpdated={onHomepageUpdated || (() => {})}
+          onPreviewProject={onPreviewProject}
+          onSelectProperty={onSelectProperty}
+        />
+      )}
 
       {/* =====================================================================
        * MODULE 0: OUR PROJECTS (COMPANY PROPRIETARY PROJECTS MANAGEMENT)
@@ -1210,17 +1379,31 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
 
             {/* Select Images from Studio Media Library */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <label className="block text-xs font-medium text-[#141413]">
                   Select Property Gallery Plates ({formImages.length} selected)
                 </label>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('upload-images')}
-                  className="text-xs text-[#1E3A2F] underline cursor-pointer"
-                >
-                  + Upload New Image Asset
-                </button>
+                <div className="flex items-center gap-3">
+                  <label className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] transition-colors rounded-sm cursor-pointer shadow-xs">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{optimizingUpload ? 'Compressing...' : 'Upload from Phone / Device'}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleDirectPropertyImageUpload}
+                      disabled={optimizingUpload}
+                      className="hidden"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('upload-images')}
+                    className="text-xs text-[#1E3A2F] underline cursor-pointer"
+                  >
+                    Open Media Studio
+                  </button>
+                </div>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 {media.map((item) => {
@@ -1414,28 +1597,169 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
               </span>
             </div>
 
+            {mediaActionFeedback && (
+              <div className="p-3 bg-[#EBF3EE] border border-[#1E3A2F]/30 text-xs text-[#1E3A2F] font-medium flex items-center justify-between">
+                <span>{mediaActionFeedback}</span>
+                <button
+                  type="button"
+                  onClick={() => setMediaActionFeedback('')}
+                  className="text-stone-400 hover:text-stone-700 cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {media.map((item) => (
                 <div
                   key={item.id}
                   className="border border-stone-200 bg-[#FBFBF9] overflow-hidden flex flex-col justify-between"
                 >
-                  <div className="aspect-[4/3] w-full bg-[#F3F2EE] overflow-hidden">
+                  <div className="aspect-[4/3] w-full bg-[#F3F2EE] overflow-hidden relative group">
                     <ArchitecturalImage
                       src={item.url}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
+                    <div className="absolute top-2 right-2 flex items-center gap-1.5 opacity-90">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEditMedia(item)}
+                        className="p-1.5 bg-white/95 text-[#141413] hover:text-[#1E3A2F] hover:bg-white shadow-xs rounded-sm cursor-pointer"
+                        title="Edit Plate Details"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteMedia(item.id, item.name)}
+                        className="p-1.5 bg-white/95 text-red-600 hover:bg-red-50 shadow-xs rounded-sm cursor-pointer"
+                        title="Delete Plate"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
-                  <div className="p-4">
-                    <div className="text-xs text-[#615E59]">{item.category}</div>
-                    <div className="text-sm font-semibold text-[#141413] mt-0.5">
-                      {item.name}
+                  <div className="p-4 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs text-[#615E59]">{item.category}</div>
+                      <div className="text-sm font-semibold text-[#141413] mt-0.5">
+                        {item.name}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEditMedia(item)}
+                        className="px-2.5 py-1 text-[11px] font-medium border border-stone-300 text-[#141413] hover:border-[#141413] cursor-pointer"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteMedia(item.id, item.name)}
+                        className="px-2.5 py-1 text-[11px] font-medium border border-red-200 text-red-700 hover:bg-red-50 cursor-pointer"
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
+
+            {/* Edit Media Modal */}
+            {editingMediaItem && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+                <div className="bg-[#FBFBF9] border border-stone-300 max-w-lg w-full p-6 space-y-4 shadow-2xl">
+                  <div className="flex items-center justify-between border-b border-stone-200 pb-3">
+                    <h4 className="font-serif-display text-xl font-semibold text-[#141413]">
+                      Edit Studio Media Plate
+                    </h4>
+                    <button
+                      type="button"
+                      onClick={() => setEditingMediaItem(null)}
+                      className="text-stone-400 hover:text-stone-700 text-lg cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleSaveMediaEdit} className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-medium text-[#141413] mb-1">
+                        Plate Title / Caption *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={editMediaName}
+                        onChange={(e) => setEditMediaName(e.target.value)}
+                        className="w-full px-3 py-2 text-sm bg-white border border-stone-300"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-[#141413] mb-1">
+                        Category
+                      </label>
+                      <select
+                        value={editMediaCategory}
+                        onChange={(e) => setEditMediaCategory(e.target.value)}
+                        className="w-full px-3 py-2 text-xs bg-white border border-stone-300"
+                      >
+                        <option value="Interior Living">Interior Living</option>
+                        <option value="Exterior & Pool">Exterior & Pool</option>
+                        <option value="Courtyard & Architecture">Courtyard & Architecture</option>
+                        <option value="Waterfront">Waterfront</option>
+                        <option value="Floorplan & Monograph">Floorplan & Monograph</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-[#141413] mb-1">
+                        Image URL / Data URI *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={editMediaUrl}
+                        onChange={(e) => setEditMediaUrl(e.target.value)}
+                        className="w-full px-3 py-2 text-xs bg-white border border-stone-300"
+                      />
+                    </div>
+
+                    {editMediaUrl && (
+                      <div className="aspect-[16/9] w-full bg-stone-100 overflow-hidden border border-stone-200">
+                        <ArchitecturalImage
+                          src={editMediaUrl}
+                          alt={editMediaName}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+
+                    <div className="flex justify-end gap-2 pt-2 border-t border-stone-200">
+                      <button
+                        type="button"
+                        onClick={() => setEditingMediaItem(null)}
+                        className="px-4 py-2 text-xs font-medium border border-stone-300 text-[#57534E] hover:text-[#141413] cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={savingMediaEdit}
+                        className="px-5 py-2 text-xs font-semibold bg-[#1E3A2F] text-white hover:bg-[#141413] cursor-pointer"
+                      >
+                        {savingMediaEdit ? 'Saving...' : 'Update Media Plate'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

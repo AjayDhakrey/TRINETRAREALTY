@@ -37,7 +37,11 @@ import {
   ActiveRoute,
   LeadType,
   TransactionType,
+  HomepageContent,
+  DEFAULT_HOMEPAGE_CONTENT,
 } from './types/realestate';
+import { fetchHomepageContent } from './services/homepageApi';
+import { realtimeClient } from './services/realtime';
 import {
   INITIAL_PROPERTIES,
   INITIAL_PROJECTS,
@@ -119,6 +123,7 @@ export default function App() {
   const [localities, setLocalities] = useState<LocalityProfile[]>(INITIAL_LOCALITIES);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>(INITIAL_BLOG_POSTS);
   const [media, setMedia] = useState<UploadedMedia[]>(INITIAL_MEDIA);
+  const [homepageContent, setHomepageContent] = useState<HomepageContent>(DEFAULT_HOMEPAGE_CONTENT);
 
   // --- NAVIGATION & VIEW STATE ---
   const [activeRoute, setActiveRoute] = useState<ActiveRoute>(() => {
@@ -180,7 +185,7 @@ export default function App() {
     undefined
   );
 
-  // Hydrate live data from Node.js Express backend (/api/bootstrap)
+  // Hydrate live data from Node.js Express backend (/api/bootstrap & /api/homepage)
   useEffect(() => {
     let mounted = true;
     apiFetch('/api/bootstrap')
@@ -211,8 +216,117 @@ export default function App() {
         // Fallback to seed data already initialized in state
       });
 
+    fetchHomepageContent()
+      .then((content) => {
+        if (mounted && content) {
+          setHomepageContent(content);
+        }
+      })
+      .catch(() => {});
+
     return () => {
       mounted = false;
+    };
+  }, []);
+
+  // Real-Time Event Synchronization (SSE & BroadcastChannel)
+  useEffect(() => {
+    // 1. Homepage content updates
+    const unsubs: Array<() => void> = [];
+
+    unsubs.push(
+      realtimeClient.subscribe('homepage:updated', (newContent: HomepageContent) => {
+        if (newContent) {
+          setHomepageContent((prev) => ({
+            ...prev,
+            ...newContent,
+          }));
+        }
+      })
+    );
+
+    // 2. Project updates
+    unsubs.push(
+      realtimeClient.subscribe('project:created', (newProj: CompanyProject) => {
+        setProjects((prev) => {
+          if (prev.some((p) => p.id === newProj.id)) return prev;
+          return [newProj, ...prev];
+        });
+      })
+    );
+    unsubs.push(
+      realtimeClient.subscribe('project:updated', (upProj: CompanyProject) => {
+        setProjects((prev) => prev.map((p) => (p.id === upProj.id ? upProj : p)));
+      })
+    );
+    unsubs.push(
+      realtimeClient.subscribe('project:deleted', ({ id }: { id: string }) => {
+        setProjects((prev) => prev.filter((p) => p.id !== id));
+      })
+    );
+
+    // 3. Property updates
+    unsubs.push(
+      realtimeClient.subscribe('property:created', (newProp: Property) => {
+        setProperties((prev) => {
+          if (prev.some((p) => p.id === newProp.id)) return prev;
+          return [newProp, ...prev];
+        });
+      })
+    );
+    unsubs.push(
+      realtimeClient.subscribe('property:updated', (upProp: Property) => {
+        setProperties((prev) => prev.map((p) => (p.id === upProp.id ? upProp : p)));
+      })
+    );
+    unsubs.push(
+      realtimeClient.subscribe('property:deleted', ({ id }: { id: string }) => {
+        setProperties((prev) => prev.filter((p) => p.id !== id));
+      })
+    );
+
+    // 4. Media updates
+    unsubs.push(
+      realtimeClient.subscribe('media:created', (newMedia: UploadedMedia) => {
+        setMedia((prev) => {
+          if (prev.some((m) => m.id === newMedia.id)) return prev;
+          return [newMedia, ...prev];
+        });
+      })
+    );
+    unsubs.push(
+      realtimeClient.subscribe('media:updated', (upMedia: UploadedMedia) => {
+        setMedia((prev) => prev.map((m) => (m.id === upMedia.id ? upMedia : m)));
+      })
+    );
+    unsubs.push(
+      realtimeClient.subscribe('media:deleted', ({ id }: { id: string }) => {
+        setMedia((prev) => prev.filter((m) => m.id !== id));
+      })
+    );
+
+    // 5. Customer Leads
+    unsubs.push(
+      realtimeClient.subscribe('lead:created', (newLead: CustomerLead) => {
+        setLeads((prev) => {
+          if (prev.some((l) => l.id === newLead.id)) return prev;
+          return [newLead, ...prev];
+        });
+      })
+    );
+    unsubs.push(
+      realtimeClient.subscribe('lead:updated', (upLead: CustomerLead) => {
+        setLeads((prev) => prev.map((l) => (l.id === upLead.id ? upLead : l)));
+      })
+    );
+    unsubs.push(
+      realtimeClient.subscribe('lead:deleted', ({ id }: { id: string }) => {
+        setLeads((prev) => prev.filter((l) => l.id !== id));
+      })
+    );
+
+    return () => {
+      unsubs.forEach((unsub) => unsub());
     };
   }, []);
 
@@ -479,10 +593,10 @@ export default function App() {
                     {/* Hero Focal Proposition */}
                     <div className="max-w-3xl space-y-3 sm:space-y-5 opacity-100">
                       <h1 className="font-serif-display text-2xl sm:text-4xl lg:text-6xl font-semibold text-white leading-[1.12] sm:leading-[1.08] tracking-tight text-balance [text-shadow:0_2px_16px_rgba(0,0,0,0.65)] tr-reveal-heading">
-                        Architectural Residences of Enduring Provenance.
+                        {homepageContent.heroTitle || 'Architectural Residences of Enduring Provenance.'}
                       </h1>
                       <p className="text-xs sm:text-base text-stone-100 max-w-2xl leading-relaxed [text-shadow:0_1px_10px_rgba(0,0,0,0.65)] tr-reveal-supporting">
-                        Trinetra Realty represents collector-grade penthouses, modernist courtyard villas, and historic townhouses across North America’s premier residential enclaves.
+                        {homepageContent.heroSubtitle || 'Trinetra Realty represents collector-grade penthouses, modernist courtyard villas, and historic townhouses across premier residential enclaves.'}
                       </p>
 
                       {/* Primary Hero Search & Filter Bar */}
@@ -564,10 +678,10 @@ export default function App() {
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 border-b border-stone-200 pb-5 sm:pb-6">
                 <div>
                   <div className="text-xs text-[#615E59]">
-                    Curated Architectural Mandates · Available for Private Showing
+                    {homepageContent.featuredSectionEyebrow || 'Curated Architectural Mandates · Available for Private Showing'}
                   </div>
                   <h2 className="font-serif-display text-2xl sm:text-4xl font-semibold text-[#141413] mt-1">
-                    Featured Residences & Estates
+                    {homepageContent.featuredSectionTitle || 'Featured Residences & Estates'}
                   </h2>
                 </div>
 
@@ -613,13 +727,13 @@ export default function App() {
                   <div>
                     <div className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.14em] uppercase text-[#1E3A2F]">
                       <Building2 className="w-3.5 h-3.5" />
-                      <span>Trinetra Realty · Proprietary Developments &amp; Official Projects</span>
+                      <span>{homepageContent.ourProjectsSectionEyebrow || 'Trinetra Realty · Proprietary Developments & Official Projects'}</span>
                     </div>
                     <h2 className="font-serif-display text-2xl sm:text-4xl font-semibold text-[#141413] mt-1">
-                      Our Signature Projects
+                      {homepageContent.ourProjectsSectionTitle || 'Our Signature Projects'}
                     </h2>
                     <p className="text-xs sm:text-sm text-[#57534E] mt-1 max-w-2xl">
-                      Explore landmark residential and commercial developments conceived, built, and officially represented by Trinetra Realty.
+                      {homepageContent.ourProjectsSectionSubtitle || 'Explore landmark residential and commercial developments conceived, built, and officially represented by Trinetra Realty.'}
                     </p>
                   </div>
 
@@ -663,39 +777,39 @@ export default function App() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-end border-b border-stone-300 pb-8 sm:pb-12">
                   <div className="lg:col-span-6 space-y-2.5 sm:space-y-3">
                     <div className="text-xs text-[#615E59]">
-                      Empirical Performance & Private Placement Advisory
+                      {homepageContent.advisoryEyebrow || 'Empirical Performance & Private Placement Advisory'}
                     </div>
                     <h2 className="font-serif-display text-2xl sm:text-4xl font-semibold text-[#141413] text-balance">
-                      Full-Spectrum Real Estate Advisory, Valuation, and Financing
+                      {homepageContent.advisoryTitle || 'Full-Spectrum Real Estate Advisory, Valuation, and Financing'}
                     </h2>
                     <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed max-w-xl">
-                      Whether acquiring a primary penthouse, leasing a turnkey courtyard villa, or appraising a generational townhouse for disposition, our integrated platform connects principals directly with quantitative market data and senior partners.
+                      {homepageContent.advisorySubtitle || 'Whether acquiring a primary penthouse, leasing a turnkey courtyard villa, or appraising a generational townhouse for disposition, our integrated platform connects principals directly with quantitative market data and senior partners.'}
                     </p>
                   </div>
 
                   <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                     <div className="bg-[#FBFBF9] border border-stone-200 p-4 sm:p-5">
                       <div className="font-mono-tabular text-2xl sm:text-3xl font-semibold text-[#141413]">
-                        ₹1,480 Cr
+                        {homepageContent.metric1Value || '₹1,480 Cr'}
                       </div>
                       <div className="text-[11px] sm:text-xs text-[#615E59] mt-1">
-                        Closed Transaction Volume Across 12 Months (2025–2026)
+                        {homepageContent.metric1Label || 'Closed Transaction Volume Across 12 Months (2025–2026)'}
                       </div>
                     </div>
                     <div className="bg-[#FBFBF9] border border-stone-200 p-4 sm:p-5">
                       <div className="font-mono-tabular text-2xl sm:text-3xl font-semibold text-[#1E3A2F]">
-                        98.4%
+                        {homepageContent.metric2Value || '98.4%'}
                       </div>
                       <div className="text-[11px] sm:text-xs text-[#615E59] mt-1">
-                        List-to-Close Realization on Verified Mandates
+                        {homepageContent.metric2Label || 'List-to-Close Realization on Verified Mandates'}
                       </div>
                     </div>
                     <div className="bg-[#FBFBF9] border border-stone-200 p-4 sm:p-5">
                       <div className="font-mono-tabular text-2xl sm:text-3xl font-semibold text-[#141413]">
-                        24 Days
+                        {homepageContent.metric3Value || '24 Days'}
                       </div>
                       <div className="text-[11px] sm:text-xs text-[#615E59] mt-1">
-                        Median Private Placement Velocity for Valued Estates
+                        {homepageContent.metric3Label || 'Median Private Placement Velocity for Valued Estates'}
                       </div>
                     </div>
                   </div>
@@ -1206,6 +1320,14 @@ export default function App() {
                 );
               }
             }}
+            onMediaUpdated={(updatedMedia) => {
+              setMedia((prev) => prev.map((m) => (m.id === updatedMedia.id ? updatedMedia : m)));
+            }}
+            onMediaDeleted={(id) => {
+              setMedia((prev) => prev.filter((m) => m.id !== id));
+            }}
+            homepageContent={homepageContent}
+            onHomepageUpdated={(newContent) => setHomepageContent(newContent)}
           />
         )}
       </main>
@@ -1224,13 +1346,17 @@ export default function App() {
                 <span className="font-owner-brand font-bold text-white tracking-wider text-xs sm:text-sm">Rohit Joon</span>
               </div>
               <h2 className="font-serif-display text-3xl sm:text-4xl font-semibold text-white">
-                Ready to Explore Your Next Property?
+                {homepageContent.ctaTitle || 'Ready to Explore Your Next Property?'}
               </h2>
               <p className="text-sm text-stone-200 font-medium">
-                Have a property enquiry or want to schedule a site visit?
+                {homepageContent.ctaSubtitle || 'Have a property enquiry or want to schedule a site visit?'}
               </p>
               <p className="text-xs text-stone-300/90 leading-relaxed pt-1">
-                Connect directly with business owners <strong className="font-owner-brand text-white font-bold tracking-wide text-xs sm:text-sm underline decoration-[#D4AF6A]/60 underline-offset-2">Rahul Khatri</strong> &amp; <strong className="font-owner-brand text-white font-bold tracking-wide text-xs sm:text-sm underline decoration-[#D4AF6A]/60 underline-offset-2">Rohit Joon</strong> for project details, inventory availability, and site visits.
+                {homepageContent.ctaDescription || (
+                  <>
+                    Connect directly with business owners <strong className="font-owner-brand text-white font-bold tracking-wide text-xs sm:text-sm underline decoration-[#D4AF6A]/60 underline-offset-2">Rahul Khatri</strong> &amp; <strong className="font-owner-brand text-white font-bold tracking-wide text-xs sm:text-sm underline decoration-[#D4AF6A]/60 underline-offset-2">Rohit Joon</strong> for project details, inventory availability, and site visits.
+                  </>
+                )}
               </p>
             </div>
 

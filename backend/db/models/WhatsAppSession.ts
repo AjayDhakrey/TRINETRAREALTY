@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface WhatsAppSessionDocument extends Document {
   sessionId: string;
@@ -20,7 +20,6 @@ const WhatsAppSessionSchema = new Schema<WhatsAppSessionDocument>(
   { timestamps: true }
 );
 
-export const WhatsAppSessionModel =
-  mongoose.models.WhatsAppSession ||
+export const WhatsAppSessionModel: Model<WhatsAppSessionDocument> =
+  (mongoose.models.WhatsAppSession as Model<WhatsAppSessionDocument>) ||
   mongoose.model<WhatsAppSessionDocument>('WhatsAppSession', WhatsAppSessionSchema);
-

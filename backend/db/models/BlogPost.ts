@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { BlogPost } from '../../frontend/src/types/realestate';
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import { BlogPost } from '../../../shared/types/realestate';
 
 export interface BlogPostDocument extends Omit<BlogPost, 'id'>, Document {
   id: string;
@@ -31,6 +31,6 @@ const BlogPostSchema = new Schema<BlogPostDocument>(
   }
 );
 
-export const BlogPostModel =
-  mongoose.models.BlogPost || mongoose.model<BlogPostDocument>('BlogPost', BlogPostSchema);
-
+export const BlogPostModel: Model<BlogPostDocument> =
+  (mongoose.models.BlogPost as Model<BlogPostDocument>) ||
+  mongoose.model<BlogPostDocument>('BlogPost', BlogPostSchema);

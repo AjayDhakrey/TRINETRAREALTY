@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { CustomerLead } from '../../frontend/src/types/realestate';
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import { CustomerLead } from '../../../shared/types/realestate';
 
 export interface LeadDocument extends Omit<CustomerLead, 'id'>, Document {
   id: string;
@@ -66,6 +66,6 @@ const LeadSchema = new Schema<LeadDocument>(
   }
 );
 
-export const LeadModel =
-  mongoose.models.Lead || mongoose.model<LeadDocument>('Lead', LeadSchema);
-
+export const LeadModel: Model<LeadDocument> =
+  (mongoose.models.Lead as Model<LeadDocument>) ||
+  mongoose.model<LeadDocument>('Lead', LeadSchema);

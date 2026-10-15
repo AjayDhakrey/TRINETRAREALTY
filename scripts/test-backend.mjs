@@ -370,6 +370,92 @@ async function runTests() {
       console.log(`       -> Total media assets: ${mediaList.length}`);
     });
 
+    await test('PUT & DELETE /api/media/:id updates and deletes media asset', async () => {
+      // 1. Create a temporary media plate
+      const postRes = await fetch(`${BASE_URL}/api/media`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: 'Temporary Media Plate',
+          url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c',
+          category: 'Interior Living',
+        }),
+      });
+      if (!postRes.ok) throw new Error(`Media creation failed with status ${postRes.status}`);
+      const created = await postRes.json();
+      const mediaId = created.media?.id || created.id;
+
+      // 2. Update media plate
+      const putRes = await fetch(`${BASE_URL}/api/media/${mediaId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: 'Updated Plate Title',
+          category: 'Exterior & Pool',
+        }),
+      });
+      if (!putRes.ok) throw new Error(`Media update failed with status ${putRes.status}`);
+      const updated = await putRes.json();
+      if (updated.name !== 'Updated Plate Title') throw new Error('Media name was not updated');
+
+      // 3. Delete media plate
+      const delRes = await fetch(`${BASE_URL}/api/media/${mediaId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!delRes.ok) throw new Error(`Media delete failed with status ${delRes.status}`);
+      console.log(`       -> Media Plate ${mediaId} updated and deleted successfully`);
+    });
+
+    await test('GET & PUT /api/homepage manages homepage text & metrics content', async () => {
+      // 1. Fetch current homepage content
+      const getRes = await fetch(`${BASE_URL}/api/homepage`);
+      if (!getRes.ok) throw new Error(`GET /api/homepage failed with status ${getRes.status}`);
+      const initial = await getRes.json();
+      if (!initial.heroTitle || !initial.metric1Value) {
+        throw new Error('Invalid initial homepage content structure');
+      }
+
+      // 2. Update homepage content via Admin API
+      const testHeadline = 'Curated Provenance · Integration Verified';
+      const putRes = await fetch(`${BASE_URL}/api/admin/homepage`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          heroTitle: testHeadline,
+          metric1Value: '₹1,520 Cr',
+        }),
+      });
+      if (!putRes.ok) throw new Error(`PUT /api/admin/homepage failed with status ${putRes.status}`);
+      const updated = await putRes.json();
+      if (updated.heroTitle !== testHeadline || updated.metric1Value !== '₹1,520 Cr') {
+        throw new Error('Homepage content was not updated');
+      }
+
+      // 3. Restore default headline
+      await fetch(`${BASE_URL}/api/admin/homepage`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          heroTitle: initial.heroTitle,
+          metric1Value: initial.metric1Value,
+        }),
+      });
+      console.log(`       -> Homepage content fetched, updated, and restored live`);
+    });
+
     await test('POST /api/admin/logout revokes admin session', async () => {
       const res = await fetch(`${BASE_URL}/api/admin/logout`, {
         method: 'POST',

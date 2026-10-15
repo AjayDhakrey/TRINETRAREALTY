@@ -99,7 +99,7 @@ async function sendViaResend(
       }),
     });
 
-    const data = await res.json().catch(() => ({}));
+    const data: any = await res.json().catch(() => ({}));
     if (!res.ok) {
       const errMsg = (data && (data.message || data.error)) || `Resend HTTP ${res.status}`;
       console.warn(`⚠️ [Resend API] Failed to send to ${to}:`, errMsg);

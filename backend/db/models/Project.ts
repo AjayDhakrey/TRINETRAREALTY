@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { CompanyProject } from '../../frontend/src/types/realestate';
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import { CompanyProject } from '../../../shared/types/realestate';
 
 export interface ProjectDocument extends Omit<CompanyProject, 'id'>, Document {
   id: string;
@@ -39,7 +39,7 @@ const ProjectSchema = new Schema<ProjectDocument>(
     projectStatus: {
       type: String,
       enum: ['Upcoming', 'New Launch', 'Under Construction', 'Ready to Move', 'Completed'],
-      default: 'New Launch',
+      default: 'Under Construction',
       index: true,
     },
     publicationState: {
@@ -51,26 +51,26 @@ const ProjectSchema = new Schema<ProjectDocument>(
     featured: { type: Boolean, default: false, index: true },
     shortDescription: { type: String, default: '' },
     fullDescription: { type: String, default: '' },
-    city: { type: String, default: 'Noida', index: true },
-    locality: { type: String, default: 'Sector 94 · Expressway', index: true },
-    state: { type: String, default: 'Uttar Pradesh' },
+    city: { type: String, default: 'Gurugram', index: true },
+    locality: { type: String, required: true, index: true },
+    state: { type: String, default: 'Haryana' },
     fullAddress: { type: String, default: '' },
     googleMapsLink: { type: String, default: '' },
     coordinates: { type: String, default: '' },
-    startingPrice: { type: Number, default: 25000000 },
-    maxPrice: { type: Number },
+    startingPrice: { type: Number, required: true, index: true },
+    maxPrice: { type: Number, default: 0 },
     priceOnRequest: { type: Boolean, default: false },
-    configurationSummary: { type: String, default: '3 BHK & 4 BHK Luxury Residences' },
-    areaRangeSqFt: { type: String, default: '2,200 – 4,200 sq.ft.' },
-    unitsAvailable: { type: Number, default: 24 },
-    totalUnits: { type: Number, default: 80 },
-    possessionDate: { type: String, default: 'December 2028' },
-    reraNumber: { type: String, default: 'UPRERAPRJ-PENDING', index: true },
-    projectArea: { type: String, default: '5.0 Acres' },
-    numberOfTowers: { type: Number, default: 2 },
-    numberOfFloors: { type: Number, default: 28 },
-    constructionStatus: { type: String, default: 'Active Construction Underway' },
-    coverImage: { type: String, default: '' },
+    configurationSummary: { type: String, default: '' },
+    areaRangeSqFt: { type: String, default: '' },
+    unitsAvailable: { type: Number, default: 0 },
+    totalUnits: { type: Number, default: 0 },
+    possessionDate: { type: String, default: '' },
+    reraNumber: { type: String, default: '' },
+    projectArea: { type: String, default: '' },
+    numberOfTowers: { type: Number, default: 0 },
+    numberOfFloors: { type: Number, default: 0 },
+    constructionStatus: { type: String, default: '' },
+    coverImage: { type: String, required: true },
     galleryImages: { type: [MediaGalleryItemSchema], default: [] },
     floorPlanImages: { type: [MediaGalleryItemSchema], default: [] },
     masterPlanImage: { type: String, default: '' },
@@ -97,6 +97,6 @@ const ProjectSchema = new Schema<ProjectDocument>(
   }
 );
 
-export const ProjectModel =
-  mongoose.models.Project || mongoose.model<ProjectDocument>('Project', ProjectSchema);
-
+export const ProjectModel: Model<ProjectDocument> =
+  (mongoose.models.Project as Model<ProjectDocument>) ||
+  mongoose.model<ProjectDocument>('Project', ProjectSchema);

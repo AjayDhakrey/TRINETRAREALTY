@@ -12,7 +12,7 @@
         "clean": "node -e \"require('node:fs').rmSync('frontend/dist',{recursive:true,force:true})\"",
         "lint": "node ./node_modules/typescript/bin/tsc --noEmit -p frontend/tsconfig.json",
         "dev:api": "node ./node_modules/tsx/dist/cli.mjs backend/server.ts",
-        "typecheck:backend": "node ./node_modules/typescript/bin/tsc --noEmit --module ESNext --moduleResolution bundler --target ES2022 --types node --skipLibCheck backend/server.ts",
+        "typecheck:backend": "node ./node_modules/typescript/bin/tsc --noEmit -p backend/tsconfig.json",
         "test:backend": "node scripts/test-backend.mjs",
         "test:mongo": "node ./node_modules/tsx/dist/cli.mjs scripts/test-mongo.mjs"
     },
